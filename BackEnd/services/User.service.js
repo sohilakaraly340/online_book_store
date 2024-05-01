@@ -2,7 +2,6 @@ const User = require("../models/User.schema");
 
 const createUserService = async (body, passwordHash) => {
   try {
-    console.log(body, passwordHash);
     return await User.create({ ...body, password: passwordHash });
   } catch (error) {
     console.log(error);
