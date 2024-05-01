@@ -19,7 +19,7 @@ app.use(express.json());
 
 app.use(`${process.env.API_URL}user`, userRouter);
 app.use(`${process.env.API_URL}item`, itemRouter);
-app.use(`${process.env.API_URL}admin`, userRouter);
+app.use(`${process.env.API_URL}admin`, adminRouter);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

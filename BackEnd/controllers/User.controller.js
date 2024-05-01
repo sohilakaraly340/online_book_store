@@ -1,11 +1,14 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const asyncHandler = require("express-async-handler");
 
 const { validateAddUsers } = require("../validation/user.validator");
 const {
   createUserService,
   findUserService,
+  getAllUseService,
 } = require("../services/User.service");
+const User = require("../models/User.schema");
 
 const createNewUse = async (req, res) => {
   try {
@@ -65,7 +68,18 @@ const login = async (req, res) => {
     res.status(500).send({ message: "An internal server error occurred." });
   }
 };
+
+const findAllusers = asyncHandler(async (req, res) => {
+  try {
+    const allUsers = await getAllUseService();
+    console.log(allUsers);
+    res.status(200).json({ success: true, data: allUsers });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
 module.exports = {
   createNewUse,
   login,
+  findAllusers,
 };
