@@ -8,8 +8,10 @@ const validateAddProduct = (user) => {
     countInStock: joi.required(),
     price: joi.number().required(),
     itemType: joi.string().required(),
+    publicationDate: joi.string(),
+    numOfPage: joi.number(),
 
-    // category:joi.string().required(),
+    category: joi.string().required(),
   });
   return schema.validate(user);
 };

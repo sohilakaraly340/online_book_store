@@ -11,6 +11,7 @@ const {
 const { validateAddProduct } = require("../validation/Item.validator");
 const ItemType = require("../models/ItemType.schema");
 const Item = require("../models/Item.schema");
+const Category = require("../models/Category.schema");
 
 const getAllItems = asyncHandler(async (req, res) => {
   try {
@@ -57,8 +58,8 @@ const addNewItem = asyncHandler(async (req, res) => {
     const itemType = await findItemType(req.body.itemType);
     if (!itemType) return res.status(400).send("invalid type");
 
-    // const category = await categoryModule.findById(req.body.categories);
-    // if (!category) return res.status(400).send("invalid category");
+    const category = await Category.findById(req.body.category);
+    if (!category) return res.status(400).send("invalid category");
 
     const newItem = await createItemService(req.body);
     res.status(201).json({ success: true, data: newItem });
@@ -73,9 +74,6 @@ const deleteItem = asyncHandler(async (req, res) => {
 
     const newItems = await Item.findOneAndDelete({ _id: prdId });
 
-    // const category = await categoryModule.findById(req.body.categories);
-    // if (!category) return res.status(400).send("invalid category");
-
     res.status(201).json({ success: true, data: newItems });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -88,6 +86,9 @@ const updateItem = asyncHandler(async (req, res) => {
     let body = req.body;
 
     const newItems = await Item.updateOne({ _id: prdId }, body);
+
+    const category = await Category.findById(req.body.category);
+    if (!category) return res.status(400).send("invalid category");
 
     res.status(201).json({ success: true, data: newItems });
   } catch (error) {
