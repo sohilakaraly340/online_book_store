@@ -2,34 +2,104 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const {
-  findProductService,
-  getAllProductsService,
+  findItemService,
+  getAllItemsService,
+  findItemType,
+  createItemService,
 } = require("../services/Item.service");
 
-const getAllProducts = asyncHandler(async (req, res) => {
+const { validateAddProduct } = require("../validation/Item.validator");
+const ItemType = require("../models/ItemType.schema");
+const Item = require("../models/Item.schema");
+
+const getAllItems = asyncHandler(async (req, res) => {
   try {
-    const productList = await getAllProductsService();
+    const ItemList = await getAllItemsService();
     res
       .status(200)
-      .json({ success: true, results: productList.length, data: productList });
+      .json({ success: true, results: ItemList.length, data: ItemList });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
 });
 
-const getProductById = asyncHandler(async (req, res) => {
+const getItemById = asyncHandler(async (req, res) => {
   try {
     let prdId = req.params.id;
 
-    const product = await findProductService(prdId);
+    const Item = await findItemService(prdId);
 
-    res.status(200).json({ success: true, data: product });
+    res.status(200).json({ success: true, data: Item });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+const AddItemType = asyncHandler(async (req, res) => {
+  try {
+    let body = req.body;
+
+    const productType = await ItemType.create(body);
+
+    res.status(200).json({ success: true, data: productType });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+const addNewItem = asyncHandler(async (req, res) => {
+  try {
+    const { error } = validateAddProduct(req.body);
+    if (error) {
+      res.status(400).send({ message: error });
+      return;
+    }
+    const itemType = await findItemType(req.body.itemType);
+    if (!itemType) return res.status(400).send("invalid type");
+
+    // const category = await categoryModule.findById(req.body.categories);
+    // if (!category) return res.status(400).send("invalid category");
+
+    const newItem = await createItemService(req.body);
+    res.status(201).json({ success: true, data: newItem });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+const deleteItem = asyncHandler(async (req, res) => {
+  try {
+    let prdId = req.params.id;
+
+    const newItems = await Item.findOneAndDelete({ _id: prdId });
+
+    // const category = await categoryModule.findById(req.body.categories);
+    // if (!category) return res.status(400).send("invalid category");
+
+    res.status(201).json({ success: true, data: newItems });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
+const updateItem = asyncHandler(async (req, res) => {
+  try {
+    let prdId = req.params.id;
+    let body = req.body;
+
+    const newItems = await Item.updateOne({ _id: prdId }, body);
+
+    res.status(201).json({ success: true, data: newItems });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
 });
 
 module.exports = {
-  getAllProducts,
-  getProductById,
+  getAllItems,
+  getItemById,
+  deleteItem,
+  addNewItem,
+  AddItemType,
+  updateItem,
 };

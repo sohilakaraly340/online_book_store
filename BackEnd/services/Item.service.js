@@ -1,7 +1,7 @@
 const Item = require("../models/Item.schema");
 const ItemType = require("../models/ItemType.schema");
 
-const createProductService = async (body) => {
+const createItemService = async (body) => {
   try {
     return await Item.create(body);
   } catch (error) {
@@ -12,17 +12,17 @@ const createProductService = async (body) => {
 const findItemType = async (id) => {
   return await ItemType.findOne({ _id: id });
 };
-const findProductService = async (id) => {
+const findItemService = async (id) => {
   return await Item.findOne({ _id: id }).populate("itemType");
 };
 
-const getAllProductsService = async () => {
+const getAllItemsService = async () => {
   return await Item.find().populate("itemType");
 };
 
 module.exports = {
-  createProductService,
-  findProductService,
-  getAllProductsService,
+  createItemService,
+  findItemService,
+  getAllItemsService,
   findItemType,
 };

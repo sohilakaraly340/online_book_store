@@ -1,11 +1,15 @@
 const express = require("express");
 const {
-  addNewProduct,
+  addNewItem,
   AddItemType,
-} = require("../controllers/Admin.controller");
+  deleteItem,
+  updateItem,
+} = require("../controllers/Item.controller");
 const router = express.Router();
 
-router.post("/addItem", addNewProduct);
+router.post("/addItem", addNewItem);
 router.post("/addItemType", AddItemType);
+router.delete("/deleteItem/:id", deleteItem);
+router.patch("/updateItem/:id", updateItem);
 
 module.exports = router;
