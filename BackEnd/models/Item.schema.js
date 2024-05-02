@@ -49,10 +49,10 @@ const itemSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  //   category: {
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     ref: "Category",
-  //   },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+  },
   //   authorId: {
   //     type: mongoose.Schema.Types.ObjectId,
   //     ref: "Author",
