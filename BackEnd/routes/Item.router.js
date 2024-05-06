@@ -1,9 +1,16 @@
 const express = require("express");
-const { getItemById, getAllItems } = require("../controllers/Item.controller");
-
 const router = express.Router();
 
-router.get("/", getAllItems);
-router.get("/:id", getItemById);
+const ItemController = require("../controllers/Item.controller");
+const ItemRepository = require("../repository/Item.repository");
+const item = require("../models/Item.schema");
+const itemType = require("../models/ItemType.schema");
+const category = require("../models/Category.schema");
+
+const itemRepository = new ItemRepository(item, itemType, category);
+const itemController = new ItemController(itemRepository);
+
+router.get("/", (req, res) => itemController.GetAllItems(req, res));
+router.get("/:id", (req, res) => itemController.GetItemById(req, res));
 
 module.exports = router;

@@ -1,85 +1,92 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const asyncHandler = require("express-async-handler");
+const joi = require("joi");
 
-const { validateAddUsers } = require("../validation/user.validator");
-const {
-  createUserService,
-  findUserService,
-  getAllUseService,
-} = require("../services/User.service");
-const User = require("../models/User.schema");
-
-const createNewUse = async (req, res) => {
-  try {
-    const { error } = validateAddUsers(req.body);
-    if (error) {
-      return res.status(400).send({ message: error });
-    }
-    console.log(req.body);
-
-    const { firstName, email, password } = req.body;
-    if (!email || !firstName) {
-      return res
-        .status(400)
-        .send({ message: "Name and email are required fields." });
-    }
-
-    const existingUser = await findUserService(email);
-    if (existingUser) {
-      return res
-        .status(409)
-        .send({ message: "This email is already registered." });
-    }
-
-    const passwordHash = await bcrypt.hash(password, 10);
-    const newUser = await createUserService(req.body, passwordHash);
-
-    res.status(201).send(newUser);
-  } catch (error) {
-    console.error("Error creating new user:", error);
-    res.status(500).send({ message: "An internal server error occurred." });
+class UserController {
+  constructor(userRepository) {
+    this.userRepository = userRepository;
   }
-};
 
-const login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res
-        .status(400)
-        .send({ message: "Email and password are required fields." });
-    }
-
-    const user = await findUserService(email);
-    if (!user) {
-      return res.status(401).send({ message: "Incorrect email or password." });
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return res.status(401).send({ message: "Incorrect email or password." });
-    }
-
-    const token = jwt.sign({ email }, "myjwtsecret", { expiresIn: "1d" });
-    res.header("Authorization", token).send({ token, user });
-  } catch (error) {
-    console.error("Error logging in:", error);
-    res.status(500).send({ message: "An internal server error occurred." });
+  async validateUser(user) {
+    const schema = joi.object({
+      firstName: joi.string().min(3).max(20).required(),
+      email: joi.string().min(3).max(100).required(),
+      password: joi.string().min(3).max(100).required(),
+    });
+    return schema.validate(user);
   }
-};
 
-const findAllusers = asyncHandler(async (req, res) => {
-  try {
-    const allUsers = await getAllUseService();
-    console.log(allUsers);
-    res.status(200).json({ success: true, data: allUsers });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+  async createNewUser(req, res) {
+    try {
+      const { error } = this.validateUser(req.body);
+      if (error) {
+        return res.status(400).json({ success: false, message: error.message });
+      }
+
+      const { firstName, email, password } = req.body;
+
+      // if (!firstName || !email || !password) {
+      //   return res.status(400).json({
+      //     success: false,
+      //     message: "Name, email, and password are required fields.",
+      //   });
+      // }
+
+      const existingUser = await this.userRepository.findByEmail(email);
+      if (existingUser) {
+        return res.status(409).json({
+          success: false,
+          message: "This email is already exist.",
+        });
+      }
+
+      const newUser = await this.userRepository.createUser(req.body);
+      res.status(201).json({ success: true, data: newUser });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
   }
-});
-module.exports = {
-  createNewUse,
-  login,
-  findAllusers,
-};
+
+  async login(req, res) {
+    try {
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        return res.status(400).json({
+          success: false,
+          message: "Email and password are required.",
+        });
+      }
+
+      const user = await this.userRepository.findByEmail(email);
+      if (!user) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Incorrect email or password." });
+      }
+
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Incorrect email or password." });
+      }
+
+      const token = jwt.sign({ email }, "myjwtsecret", { expiresIn: "1d" });
+      res.header("Authorization", token).send({ token, user });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
+  async findAllUsers(req, res) {
+    try {
+      const allUsers = await this.userRepository.findAll();
+      res.status(200).json({ success: true, data: allUsers });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+}
+
+module.exports = UserController;
