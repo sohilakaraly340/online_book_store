@@ -9,12 +9,8 @@ const item = require("../models/Item.schema");
 const categoryRepository = new CategoryRepository(category, item);
 const categoryController = new CategoryController(categoryRepository);
 
-router.post("/", (req, res) => categoryController.addCategory(req, res));
 router.get("/", (req, res) => categoryController.findAllCategories(req, res));
-router.patch("/:id", (req, res) => categoryController.updateCategory(req, res));
-router.delete("/:id", (req, res) =>
-  categoryController.deleteCategory(req, res)
-);
+
 router.get("/:id", (req, res) =>
   categoryController.findItemsOfCategory(req, res)
 );

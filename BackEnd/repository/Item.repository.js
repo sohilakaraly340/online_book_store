@@ -12,6 +12,18 @@ class ItemRepository {
     }
   }
 
+  async deleteItemType(id) {
+    try {
+      return await this.itemType.findByIdAndDelete({ _id: id });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async updateItemType(id, body) {
+    return await this.itemType.updateOne({ _id: id }, body);
+  }
+
   async createItem(body) {
     try {
       return await this.item.create(body);
