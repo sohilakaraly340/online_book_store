@@ -1,106 +1,108 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const asyncHandler = require("express-async-handler");
-const {
-  findItemService,
-  getAllItemsService,
-  findItemType,
-  createItemService,
-} = require("../services/Item.service");
+const Joi = require("joi");
 
-const { validateAddProduct } = require("../validation/Item.validator");
-const ItemType = require("../models/ItemType.schema");
-const Item = require("../models/Item.schema");
-const Category = require("../models/Category.schema");
-
-const getAllItems = asyncHandler(async (req, res) => {
-  try {
-    const ItemList = await getAllItemsService();
-    res
-      .status(200)
-      .json({ success: true, results: ItemList.length, data: ItemList });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+class ItemController {
+  constructor(itemRepository) {
+    this.itemRepository = itemRepository;
   }
-});
 
-const getItemById = asyncHandler(async (req, res) => {
-  try {
-    let prdId = req.params.id;
-
-    const Item = await findItemService(prdId);
-
-    res.status(200).json({ success: true, data: Item });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+  async validateItem(item) {
+    const schema = Joi.object({
+      title: Joi.string().min(3).max(100).required(),
+      description: Joi.string().min(5).required(),
+      images: Joi.array().items(Joi.string()),
+      countInStock: Joi.number().required(),
+      price: Joi.number().required(),
+      itemType: Joi.string().required(),
+      publicationDate: Joi.string(),
+      numOfPage: Joi.number(),
+      category: Joi.string().required(),
+    });
+    return schema.validate(item);
   }
-});
 
-const AddItemType = asyncHandler(async (req, res) => {
-  try {
-    let body = req.body;
-
-    const productType = await ItemType.create(body);
-
-    res.status(200).json({ success: true, data: productType });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
-  }
-});
-
-const addNewItem = asyncHandler(async (req, res) => {
-  try {
-    const { error } = validateAddProduct(req.body);
-    if (error) {
-      res.status(400).send({ message: error });
-      return;
+  async AddItemType(req, res) {
+    try {
+      const itemType = await this.itemRepository.createItemType(req.body);
+      res.status(200).json({ success: true, data: itemType });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
     }
-    const itemType = await findItemType(req.body.itemType);
-    if (!itemType) return res.status(400).send("invalid type");
-
-    const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send("invalid category");
-
-    const newItem = await createItemService(req.body);
-    res.status(201).json({ success: true, data: newItem });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
   }
-});
 
-const deleteItem = asyncHandler(async (req, res) => {
-  try {
-    let prdId = req.params.id;
+  async AddItem(req, res) {
+    try {
+      const { error } = this.validateItem(req.body);
+      if (error) {
+        res.status(400).json({ success: false, message: error.message });
+        return;
+      }
+      const itemType = await this.itemRepository.findItemType(
+        req.body.itemType
+      );
+      if (!itemType) return res.status(400).send("invalid type");
 
-    const newItems = await Item.findOneAndDelete({ _id: prdId });
+      const category = await this.itemRepository.findCategory(
+        req.body.category
+      );
+      if (!category) return res.status(400).send("invalid category");
 
-    res.status(201).json({ success: true, data: newItems });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+      const newItem = await this.itemRepository.createItem(req.body);
+
+      res.status(200).json({ success: true, data: newItem });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
   }
-});
 
-const updateItem = asyncHandler(async (req, res) => {
-  try {
-    let prdId = req.params.id;
-    let body = req.body;
-
-    const newItems = await Item.updateOne({ _id: prdId }, body);
-
-    const category = await Category.findById(req.body.category);
-    if (!category) return res.status(400).send("invalid category");
-
-    res.status(201).json({ success: true, data: newItems });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+  async DeleteItem(req, res) {
+    try {
+      const newItems = await this.itemRepository.deleteItem(req.params.id);
+      res.status(200).json({ success: true, data: newItems });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
   }
-});
 
-module.exports = {
-  getAllItems,
-  getItemById,
-  deleteItem,
-  addNewItem,
-  AddItemType,
-  updateItem,
-};
+  async GetItemById(req, res) {
+    try {
+      const Item = await this.itemRepository.findItem(req.params.id);
+
+      res.status(200).json({ success: true, data: Item });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
+  async UpdateItem(req, res) {
+    try {
+      if (req.body.category) {
+        const category = await this.itemRepository.findCategory(
+          req.body.category
+        );
+        if (!category) return res.status(400).send("invalid category");
+      }
+
+      const updatedItem = await this.itemRepository.updateItem(
+        req.params.id,
+        req.body
+      );
+
+      res.status(201).json({ success: true, data: updatedItem });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
+  async GetAllItems(req, res) {
+    try {
+      const ItemList = await this.itemRepository.getAllItems();
+      res
+        .status(200)
+        .json({ success: true, results: ItemList.length, data: ItemList });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+}
+
+module.exports = ItemController;
