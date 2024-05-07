@@ -58,7 +58,7 @@ const itemSchema = new mongoose.Schema({
     min: [0, "Discount cannot be less than 0"],
     max: [100, "Discount cannot be greater than 100%"],
   },
-  //   authorId: {
+  //   author: {
   //     type: mongoose.Schema.Types.ObjectId,
   //     ref: "Author",
   //   },
