@@ -4,7 +4,6 @@ const itemSchema = new mongoose.Schema({
   title: {
     type: String,
     required: [true, "Item name is required"],
-    maxlength: [100, "Item name is too long"],
     minlength: [3, "Item name is too short"],
   },
   description: {
@@ -22,6 +21,7 @@ const itemSchema = new mongoose.Schema({
   price: {
     type: Number,
     default: 0,
+    min: [0, "price cannot be less than 0"],
   },
 
   itemType: {
@@ -38,8 +38,7 @@ const itemSchema = new mongoose.Schema({
   countInStock: {
     type: Number,
     required: true,
-    min: 0,
-    max: 255,
+    min: [0, "count in stock cannot be less than 0"],
   },
   duration: {
     type: Number,
@@ -52,6 +51,12 @@ const itemSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
+  },
+  discount: {
+    type: Number,
+    default: 0,
+    min: [0, "Discount cannot be less than 0"],
+    max: [100, "Discount cannot be greater than 100%"],
   },
   //   authorId: {
   //     type: mongoose.Schema.Types.ObjectId,
