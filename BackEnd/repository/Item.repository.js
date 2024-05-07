@@ -33,16 +33,21 @@ class ItemRepository {
   }
   async search(key) {
     try {
-      const data = await this.item.aggregate([
-        {
-          $match: {
-            $or: [
-              { title: { $regex: key, $options: "i" } },
-              { category: { $regex: key, $options: "i" } },
-            ],
-          },
-        },
-      ]);
+      const categories = await this.category.find({
+        title: { $regex: key, $options: "i" },
+      });
+
+      const categoryIds = categories.map((category) => category._id);
+
+      const data = await this.item
+        .find({
+          $or: [
+            { title: { $regex: key, $options: "i" } },
+            { category: { $in: categoryIds } },
+          ],
+        })
+        .populate("category");
+
       return data;
     } catch (error) {
       throw new Error(error.message);
@@ -69,7 +74,7 @@ class ItemRepository {
   }
 
   async getAllItems() {
-    return await this.item.find().populate("itemType");
+    return await this.item.find().populate("itemType").populate("category");
   }
 
   async updateItem(id, body) {
