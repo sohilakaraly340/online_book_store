@@ -31,6 +31,23 @@ class ItemRepository {
       throw new Error(error.message);
     }
   }
+  async search(key) {
+    try {
+      const data = await this.item.aggregate([
+        {
+          $match: {
+            $or: [
+              { title: { $regex: key, $options: "i" } },
+              { category: { $regex: key, $options: "i" } },
+            ],
+          },
+        },
+      ]);
+      return data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 
   async deleteItem(id) {
     try {

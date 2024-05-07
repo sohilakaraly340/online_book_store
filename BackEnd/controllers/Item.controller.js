@@ -127,6 +127,16 @@ class ItemController {
       res.status(400).json({ success: false, message: error.message });
     }
   }
+
+  async search(req, res) {
+    try {
+      const data = await this.itemRepository.search(req.params.key);
+
+      res.status(200).json({ success: true, data: data });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
 }
 
 module.exports = ItemController;
