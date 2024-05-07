@@ -29,6 +29,30 @@ class ItemController {
     }
   }
 
+  async DeleteItemType(req, res) {
+    try {
+      const newItemsType = await this.itemRepository.deleteItemType(
+        req.params.id
+      );
+      res.status(200).json({ success: true, data: newItemsType });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
+  async UpdateItemType(req, res) {
+    try {
+      const updatedItemType = await this.itemRepository.updateItemType(
+        req.params.id,
+        req.body
+      );
+
+      res.status(201).json({ success: true, data: updatedItemType });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
   async AddItem(req, res) {
     try {
       const { error } = this.validateItem(req.body);
