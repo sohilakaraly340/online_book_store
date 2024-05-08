@@ -13,10 +13,11 @@ const auth = async (req, res, next) => {
     if (!user) {
       return res.status(401).send({ message: "un authorized user" });
     }
+    req.auth = user;
     next();
   } catch (err) {
     return res.status(401).send({ message: "error" });
   }
 };
 
-module.exports = { auth };
+module.exports = {auth};
