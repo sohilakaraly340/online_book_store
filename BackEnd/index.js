@@ -5,6 +5,11 @@ const userRouter = require("./routes/User.router");
 const itemRouter = require("./routes/Item.router");
 const adminRouter = require("./routes/Admin.router");
 const categoryRouter = require("./routes/Category.router");
+const userProfile=require('./routes/userProfile.router');
+
+
+
+
 
 const cors = require("cors");
 const app = express();
@@ -15,6 +20,15 @@ app.use(`${process.env.API_URL}user`, userRouter);
 app.use(`${process.env.API_URL}item`, itemRouter);
 app.use(`${process.env.API_URL}category`, categoryRouter);
 app.use(`${process.env.API_URL}admin`, adminRouter);
+
+
+/////mariam///
+app.use(`${process.env.API_URL}profile`,userProfile);
+
+
+//////////////////
+
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
