@@ -20,6 +20,15 @@ class ItemController {
     return schema.validate(item);
   }
 
+  async getItemTypes(req, res) {
+    try {
+      const itemType = await this.itemRepository.getItemTypes();
+      res.status(200).json({ success: true, data: itemType });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
   async AddItemType(req, res) {
     try {
       const itemType = await this.itemRepository.createItemType(req.body);
