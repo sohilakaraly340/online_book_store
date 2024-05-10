@@ -37,7 +37,10 @@ class CategoryRepository {
 
   async findItemsOfCategory(id) {
     try {
-      return await this.item.find({ category: id });
+      return await this.item
+        .find({ category: id })
+        .populate("itemType")
+        .populate("category");
     } catch (error) {
       throw new Error(error.message);
     }

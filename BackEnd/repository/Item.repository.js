@@ -4,6 +4,14 @@ class ItemRepository {
     this.itemType = itemType;
     this.category = category;
   }
+
+  async getItemTypes() {
+    try {
+      return await this.itemType.find();
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
   async createItemType(body) {
     try {
       return await this.itemType.create(body);
