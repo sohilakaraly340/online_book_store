@@ -6,6 +6,7 @@ const itemRouter = require("./routes/Item.router");
 const adminRouter = require("./routes/Admin.router");
 const categoryRouter = require("./routes/Category.router");
 const userProfile=require('./routes/userProfile.router');
+const authorRouter=require('./routes/author.router');
 
 
 
@@ -24,6 +25,7 @@ app.use(`${process.env.API_URL}admin`, adminRouter);
 
 /////mariam///
 app.use(`${process.env.API_URL}profile`,userProfile);
+app.use(`${process.env.API_URL}author`, authorRouter);
 
 
 //////////////////
