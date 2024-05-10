@@ -25,19 +25,22 @@ const categoryRepository = new CategoryRepository(category, item);
 const categoryController = new CategoryController(categoryRepository);
 
 /////////////////////item//////////////////////////
-router.post("/addItem", (req, res) => itemController.AddItem(req, res));
 router.get("/allItems", (req, res) => itemController.GetAllItems(req, res));
+router.post("/addItem", (req, res) => itemController.AddItem(req, res));
 router.delete("/deleteItem/:id", (req, res) =>
   itemController.DeleteItem(req, res)
 );
 router.patch("/updateItem/:id", (req, res) =>
   itemController.UpdateItem(req, res)
 );
+router.get("/allItemTypes", (req, res) =>
+  itemController.getItemTypes(req, res)
+);
 router.post("/addItemType", (req, res) => itemController.AddItemType(req, res));
-router.delete("/deleteItemType", (req, res) =>
+router.delete("/deleteItemType/:id", (req, res) =>
   itemController.DeleteItemType(req, res)
 );
-router.patch("/updateItemType", (req, res) =>
+router.patch("/updateItemType/:id", (req, res) =>
   itemController.UpdateItemType(req, res)
 );
 
