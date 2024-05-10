@@ -10,6 +10,7 @@ const categoryRouter = require("./routes/Category.router");
 const cartRouter = require("./routes/Cart.router");
 
 const userProfile=require('./routes/userProfile.router');
+const authorRouter=require('./routes/author.router');
 
 
 
@@ -27,6 +28,7 @@ app.use(`${process.env.API_URL}cart`, cartRouter);
 
 /////mariam///
 app.use(`${process.env.API_URL}profile`,userProfile);
+app.use(`${process.env.API_URL}author`, authorRouter);
 
 
 //////////////////
