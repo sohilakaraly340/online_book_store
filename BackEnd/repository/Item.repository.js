@@ -4,6 +4,14 @@ class ItemRepository {
     this.itemType = itemType;
     this.category = category;
   }
+
+  async getItemTypes() {
+    try {
+      return await this.itemType.find();
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
   async createItemType(body) {
     try {
       return await this.itemType.create(body);
@@ -31,6 +39,28 @@ class ItemRepository {
       throw new Error(error.message);
     }
   }
+  async search(key) {
+    try {
+      const categories = await this.category.find({
+        title: { $regex: key, $options: "i" },
+      });
+
+      const categoryIds = categories.map((category) => category._id);
+
+      const data = await this.item
+        .find({
+          $or: [
+            { title: { $regex: key, $options: "i" } },
+            { category: { $in: categoryIds } },
+          ],
+        })
+        .populate("category");
+
+      return data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 
   async deleteItem(id) {
     try {
@@ -52,7 +82,7 @@ class ItemRepository {
   }
 
   async getAllItems() {
-    return await this.item.find().populate("itemType");
+    return await this.item.find().populate("itemType").populate("category");
   }
 
   async updateItem(id, body) {

@@ -12,5 +12,6 @@ const itemController = new ItemController(itemRepository);
 
 router.get("/", (req, res) => itemController.GetAllItems(req, res));
 router.get("/:id", (req, res) => itemController.GetItemById(req, res));
+router.get("/search/:key", (req, res) => itemController.search(req, res));
 
 module.exports = router;

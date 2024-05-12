@@ -20,6 +20,15 @@ class ItemController {
     return schema.validate(item);
   }
 
+  async getItemTypes(req, res) {
+    try {
+      const itemType = await this.itemRepository.getItemTypes();
+      res.status(200).json({ success: true, data: itemType });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
   async AddItemType(req, res) {
     try {
       const itemType = await this.itemRepository.createItemType(req.body);
@@ -123,6 +132,16 @@ class ItemController {
       res
         .status(200)
         .json({ success: true, results: ItemList.length, data: ItemList });
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
+  async search(req, res) {
+    try {
+      const data = await this.itemRepository.search(req.params.key);
+
+      res.status(200).json({ success: true, data: data });
     } catch (error) {
       res.status(400).json({ success: false, message: error.message });
     }
