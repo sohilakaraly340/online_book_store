@@ -23,9 +23,11 @@ const userSchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
   },
-  // wishList: {
-  //   type: [mongoose.Schema.Types.ObjectId],
-  // },
+  wishList: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref:"Item",
+    default: []
+  },
   password: {
     type: String,
   },

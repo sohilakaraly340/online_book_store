@@ -22,7 +22,8 @@ class UserProfileRepository {
       
       return updated;
     } catch (error) {
-      console.log(error);
+      throw new Error(error.message);
+      // console.log(error);
     }
   }
 }
