@@ -12,12 +12,12 @@ class CategoryController {
     }
   }
 
-  async findAllCategories(req, res) {
+  async findAllCategories() {
     try {
-      const categories = await this.categoryRepository.getAllCategories();
-      res.status(200).json({ success: true, data: categories });
+    return await this.categoryRepository.getAllCategories();
+      
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      throw new Error(error.message);
     }
   }
 
