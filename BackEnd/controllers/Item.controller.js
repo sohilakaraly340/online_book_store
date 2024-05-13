@@ -30,64 +30,55 @@ class ItemController {
     }
   }
 
-  async getItemTypes(req, res) {
+  async getItemTypes() {
     try {
-      const itemType = await this.itemRepository.getItemTypes();
-      res.status(200).json({ success: true, data: itemType });
+     return await this.itemRepository.getItemTypes();
+      
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      throw new Error(error.message);
     }
   }
 
-  async AddItemType(req, res) {
+  async AddItemType(body) {
     try {
-      const itemType = await this.itemRepository.createItemType(req.body);
-      res.status(200).json({ success: true, data: itemType });
+      return await this.itemRepository.createItemType(body);
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      throw new Error(error.message);
     }
   }
 
-  async DeleteItemType(req, res) {
+  async DeleteItemType(id) {
     try {
-      const newItemsType = await this.itemRepository.deleteItemType(
-        req.params.id
-      );
-      res.status(200).json({ success: true, data: newItemsType });
+    return await this.itemRepository.deleteItemType(id);
+     
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      throw new Error(error.message);
     }
   }
 
-  async UpdateItemType(req, res) {
+  async UpdateItemType(id,body) {
     try {
-      const updatedItemType = await this.itemRepository.updateItemType(
-        req.params.id,
-        req.body
-      );
-
-      res.status(201).json({ success: true, data: updatedItemType });
+      return await this.itemRepository.updateItemType(id,body);
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      throw new Error(error.message);
     }
   }
 
-  async DeleteItem(req, res) {
+  async DeleteItem(id) {
     try {
-      const newItems = await this.itemRepository.deleteItem(req.params.id);
-      res.status(200).json({ success: true, data: newItems });
+     return await this.itemRepository.deleteItem(id);
+     
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      throw new Error(error.message);
     }
   }
 
-  async GetItemById(req, res) {
+  async GetItemById(id) {
     try {
-      const Item = await this.itemRepository.findItem(req.params.id);
+      return await this.itemRepository.findItem(id);
 
-      res.status(200).json({ success: true, data: Item });
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      throw new Error(error.message);
     }
   }
 
@@ -111,24 +102,20 @@ class ItemController {
     }
   }
 
-  async GetAllItems(req, res) {
+  async GetAllItems() {
     try {
-      const ItemList = await this.itemRepository.getAllItems();
-      res
-        .status(200)
-        .json({ success: true, results: ItemList.length, data: ItemList });
+     return await this.itemRepository.getAllItems();
+     
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+        throw new Error(error.message);
     }
   }
 
-  async search(req, res) {
+  async search(key) {
     try {
-      const data = await this.itemRepository.search(req.params.key);
-
-      res.status(200).json({ success: true, data: data });
+     return await this.itemRepository.search(key);
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      throw new Error(error.message);
     }
   }
 }

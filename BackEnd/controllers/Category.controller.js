@@ -44,13 +44,11 @@ class CategoryController {
     }
   }
 
-  async findItemsOfCategory(req, res) {
+  async findItemsOfCategory(id) {
     try {
-      const id = req.params.id;
-      const items = await this.categoryRepository.findItemsOfCategory(id);
-      res.status(200).json({ success: true, data: items });
+     return await this.categoryRepository.findItemsOfCategory(id);
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+     throw new Error(error.message);
     }
   }
 }

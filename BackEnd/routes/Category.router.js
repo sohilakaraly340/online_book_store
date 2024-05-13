@@ -19,13 +19,18 @@ const categoryRouter=(categoryController)=>{
     }
   });
 
-  
+  router.get('/:id',async(req,res)=>{
+    try{
+      const itemOfCategory= await categoryController.findItemsOfCategory(req.params.id);
+      if(itemOfCategory.length==0)res.json("this category hasn't have any item")
+      else{res.status(200).json({success: true , data: itemOfCategory})}
+    }catch(error){
+      res.status(500).json({ success: false, message: error.message });
+    }
+  })
   return router;
 
 }
 
-// router.get("/:id", (req, res) =>
-//   categoryController.findItemsOfCategory(req, res)
-// );
 
 module.exports = categoryRouter;
