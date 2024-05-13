@@ -3,9 +3,10 @@ const router = express.Router();
 const UserController = require("../controllers/User.controller");
 const UserRepository = require("../repository/User.repository");
 const user = require("../models/User.schema");
+const { validatUsers } = require("../validation/User.validator");
 
 const userRepository = new UserRepository(user);
-const userController = new UserController(userRepository);
+const userController = new UserController(userRepository, validatUsers);
 
 router.post("/", (req, res) => userController.createNewUser(req, res));
 router.post("/login", (req, res) => userController.login(req, res));

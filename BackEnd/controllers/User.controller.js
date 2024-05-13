@@ -1,36 +1,20 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const joi = require("joi");
 
 class UserController {
-  constructor(userRepository) {
+  constructor(userRepository, validatUsers) {
     this.userRepository = userRepository;
-  }
-
-  async validateUser(user) {
-    const schema = joi.object({
-      firstName: joi.string().min(3).max(20).required(),
-      email: joi.string().min(3).max(100).required(),
-      password: joi.string().min(3).max(100).required(),
-    });
-    return schema.validate(user);
+    this.validatUsers = validatUsers;
   }
 
   async createNewUser(req, res) {
     try {
-      const { error } = this.validateUser(req.body);
+      const { error } = this.validatUsers(req.body);
       if (error) {
         return res.status(400).json({ success: false, message: error.message });
       }
 
-      const { firstName, email, password } = req.body;
-
-      // if (!firstName || !email || !password) {
-      //   return res.status(400).json({
-      //     success: false,
-      //     message: "Name, email, and password are required fields.",
-      //   });
-      // }
+      const { email } = req.body;
 
       const existingUser = await this.userRepository.findByEmail(email);
       if (existingUser) {
