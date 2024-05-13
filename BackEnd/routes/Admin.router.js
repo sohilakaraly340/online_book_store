@@ -14,9 +14,12 @@ const item = require("../models/Item.schema");
 const itemType = require("../models/ItemType.schema");
 const category = require("../models/Category.schema");
 const user = require("../models/User.schema");
+const author = require("../models/Author.schema");
 
-const itemRepository = new ItemRepository(item, itemType, category);
-const itemController = new ItemController(itemRepository);
+const { validateItem } = require("../validation/Item.validator");
+
+const itemRepository = new ItemRepository(item, itemType, category, author);
+const itemController = new ItemController(itemRepository, validateItem);
 
 const userRepository = new UserRepository(user);
 const userController = new UserController(userRepository);

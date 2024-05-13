@@ -12,8 +12,9 @@ const ItemRepository = require("../repository/Item.repository");
 
 const OrderItem = require("../models/OrderItem.schema");
 
-const { orderItemValidation } = require("../validation/orderItem.validator");
+const { orderItemValidation } = require("../validation/OrderItem.validator");
 
+// console.log(orderItemValidation);
 const cartRepository = new CartRepository(Cart);
 const itemRepository = new ItemRepository(Item, ItemType, Category);
 
