@@ -3,39 +3,29 @@ class AuthorController {
     this.authorRepo = authorRepo;
   }
 
-  async createAuthor(req,res){
+  async createAuthor(body){
     try{
-        const newAuthor=await this.authorRepo.createNewAuthor(req.body);
-        res.status(200).json({success:true , data : newAuthor}) ;
-
+       return await this.authorRepo.createNewAuthor(body);
     }catch(error){
-        res.status(500).json({ success: false, message: error.message });
+      throw new Error(error.message);
     }
 
   }
 
-
-  async getAllAuthor(req, res) {
+  async getAllAuthor() {
     try {
-      const allAuthors = await this.authorRepo.getAll();
-      if(allAuthors.length==0)res.status(404).json("There are no Authors")
-        else{
-            res.status(200).json({ success: true, data: allAuthors });
-    }
+      return await this.authorRepo.getAll();
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      throw new Error(error.message);
+      
     }
   }
 
-  async getBooksOfAuthor(req,res){
+  async getBooksOfAuthor(id){
     try{
-        const books=await this.authorRepo.getAllBooks(req.params.id)
-        if(books.length==0) {
-             res.status(404).json(" this author hasn't have any books")
-            }
-        else {res.status(200).json({success: true, data: books})};
+        return await this.authorRepo.getAllBooks(id)
     }catch(error){
-        res.status(500).json({ success: false, message: error.message });
+      throw new Error(error.message);
     }
   }
 }

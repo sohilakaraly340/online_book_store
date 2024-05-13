@@ -4,21 +4,20 @@ class WishListController{
         this.itemRepo=itemRepo;
         this.userRepo=userRepo
     }
-    async getAllUsersWishList(req,res){
+    async getAllUsersWishList(email){
         try{
-            const userWishList= await this.whishListRepo.getAllWishList(req.headers.email);
-            res.status(200).json({success:true , data: userWishList});
+            return await this.whishListRepo.getAllWishList(email);
         }catch(error){
-            res.status(500).json({ message:'Internal server error'})
+            throw new Error(error.message);
         }
     }
 
-    async updateWishList(req,res){
+    async updateWishList(id,email){
         try{
             
-            const item= req.body._id;
+            const item= id;
             const itemAdded=await this.itemRepo.findItem(item);
-            const user = await this.userRepo.findByEmail(req.headers.email);
+            const user = await this.userRepo.findByEmail(email);
             // console.log(req.headers.email);
 
             if (user.wishList.includes(item)) {
@@ -29,12 +28,11 @@ class WishListController{
                 }
 
             
-            const updated=await this.whishListRepo.updateWishList(req.headers.email,user.wishList);
-            res.status(200).json(updated);
+           return await this.whishListRepo.updateWishList(email,user.wishList);
+         
 
         }catch(error){
-            console.log(error);
-            res.status(500).json("internal server error ");
+            throw new Error(error.message);
         }
 
     }
