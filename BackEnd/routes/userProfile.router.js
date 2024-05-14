@@ -10,21 +10,35 @@ const userProfile = (userProfileController) => {
       );
       res.status(200).json({ success: true, data: profile });
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      res
+        .status(error.statusCode || 500)
+        .json({ success: false, message: error.message });
     }
   });
+
   router.patch("/", async (req, res) => {
     try {
+      if (req.body.email) {
+        return res.status(400).json({ message: "can't change email!" });
+      }
+
+      if (req.body.password) {
+        const newPassword = await bycrypt.hash(req.body.password, 10);
+        req.body.password = newPassword;
+      }
       const updated = await userProfileController.UpdateUserProfile(
         req.headers.email,
-        req.body.email,
         req.body
       );
-      res.json(updated);
+      res.status(200).json({ success: true, message: updated });
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      res
+        .status(error.statusCode || 500)
+        .json({ success: false, message: error.message });
     }
   });
+
   return router;
 };
+
 module.exports = userProfile;
