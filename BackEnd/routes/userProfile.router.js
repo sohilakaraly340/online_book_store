@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const bycrypt = require("bcrypt");
-const { validatUsers } = require("../validation/User.validator");
 
 const userProfile = (userProfileController) => {
   router.get("/", async (req, res) => {
@@ -17,8 +16,8 @@ const userProfile = (userProfileController) => {
 
   router.patch("/", async (req, res) => {
     try {
-      const { error, value } = await validatUsers(req.body);
-      if (error) return res.status(422).json({ message: error.message });
+      // const { error, value } = await validatUsers(req.body);
+      // if (error) return res.status(422).json({ message: error.message });
 
       if (req.body.email) {
         return res.end("can't change email!");
