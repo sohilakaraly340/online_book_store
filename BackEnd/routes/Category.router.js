@@ -1,18 +1,27 @@
 const express = require("express");
+const { handleAsync } = require("../handleErrors/handleAsync");
 const router = express.Router();
 
-const CategoryController = require("../controllers/Category.controller");
-const CategoryRepository = require("../repository/Category.repository");
-const category = require("../models/Category.schema");
-const item = require("../models/Item.schema");
+const categoryRouter = (categoryController) => {
+  router.get(
+    "/",
+    handleAsync(async (req, res) => {
+      const allCategory = await categoryController.findAllCategories();
+      res.status(200).json({ success: true, data: allCategory });
+    })
+  );
 
-const categoryRepository = new CategoryRepository(category, item);
-const categoryController = new CategoryController(categoryRepository);
+  router.get(
+    "/:id",
+    handleAsync(async (req, res) => {
+      const itemOfCategory = await categoryController.findItemsOfCategory(
+        req.params.id
+      );
+      res.status(200).json({ success: true, data: itemOfCategory });
+    })
+  );
 
-router.get("/", (req, res) => categoryController.findAllCategories(req, res));
+  return router;
+};
 
-router.get("/:id", (req, res) =>
-  categoryController.findItemsOfCategory(req, res)
-);
-
-module.exports = router;
+module.exports = categoryRouter;

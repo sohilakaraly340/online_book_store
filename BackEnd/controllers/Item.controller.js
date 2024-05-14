@@ -1,135 +1,73 @@
+const { BadRequestError } = require("../handleErrors/badRequestError");
+const { InternalServerError } = require("../handleErrors/internalServerError");
+const validator = require("../validation/Item.validator");
 class ItemController {
-  constructor(itemRepository, validateItem) {
+  constructor(itemRepository) {
     this.itemRepository = itemRepository;
-    this.validateItem = validateItem;
   }
 
-  async AddItem(req, res) {
+  handleError = (error) => {
+    if (error instanceof BadRequestError)
+      throw new BadRequestError(error.message);
+
+    throw new InternalServerError(error.message);
+  };
+
+  async AddItem(body, itemType, category) {
     try {
-      const { error } = this.validateItem(req.body);
+      const { error } = validator.validateItem(body);
       if (error) {
-        res.status(400).json({ success: false, message: error.message });
-        return;
-      }
-      const itemType = await this.itemRepository.findItemType(
-        req.body.itemType
-      );
-      if (!itemType) return res.status(400).send("invalid type");
-
-      const category = await this.itemRepository.findCategory(
-        req.body.category
-      );
-      if (!category) return res.status(400).send("invalid category");
-
-      const newItem = await this.itemRepository.createItem(req.body);
-
-      res.status(200).json({ success: true, data: newItem });
-    } catch (error) {
-      console.log(error);
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
-
-  async getItemTypes(req, res) {
-    try {
-      const itemType = await this.itemRepository.getItemTypes();
-      res.status(200).json({ success: true, data: itemType });
-    } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
-
-  async AddItemType(req, res) {
-    try {
-      const itemType = await this.itemRepository.createItemType(req.body);
-      res.status(200).json({ success: true, data: itemType });
-    } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
-
-  async DeleteItemType(req, res) {
-    try {
-      const newItemsType = await this.itemRepository.deleteItemType(
-        req.params.id
-      );
-      res.status(200).json({ success: true, data: newItemsType });
-    } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
-
-  async UpdateItemType(req, res) {
-    try {
-      const updatedItemType = await this.itemRepository.updateItemType(
-        req.params.id,
-        req.body
-      );
-
-      res.status(201).json({ success: true, data: updatedItemType });
-    } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
-
-  async DeleteItem(req, res) {
-    try {
-      const newItems = await this.itemRepository.deleteItem(req.params.id);
-      res.status(200).json({ success: true, data: newItems });
-    } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
-
-  async GetItemById(req, res) {
-    try {
-      const Item = await this.itemRepository.findItem(req.params.id);
-
-      res.status(200).json({ success: true, data: Item });
-    } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
-
-  async UpdateItem(req, res) {
-    try {
-      if (req.body.category) {
-        const category = await this.itemRepository.findCategory(
-          req.body.category
-        );
-        if (!category) return res.status(400).send("invalid category");
+        throw new BadRequestError(`In valid data ${error.message}`);
       }
 
-      const updatedItem = await this.itemRepository.updateItem(
-        req.params.id,
-        req.body
-      );
+      const ItemType = await this.itemRepository.findItemType(itemType);
 
-      res.status(201).json({ success: true, data: updatedItem });
+      const Category = await this.itemRepository.findCategory(category);
+
+      return await this.itemRepository.createItem(body);
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      this.handleError(error);
     }
   }
 
-  async GetAllItems(req, res) {
-    try {
-      const ItemList = await this.itemRepository.getAllItems();
-      res
-        .status(200)
-        .json({ success: true, results: ItemList.length, data: ItemList });
-    } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
-    }
+  async getItemTypes() {
+    return await this.itemRepository.getItemTypes();
   }
 
-  async search(req, res) {
-    try {
-      const data = await this.itemRepository.search(req.params.key);
+  async AddItemType(body) {
+    return await this.itemRepository.createItemType(body);
+  }
 
-      res.status(200).json({ success: true, data: data });
-    } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+  async DeleteItemType(id) {
+    return await this.itemRepository.deleteItemType(id);
+  }
+
+  async UpdateItemType(id, body) {
+    return await this.itemRepository.updateItemType(id, body);
+  }
+
+  async DeleteItem(id) {
+    return await this.itemRepository.deleteItem(id);
+  }
+
+  async GetItemById(id) {
+    return await this.itemRepository.findItem(id);
+  }
+
+  async UpdateItem(id, body, category) {
+    if (category) {
+      const Category = await this.itemRepository.findCategory(category);
     }
+
+    return await this.itemRepository.updateItem(id, body);
+  }
+
+  async GetAllItems() {
+    return await this.itemRepository.getAllItems();
+  }
+
+  async search(key) {
+    return await this.itemRepository.search(key);
   }
 }
 

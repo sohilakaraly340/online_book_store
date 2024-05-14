@@ -1,17 +1,33 @@
 const express = require("express");
-const AuthorController = require("../controllers/Author.controller");
-const AuthorRepository = require("../repository/author.repository");
-const authorRouter = express.Router();
-const author = require("../models/Author.schema");
-const item = require("../models/Item.schema");
+const { handleAsync } = require("../handleErrors/handleAsync");
+const router = express.Router();
 
-const authorRepository = new AuthorRepository(author, item);
-const authorController = new AuthorController(authorRepository);
+const authorRouter = (authorController) => {
+  router.get(
+    "/",
+    handleAsync(async (req, res) => {
+      const authors = await authorController.getAllAuthor();
+      res.status(200).json({ success: true, data: authors });
+    })
+  );
 
-authorRouter.get("/", (req, res) => authorController.getAllAuthor(req, res));
-authorRouter.post("/", (req, res) => authorController.createAuthor(req, res));
-authorRouter.get("/books/:id", (req, res) =>
-  authorController.getBooksOfAuthor(req, res)
-);
+  router.post(
+    "/",
+    handleAsync(async (req, res) => {
+      const newAuthor = await authorController.createAuthor(req.body);
+      res.status(201).json({ success: true, data: newAuthor });
+    })
+  );
+
+  router.get(
+    "/books/:id",
+    handleAsync(async (req, res) => {
+      const allBooks = await authorController.getBooksOfAuthor(req.params.id);
+      res.status(200).json({ success: true, data: allBooks });
+    })
+  );
+
+  return router;
+};
 
 module.exports = authorRouter;

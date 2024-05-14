@@ -1,19 +1,33 @@
 const express = require("express");
+const { handleAsync } = require("../handleErrors/handleAsync");
 const router = express.Router();
 
-const ItemController = require("../controllers/Item.controller");
-const ItemRepository = require("../repository/Item.repository");
-const item = require("../models/Item.schema");
-const itemType = require("../models/ItemType.schema");
-const category = require("../models/Category.schema");
-const author = require("../models/Author.schema");
-const { validateItem } = require("../validation/Item.validator");
+const itemRouter = (itemController) => {
+  router.get(
+    "/",
+    handleAsync(async (req, res) => {
+      const allItems = await itemController.GetAllItems();
+      res.status(200).json({ success: true, data: allItems });
+    })
+  );
 
-const itemRepository = new ItemRepository(item, itemType, category, author);
-const itemController = new ItemController(itemRepository, validateItem);
+  router.get(
+    "/:id",
+    handleAsync(async (req, res) => {
+      const item = await itemController.GetItemById(req.params.id);
+      res.status(200).json({ success: true, data: item });
+    })
+  );
 
-router.get("/", (req, res) => itemController.GetAllItems(req, res));
-router.get("/:id", (req, res) => itemController.GetItemById(req, res));
-router.get("/search/:key", (req, res) => itemController.search(req, res));
+  router.get(
+    "/search/:key",
+    handleAsync(async (req, res) => {
+      const searched = await itemController.search(req.params.key);
+      res.status(200).json({ success: true, data: searched });
+    })
+  );
 
-module.exports = router;
+  return router;
+};
+
+module.exports = itemRouter;

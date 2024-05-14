@@ -1,14 +1,25 @@
 const express = require("express");
+const { handleAsync } = require("../handleErrors/handleAsync");
 const router = express.Router();
-const UserController = require("../controllers/User.controller");
-const UserRepository = require("../repository/User.repository");
-const user = require("../models/User.schema");
-const { validatUsers } = require("../validation/User.validator");
 
-const userRepository = new UserRepository(user);
-const userController = new UserController(userRepository, validatUsers);
+const userRouter = (userController) => {
+  router.post(
+    "/",
+    handleAsync(async (req, res) => {
+      const newUser = await userController.createNewUser(req.body);
+      res.status(201).json({ success: true, data: newUser });
+    })
+  );
 
-router.post("/", (req, res) => userController.createNewUser(req, res));
-router.post("/login", (req, res) => userController.login(req, res));
+  router.post(
+    "/login",
+    handleAsync(async (req, res) => {
+      const logged = await userController.login(req.body);
+      res.status(200).header("Authorization", logged.token).json(logged);
+    })
+  );
 
-module.exports = router;
+  return router;
+};
+
+module.exports = userRouter;

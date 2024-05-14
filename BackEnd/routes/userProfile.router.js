@@ -1,22 +1,30 @@
 const express = require("express");
-const userProfile = express.Router();
-const UserProfileRepo = require("../repository/UserProfile.repository");
-const UserProfileController = require("../controllers/UserProfile.controller");
+const { handleAsync } = require("../handleErrors/handleAsync");
+const router = express.Router();
 
-const user = require("../models/User.schema");
-const { validatUsers } = require("../validation/User.validator");
+const userProfile = (userProfileController) => {
+  router.get(
+    "/",
+    handleAsync(async (req, res) => {
+      const profile = await userProfileController.getCurrentProfile(
+        req.headers.email
+      );
+      res.status(200).json({ success: true, data: profile });
+    })
+  );
 
-const userProfileRepository = new UserProfileRepo(user);
-const userProfileController = new UserProfileController(
-  userProfileRepository,
-  validatUsers
-);
+  router.patch(
+    "/",
+    handleAsync(async (req, res) => {
+      const updated = await userProfileController.UpdateUserProfile(
+        req.headers.email,
+        req.body
+      );
+      res.status(200).json({ success: true, message: updated });
+    })
+  );
 
-userProfile.get("/", (req, res) =>
-  userProfileController.getCurrentProfile(req, res)
-);
-userProfile.patch("/", (req, res) =>
-  userProfileController.UpdateUserProfile(req, res)
-);
+  return router;
+};
 
 module.exports = userProfile;
