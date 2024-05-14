@@ -46,8 +46,9 @@ class ItemRepository {
         title: { $regex: key, $options: "i" },
       });
       const authors = await this.author.find({
-        title: { $regex: key, $options: "i" },
+        name: { $regex: key, $options: "i" },
       });
+      console.log(authors);
 
       const categoryIds = categories.map((category) => category._id);
       const authorIds = authors.map((author) => author._id);
@@ -57,10 +58,11 @@ class ItemRepository {
           $or: [
             { title: { $regex: key, $options: "i" } },
             { category: { $in: categoryIds } },
-            { author: { $in: authorIds } },
+            { authorId: { $in: authorIds } },
           ],
         })
-        .populate("category");
+        .populate("category")
+        .populate("authorId");
 
       return data;
     } catch (error) {

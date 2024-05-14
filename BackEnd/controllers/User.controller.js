@@ -13,13 +13,12 @@ class UserController {
       const { email } = body;
       const existingUser = await this.userRepository.findByEmail(email);
       if (existingUser) {
-        return "This email is already exist."
+        return { message: "This email is already exist." };
       }
 
       return await this.userRepository.createUser(body);
-     
     } catch (error) {
-      throw new Error(error.message)
+      throw new Error(error.message);
     }
   }
 
@@ -28,22 +27,22 @@ class UserController {
       const { email, password } = body;
 
       if (!email || !password) {
-        return  {message:"Email and password are required."};
+        return { message: "Email and password are required." };
       }
 
       const user = await this.userRepository.findByEmail(email);
       if (!user) {
-        return{ message: "Incorrect email or password." };
+        return { message: "Incorrect email or password." };
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
-        return{ message: "Incorrect email or password." };
+        return { message: "Incorrect email or password." };
       }
 
       const token = jwt.sign({ email }, "myjwtsecret", { expiresIn: "1d" });
       // res.header("Authorization", token).send({ token, user });
-      return {token,user}
+      return { token, user };
     } catch (error) {
       throw new Error(error.message);
     }
@@ -53,7 +52,7 @@ class UserController {
     try {
       return await this.userRepository.findAll();
     } catch (error) {
-      throw new Error(error.message)
+      throw new Error(error.message);
     }
   }
 }
