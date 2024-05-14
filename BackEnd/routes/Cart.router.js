@@ -1,37 +1,77 @@
 const express = require("express");
 const router = express.Router();
 
-const CartController = require("../controllers/Cart.controller");
-const Cart = require("../models/Cart.schema");
-const CartRepository = require("../repository/Cart.repository");
+const cartRouter = (cartController, shoppingItemsController) => {
+  router.get("/", async (req, res) => {
+    try {
+      const data =
+        await shoppingItemsController.getAllCurrentCartshoppingItemsController();
+      res.status(200).send(data);
+    } catch (error) {
+      res.status(500).json({ message: error });
+    }
+  });
 
-const Item = require("../models/Item.schema");
-const ItemType = require("../models/ItemType.schema");
-const Category = require("../models/Category.schema");
-const ItemRepository = require("../repository/Item.repository");
+  router.post("/addToCart", async (req, res) => {
+    try {
+      const data = await shoppingItemsController.addToCartController(req.body);
+      //console.log(data);
+      res.status(200).json({ data });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error });
+    }
+  });
 
-const OrderItem = require("../models/OrderItem.schema");
+  router.patch("/:id", async (req, res) => {
+    try {
+      const data = await shoppingItemsController.updateShoppingItemController(
+        req.params.id,
+        req.body
+      );
+      console.log(data);
+      res.status(200).json("Updated successfully");
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error });
+    }
+  });
 
-const { orderItemValidation } = require("../validation/OrderItem.validator");
+  router.patch("/clearcart/:id", async (req, res) => {
+    try {
+      const data = await shoppingItemsController.clearShoppingItemsFromCart(
+        req.params.id
+      );
+      res.status(200).send(data);
+    } catch (error) {
+      res.status(500).json({ message: error });
+    }
+  });
 
-// console.log(orderItemValidation);
-const cartRepository = new CartRepository(Cart);
-const itemRepository = new ItemRepository(Item, ItemType, Category);
+  router.delete("/removefromcart/:id", async (req, res) => {
+    try {
+      await shoppingItemsController.removeShoppingItemFromCartController(
+        req.params.id
+      );
+      res.status(200).json("Deleted successfully");
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error });
+    }
+  });
 
-const cartController = new CartController(
-  cartRepository,
-  orderItemValidation,
-  itemRepository,
-  OrderItem,
-  Cart
-);
+  router.delete("/:id", async (req, res) => {
+    console.log(req.params.id);
+    try {
+      const data = await cartController.deleteCartController(req.params.id);
+      res.status(200).json("Deleted successfully");
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error });
+    }
+  });
 
-router.post("/addToCart", (req, res) =>
-  cartController.addToCartController(req, res)
-);
+  return router;
+};
 
-router.delete("/deleteCart/:id", (req, res) =>
-  cartController.deleteCartController(req, res)
-);
-
-module.exports = router;
+module.exports = cartRouter;
