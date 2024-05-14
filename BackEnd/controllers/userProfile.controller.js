@@ -11,13 +11,23 @@ class UserProfileController {
     return await this.userProfileRepo.getUser(email);
   }
 
-  async UpdateUserProfile(email, body) {
+  async UpdateUserProfile(emailHeader, body) {
     try {
       const { error, value } = validator.validatUsers(body);
-      if (error) {
-        throw new BadRequestError(`In valid data ${error.message}`);
+      if (error) return { message: error.message };
+
+      if (body.email) {
+        return ("can't change email!");
       }
-      return await this.userProfileRepo.updateProfile(email, body);
+      if (body.password) {
+        const encryptedPassword = await bycrypt.hash(body.password, 10);
+        delete body.password;
+        
+        body.password = encryptedPassword;
+       
+      }
+
+      return await this.userProfileRepo.updateProfile(emailHeader, body);
     } catch (error) {
       if (error instanceof BadRequestError)
         throw new BadRequestError(error.message);
