@@ -43,6 +43,5 @@ const authorRouter = (authorController) => {
 };
 
 
-module.exports = authorRouter;
 
 module.exports = authorRouter;

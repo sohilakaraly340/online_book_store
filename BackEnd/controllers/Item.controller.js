@@ -1,39 +1,30 @@
+const validator = require("../validation/Item.validator");
 class ItemController {
-  constructor(itemRepository, validateItem) {
+  constructor(itemRepository) {
     this.itemRepository = itemRepository;
-    this.validateItem = validateItem;
   }
 
-  async AddItem(req, res) {
+  async AddItem(body, itemType, category) {
     try {
-      const { error } = this.validateItem(req.body);
+      const { error } = validator.validateItem(body);
       if (error) {
-        res.status(400).json({ success: false, message: error.message });
-        return;
+        return { success: false, message: error.message };
       }
-      const itemType = await this.itemRepository.findItemType(
-        req.body.itemType
-      );
-      if (!itemType) return res.status(400).send("invalid type");
+      const ItemType = await this.itemRepository.findItemType(itemType);
+      if (!ItemType) throw new Error("invalid type");
 
-      const category = await this.itemRepository.findCategory(
-        req.body.category
-      );
-      if (!category) return res.status(400).send("invalid category");
+      const Category = await this.itemRepository.findCategory(category);
+      if (!Category) throw new Error("invalid category");
 
-      const newItem = await this.itemRepository.createItem(req.body);
-
-      res.status(200).json({ success: true, data: newItem });
+      return await this.itemRepository.createItem(body);
     } catch (error) {
-      console.log(error);
-      res.status(400).json({ success: false, message: error.message });
+      throw new Error(error.message);
     }
   }
 
   async getItemTypes() {
     try {
-     return await this.itemRepository.getItemTypes();
-      
+      return await this.itemRepository.getItemTypes();
     } catch (error) {
       throw new Error(error.message);
     }
@@ -49,16 +40,15 @@ class ItemController {
 
   async DeleteItemType(id) {
     try {
-    return await this.itemRepository.deleteItemType(id);
-     
+      return await this.itemRepository.deleteItemType(id);
     } catch (error) {
       throw new Error(error.message);
     }
   }
 
-  async UpdateItemType(id,body) {
+  async UpdateItemType(id, body) {
     try {
-      return await this.itemRepository.updateItemType(id,body);
+      return await this.itemRepository.updateItemType(id, body);
     } catch (error) {
       throw new Error(error.message);
     }
@@ -66,8 +56,7 @@ class ItemController {
 
   async DeleteItem(id) {
     try {
-     return await this.itemRepository.deleteItem(id);
-     
+      return await this.itemRepository.deleteItem(id);
     } catch (error) {
       throw new Error(error.message);
     }
@@ -76,44 +65,35 @@ class ItemController {
   async GetItemById(id) {
     try {
       return await this.itemRepository.findItem(id);
-
     } catch (error) {
       throw new Error(error.message);
     }
   }
 
-  async UpdateItem(req, res) {
+  async UpdateItem(id, body, category) {
     try {
-      if (req.body.category) {
-        const category = await this.itemRepository.findCategory(
-          req.body.category
-        );
-        if (!category) return res.status(400).send("invalid category");
+      if (category) {
+        const Category = await this.itemRepository.findCategory(category);
+        if (!Category) throw new Error("invalid category");
       }
 
-      const updatedItem = await this.itemRepository.updateItem(
-        req.params.id,
-        req.body
-      );
-
-      res.status(201).json({ success: true, data: updatedItem });
+      return await this.itemRepository.updateItem(id, body);
     } catch (error) {
-      res.status(400).json({ success: false, message: error.message });
+      throw new Error(error.message);
     }
   }
 
   async GetAllItems() {
     try {
-     return await this.itemRepository.getAllItems();
-     
+      return await this.itemRepository.getAllItems();
     } catch (error) {
-        throw new Error(error.message);
+      throw new Error(error.message);
     }
   }
 
   async search(key) {
     try {
-     return await this.itemRepository.search(key);
+      return await this.itemRepository.search(key);
     } catch (error) {
       throw new Error(error.message);
     }
