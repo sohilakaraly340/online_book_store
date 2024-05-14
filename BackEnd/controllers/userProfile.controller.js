@@ -14,20 +14,17 @@ class UserProfileController {
   async UpdateUserProfile(emailHeader, body) {
     try {
       const { error, value } = validator.validatUsers(body);
-      if (error) return { message: error.message };
+      if (error) throw new BadRequestError(`In valid data ${error.message}`);
 
-      if (body.email) {
-        return ("can't change email!");
-      }
+      if (body.email) throw new BadRequestError(`can't change email!`);
       if (body.password) {
         const encryptedPassword = await bycrypt.hash(body.password, 10);
         delete body.password;
-        
+
         body.password = encryptedPassword;
-       
       }
 
-      return await this.userProfileRepo.updateProfile(emailHeader, body);
+      return await this.userProfileRepo.updateProfile(emailHeader, body);
     } catch (error) {
       if (error instanceof BadRequestError)
         throw new BadRequestError(error.message);

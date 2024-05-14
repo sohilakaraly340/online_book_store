@@ -34,6 +34,9 @@ class AuthorRepository {
 
   async getAllBooks(authorId) {
     try {
+      const author = await this.author.findOne({ _id: authorId });
+      if (!author) throw new NotFoundError("Author not found!");
+
       const books = await this.item.find({ authorId });
       if (!books) throw new NotFoundError("Not found books for this authors!");
       return books;

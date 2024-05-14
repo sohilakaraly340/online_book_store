@@ -1,55 +1,44 @@
 const express = require("express");
+const { handleAsync } = require("../../handleErrors/handleAsync");
 const router = express.Router();
 
 const itemTypeRouter = (itemController) => {
-  router.get("/", async (req, res) => {
-    try {
+  router.get(
+    "/",
+    handleAsync(async (req, res) => {
       const itemType = await itemController.getItemTypes();
       res.status(200).json({ success: true, data: itemType });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  });
+    })
+  );
 
-  router.post("/", async (req, res) => {
-    try {
+  router.post(
+    "/",
+    handleAsync(async (req, res) => {
       const newItemType = await itemController.AddItemType(req.body);
       res.status(200).json({ success: true, data: newItemType });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  });
+    })
+  );
 
-  router.delete("/:id", async (req, res) => {
-    try {
-      const deleted = await itemController.DeleteItemType(req.params.id);
+  router.delete(
+    "/:id",
+    handleAsync(async (req, res) => {
+      await itemController.DeleteItemType(req.params.id);
       res
         .status(200)
-        .json({ success: true, data: "itemType deleted successfully" });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  });
+        .json({ success: true, message: "ItemType deleted successfully" });
+    })
+  );
 
-  router.patch("/:id", async (req, res) => {
-    try {
+  router.patch(
+    "/:id",
+    handleAsync(async (req, res) => {
       const updated = await itemController.UpdateItemType(
         req.params.id,
         req.body
       );
       res.status(200).json({ success: true, data: updated });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  });
+    })
+  );
 
   return router;
 };

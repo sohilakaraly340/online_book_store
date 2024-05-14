@@ -1,37 +1,32 @@
 const express = require("express");
+const { handleAsync } = require("../handleErrors/handleAsync");
 const router = express.Router();
 
 const itemRouter = (itemController) => {
-  router.get("/", async (req, res) => {
-    try {
+  router.get(
+    "/",
+    handleAsync(async (req, res) => {
       const allItems = await itemController.GetAllItems();
       res.status(200).json({ success: true, data: allItems });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  });
-  router.get("/:id", async (req, res) => {
-    try {
+    })
+  );
+
+  router.get(
+    "/:id",
+    handleAsync(async (req, res) => {
       const item = await itemController.GetItemById(req.params.id);
       res.status(200).json({ success: true, data: item });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  });
-  router.get("/search/:key", async (req, res) => {
-    try {
+    })
+  );
+
+  router.get(
+    "/search/:key",
+    handleAsync(async (req, res) => {
       const searched = await itemController.search(req.params.key);
       res.status(200).json({ success: true, data: searched });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  });
+    })
+  );
+
   return router;
 };
 
