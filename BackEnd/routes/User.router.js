@@ -15,7 +15,7 @@ const userRouter = (userController) => {
     }
   });
 
-  router.post('/login',async (req)=>{
+  router.post('/login',async (req,res)=>{
     try{
         const logged=await userController.login(req.body);
         res.status(200).json(logged)

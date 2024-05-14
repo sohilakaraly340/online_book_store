@@ -40,8 +40,4 @@ const categoryRouter=(categoryController)=>{
 }
 
 
-// router.delete("/:id", (req, res) =>
-//   categoryController.deleteCategory(req, res)
-// );
-
 module.exports= categoryRouter;
