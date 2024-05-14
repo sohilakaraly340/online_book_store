@@ -48,11 +48,8 @@ const categoryRouter = (categoryController) => {
     }
   });
 
-  return router;
-};
+    return router;
+}
 
-// router.delete("/:id", (req, res) =>
-//   categoryController.deleteCategory(req, res)
-// );
 
-module.exports = categoryRouter;
+module.exports= categoryRouter;

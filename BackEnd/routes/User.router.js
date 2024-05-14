@@ -13,6 +13,7 @@ const userRouter = (userController) => {
     }
   });
 
+
   router.post("/login", async (req, res) => {
     try {
       const logged = await userController.login(req.body);

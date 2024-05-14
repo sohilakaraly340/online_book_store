@@ -18,14 +18,7 @@ const userProfile = (userProfileController) => {
 
   router.patch("/", async (req, res) => {
     try {
-      if (req.body.email) {
-        return res.status(400).json({ message: "can't change email!" });
-      }
-
-      if (req.body.password) {
-        const newPassword = await bycrypt.hash(req.body.password, 10);
-        req.body.password = newPassword;
-      }
+      
       const updated = await userProfileController.UpdateUserProfile(
         req.headers.email,
         req.body
