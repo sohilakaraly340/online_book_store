@@ -1,30 +1,36 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { Error } = require("mongoose");
-const validator=require('../validation/User.validator');
+const validator = require("../validation/User.validator");
+const { InternalServerError } = require("../handleErrors/internalServerError");
+const { BadRequestError } = require("../handleErrors/badRequestError");
 
 class UserController {
   constructor(userRepository) {
     this.userRepository = userRepository;
-    
   }
+  handleError = (error) => {
+    if (error instanceof BadRequestError)
+      throw new BadRequestError(error.message);
+
+    throw new InternalServerError(error.message);
+  };
 
   async createNewUser(body) {
     try {
-      const { error } = validator.validatUsers(body)
+      const { error } = validator.validatUsers(body);
       if (error) {
-        return {message: error.message };
+        throw new BadRequestError(`In valid data ${error.message}`);
       }
 
       const { email } = body;
       const existingUser = await this.userRepository.findByEmail(email);
       if (existingUser) {
-        return "This email is already exist.";
+        throw new BadRequestError("This email is already exist.");
       }
 
       return await this.userRepository.createUser(body);
     } catch (error) {
-      throw new Error(error.message);
+      this.handleError(error);
     }
   }
 
@@ -33,24 +39,24 @@ class UserController {
       const { email, password } = body;
 
       if (!email || !password) {
-        return { message: "Email and password are required." };
+        throw new BadRequestError("Email and password are required.");
       }
 
       const user = await this.userRepository.findByEmail(email);
       if (!user) {
-        return { message: "Email and password are required." };
+        throw new BadRequestError("Incorrect email or password.");
       }
 
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
-        return { message: "Email and password are required." };
+        throw new BadRequestError("Incorrect email or password.");
       }
 
       const token = jwt.sign({ email }, "myjwtsecret", { expiresIn: "1d" });
-      // res.header("Authorization", token).send({ token, user });
+
       return { token, user };
     } catch (error) {
-      throw new Error(error.message);
+      this.handleError(error);
     }
   }
 
@@ -58,7 +64,7 @@ class UserController {
     try {
       return await this.userRepository.findAll();
     } catch (error) {
-      throw new Error(error.message);
+      this.handleError(error);
     }
   }
 }

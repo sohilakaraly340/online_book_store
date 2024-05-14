@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const bycrypt = require("bcrypt");
 
-
 const userProfile = (userProfileController) => {
   router.get("/", async (req, res) => {
     try {
@@ -11,33 +10,35 @@ const userProfile = (userProfileController) => {
       );
       res.status(200).json({ success: true, data: profile });
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      res
+        .status(error.statusCode || 500)
+        .json({ success: false, message: error.message });
     }
   });
 
-  router.patch('/',async(req,res)=>{
-    try{
-      // const { error, value } = await validatUsers(req.body);
-      // if (error) return res.status(422).json({ message: error.message });
-
+  router.patch("/", async (req, res) => {
+    try {
       if (req.body.email) {
-        return res.end("can't change email!");
+        return res.status(400).json({ message: "can't change email!" });
       }
 
       if (req.body.password) {
-        req.body.encryptedPassword = await bycrypt.hash(req.body.password, 10);
-        delete req.body.password;
-        req.body.password = req.body.encryptedPassword;
+        const newPassword = await bycrypt.hash(req.body.password, 10);
+        req.body.password = newPassword;
       }
-      const updated=await userProfileController.UpdateUserProfile(req.headers.email,req.body)
-      res.json(updated);
-    }catch(error){
-      res.status(500).json({success: false , message: error.message})
+      const updated = await userProfileController.UpdateUserProfile(
+        req.headers.email,
+        req.body
+      );
+      res.status(200).json({ success: true, message: updated });
+    } catch (error) {
+      res
+        .status(error.statusCode || 500)
+        .json({ success: false, message: error.message });
     }
-  })
+  });
 
   return router;
 };
-
 
 module.exports = userProfile;

@@ -1,27 +1,27 @@
+const { BadRequestError } = require("../handleErrors/badRequestError");
+const { InternalServerError } = require("../handleErrors/internalServerError");
 const validator = require("../validation/User.validator");
 class UserProfileController {
   constructor(userProfileRepo) {
     this.userProfileRepo = userProfileRepo;
-    
   }
 
   async getCurrentProfile(email) {
-    try {
-
-     return await this.userProfileRepo.getUser(email);
-    } catch (error) {
-      throw new Error(error.message);
-    }
+    return await this.userProfileRepo.getUser(email);
   }
 
-  async UpdateUserProfile(email,body) {
+  async UpdateUserProfile(email, body) {
     try {
-      const { error, value } =  validator.validatUsers(body);
-      if (error) return { message: error.message };
-      
-      return await this.userProfileRepo.updateProfile(email,body);
+      const { error, value } = validator.validatUsers(body);
+      if (error) {
+        throw new BadRequestError(`In valid data ${error.message}`);
+      }
+      return await this.userProfileRepo.updateProfile(email, body);
     } catch (error) {
-      throw new Error(error.message);
+      if (error instanceof BadRequestError)
+        throw new BadRequestError(error.message);
+
+      throw new InternalServerError(error.message);
     }
   }
 }

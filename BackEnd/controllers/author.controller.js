@@ -3,30 +3,16 @@ class AuthorController {
     this.authorRepo = authorRepo;
   }
 
-  async createAuthor(body){
-    try{
-       return await this.authorRepo.createNewAuthor(body);
-    }catch(error){
-      throw new Error(error.message);
-    }
-
+  async createAuthor(body) {
+    return await this.authorRepo.createNewAuthor(body);
   }
 
   async getAllAuthor() {
-    try {
-      return await this.authorRepo.getAll();
-    } catch (error) {
-      throw new Error(error.message);
-      
-    }
+    return await this.authorRepo.getAll();
   }
 
-  async getBooksOfAuthor(id){
-    try{
-        return await this.authorRepo.getAllBooks(id)
-    }catch(error){
-      throw new Error(error.message);
-    }
+  async getBooksOfAuthor(id) {
+    return await this.authorRepo.getAllBooks(id);
   }
 }
 module.exports = AuthorController;
