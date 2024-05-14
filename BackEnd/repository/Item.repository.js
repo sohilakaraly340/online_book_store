@@ -1,8 +1,9 @@
 class ItemRepository {
-  constructor(item, itemType, category) {
+  constructor(item, itemType, category, author) {
     this.item = item;
     this.itemType = itemType;
     this.category = category;
+    this.author = author;
   }
 
   async getItemTypes() {
@@ -44,14 +45,19 @@ class ItemRepository {
       const categories = await this.category.find({
         title: { $regex: key, $options: "i" },
       });
+      const authors = await this.author.find({
+        title: { $regex: key, $options: "i" },
+      });
 
       const categoryIds = categories.map((category) => category._id);
+      const authorIds = authors.map((author) => author._id);
 
       const data = await this.item
         .find({
           $or: [
             { title: { $regex: key, $options: "i" } },
             { category: { $in: categoryIds } },
+            { author: { $in: authorIds } },
           ],
         })
         .populate("category");
