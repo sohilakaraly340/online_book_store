@@ -27,7 +27,7 @@ class UserRepository {
   async findByEmail(email) {
     try {
       const user = await this.user.findOne({ email });
-      if (!user) throw new NotFoundError("No user found");
+      // if (!user) throw new NotFoundError("No user found");
       return user;
     } catch (error) {
       this.handleError(error);
@@ -37,7 +37,7 @@ class UserRepository {
   async findAll() {
     try {
       const users = await this.user.find();
-      if (users === 0) throw new NotFoundError("No users found!");
+      if (!users) throw new NotFoundError("No users found!");
       return users;
     } catch (error) {
       this.handleError(error);

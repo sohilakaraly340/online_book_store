@@ -18,7 +18,7 @@ class ItemRepository {
   async getItemTypes() {
     try {
       const itmeTypes = await this.itemType.find();
-      if (itmeTypes.length === 0) {
+      if (!itmeTypes) {
         throw new NotFoundError("No types found ");
       }
       return itmeTypes;
@@ -80,7 +80,7 @@ class ItemRepository {
         .populate("category")
         .populate("authorId");
 
-      if (!data || data.length === 0) {
+      if (!data) {
         throw new NotFoundError("No items found matching the search criteria.");
       }
 
@@ -153,7 +153,7 @@ class ItemRepository {
         .populate("itemType")
         .populate("category");
 
-      if (items.length === 0) throw new NotFoundError("Items not found");
+      if (!items) throw new NotFoundError("Items not found");
 
       return items;
     } catch (error) {
@@ -165,11 +165,24 @@ class ItemRepository {
     try {
       const updatedItem = await this.item.updateOne({ _id: id }, body);
 
-      if (!updatedItem === 0) {
+      if (updatedItem.modifiedCount == 0) {
         throw new NotFoundError("Item not found");
       }
 
       return updatedItem;
+    } catch (error) {
+      this.handleError(error);
+    }
+  }
+  async updateItemType(id, body) {
+    try {
+      const updatedItemType = await this.itemType.updateOne({ _id: id }, body);
+
+      if (updatedItemType.modifiedCount == 0) {
+        throw new NotFoundError("Item not found");
+      }
+
+      return updatedItemType;
     } catch (error) {
       this.handleError(error);
     }

@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const itemRouter = (itemController) => {
+const itemTypeRouter = (itemController) => {
   router.get("/", async (req, res) => {
     try {
-      const allItems = await itemController.GetAllItems();
-      res.status(200).json({ success: true, data: allItems });
+      const itemType = await itemController.getItemTypes();
+      res.status(200).json({ success: true, data: itemType });
     } catch (error) {
       res
         .status(error.statusCode || 500)
@@ -15,12 +15,8 @@ const itemRouter = (itemController) => {
 
   router.post("/", async (req, res) => {
     try {
-      const newItem = await itemController.AddItem(
-        req.body,
-        req.body.itemType,
-        req.body.category
-      );
-      res.status(201).json({ success: true, data: newItem });
+      const newItemType = await itemController.AddItemType(req.body);
+      res.status(200).json({ success: true, data: newItemType });
     } catch (error) {
       res
         .status(error.statusCode || 500)
@@ -30,10 +26,10 @@ const itemRouter = (itemController) => {
 
   router.delete("/:id", async (req, res) => {
     try {
-      const deleted = await itemController.DeleteItem(req.params.id);
+      const deleted = await itemController.DeleteItemType(req.params.id);
       res
         .status(200)
-        .json({ success: true, data: "item deleted successfully" });
+        .json({ success: true, data: "itemType deleted successfully" });
     } catch (error) {
       res
         .status(error.statusCode || 500)
@@ -43,12 +39,11 @@ const itemRouter = (itemController) => {
 
   router.patch("/:id", async (req, res) => {
     try {
-      const item = await itemController.UpdateItem(
+      const updated = await itemController.UpdateItemType(
         req.params.id,
-        req.body,
-        req.body.category
+        req.body
       );
-      res.status(200).json({ success: true, data: item });
+      res.status(200).json({ success: true, data: updated });
     } catch (error) {
       res
         .status(error.statusCode || 500)
@@ -59,4 +54,4 @@ const itemRouter = (itemController) => {
   return router;
 };
 
-module.exports = itemRouter;
+module.exports = itemTypeRouter;

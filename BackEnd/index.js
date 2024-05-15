@@ -13,6 +13,7 @@ const cartRouter = require("./routes/Cart.router");
 
 const adminUserRouter = require("./routes/admin/UserRoutes");
 const adminItemRouter = require("./routes/admin/ItemRouter");
+const adminItemTypeRouter = require("./routes/admin/ItemTypeRouter");
 const adminCategoryRouter = require("./routes/admin/CategoryRouter");
 
 /////models/////
@@ -26,7 +27,7 @@ const user = require("./models/User.schema");
 const AuthorRepository = require("./repository/author.repository");
 const CategoryRepository = require("./repository/Category.repository");
 const UserRepository = require("./repository/User.repository");
-const UserProfileRepo = require("./repository/UserProfile.repository");
+const UserProfileRepo = require("./repository/userProfile.repository");
 const ItemRepository = require("./repository/Item.repository");
 const WishListRepository = require("./repository/whishList.repository");
 
@@ -75,6 +76,7 @@ mainRouter.use("/category", categoryRouter(categoryController));
 
 mainRouter.use("/admin", mainAdminRouter);
 mainAdminRouter.use("/item", adminItemRouter(itemController));
+mainAdminRouter.use("/itemType", adminItemTypeRouter(itemController));
 mainAdminRouter.use("/user", adminUserRouter(userController));
 mainAdminRouter.use("/category", adminCategoryRouter(categoryController));
 

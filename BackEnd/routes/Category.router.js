@@ -18,11 +18,8 @@ const categoryRouter = (categoryController) => {
       const itemOfCategory = await categoryController.findItemsOfCategory(
         req.params.id
       );
-      if (itemOfCategory.length == 0)
-        res.json("this category hasn't have any item");
-      else {
-        res.status(200).json({ success: true, data: itemOfCategory });
-      }
+
+      res.status(200).json({ success: true, data: itemOfCategory });
     } catch (error) {
       res
         .status(error.statusCode || 500)

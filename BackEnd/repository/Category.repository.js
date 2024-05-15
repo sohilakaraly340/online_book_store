@@ -27,7 +27,7 @@ class CategoryRepository {
         new: true,
       });
 
-      if (!updatedCategory) {
+      if (updatedCategory.modifiedCount == 0) {
         throw new NotFoundError("Category not found");
       }
       return updatedCategory;
@@ -53,7 +53,7 @@ class CategoryRepository {
     try {
       const categories = await this.category.find();
 
-      if (categories.length === 0) {
+      if (!categories) {
         throw new NotFoundError("No categories found");
       }
 
@@ -70,7 +70,7 @@ class CategoryRepository {
         .populate("itemType")
         .populate("category");
 
-      if (items.length === 0) {
+      if (!items) {
         throw new NotFoundError("No items found for this category");
       }
 
