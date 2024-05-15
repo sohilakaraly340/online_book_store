@@ -90,7 +90,7 @@ mainRouter.use("/wishList", wishListRouter(wishListController));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500; // Using custom statusCode if available
+  const statusCode = err.statusCode || 500;
   res.status(statusCode).json({ success: false, message: err.message });
 });
 
