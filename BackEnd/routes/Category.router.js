@@ -7,7 +7,9 @@ const categoryRouter = (categoryController) => {
       const allCategory = await categoryController.findAllCategories();
       res.status(200).json({ success: true, data: allCategory });
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      res
+        .status(error.statusCode || 500)
+        .json({ success: false, message: error.message });
     }
   });
 
@@ -22,7 +24,9 @@ const categoryRouter = (categoryController) => {
         res.status(200).json({ success: true, data: itemOfCategory });
       }
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      res
+        .status(error.statusCode || 500)
+        .json({ success: false, message: error.message });
     }
   });
   return router;
