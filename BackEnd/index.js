@@ -88,6 +88,12 @@ mainRouter.use("/author", authorRouter(authorController));
 
 mainRouter.use("/wishList", wishListRouter(wishListController));
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500; // Using custom statusCode if available
+  res.status(statusCode).json({ success: false, message: err.message });
+});
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Listening on port ${port} ....`);

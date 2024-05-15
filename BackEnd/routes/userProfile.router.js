@@ -1,42 +1,38 @@
 const express = require("express");
 const router = express.Router();
-const bycrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
+const { handleAsync } = require("../handleErrors/handleAsync");
 
 const userProfile = (userProfileController) => {
-  router.get("/", async (req, res) => {
-    try {
+  router.get(
+    "/",
+    handleAsync(async (req, res) => {
       const profile = await userProfileController.getCurrentProfile(
         req.headers.email
       );
       res.status(200).json({ success: true, data: profile });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  });
+    })
+  );
 
-  router.patch("/", async (req, res) => {
-    try {
+  router.patch(
+    "/",
+    handleAsync(async (req, res) => {
       if (req.body.email) {
-        return res.status(400).json({ message: "can't change email!" });
+        return res.status(400).json({ message: "Can't change email!" });
       }
 
       if (req.body.password) {
-        const newPassword = await bycrypt.hash(req.body.password, 10);
+        const newPassword = await bcrypt.hash(req.body.password, 10);
         req.body.password = newPassword;
       }
+
       const updated = await userProfileController.UpdateUserProfile(
         req.headers.email,
         req.body
       );
       res.status(200).json({ success: true, message: updated });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  });
+    })
+  );
 
   return router;
 };

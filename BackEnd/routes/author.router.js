@@ -1,40 +1,31 @@
 const express = require("express");
-
+const { handleAsync } = require("../handleErrors/handleAsync");
 const router = express.Router();
 
 const authorRouter = (authorController) => {
-  router.get("/", async (req, res) => {
-    try {
+  router.get(
+    "/",
+    handleAsync(async (req, res) => {
       const authors = await authorController.getAllAuthor();
       res.status(200).json({ success: true, data: authors });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  });
+    })
+  );
 
-  router.post("/", async (req, res) => {
-    try {
+  router.post(
+    "/",
+    handleAsync(async (req, res) => {
       const newAuthor = await authorController.createAuthor(req.body);
       res.status(201).json({ success: true, data: newAuthor });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  });
+    })
+  );
 
-  router.get("/books/:id", async (req, res) => {
-    try {
+  router.get(
+    "/books/:id",
+    handleAsync(async (req, res) => {
       const allBooks = await authorController.getBooksOfAuthor(req.params.id);
       res.status(200).json({ success: true, data: allBooks });
-    } catch (error) {
-      res
-        .status(error.statusCode || 500)
-        .json({ success: false, message: error.message });
-    }
-  });
+    })
+  );
 
   return router;
 };
