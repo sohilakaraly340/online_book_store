@@ -23,6 +23,8 @@ const item = require("./models/Item.schema");
 const itemType = require("./models/ItemType.schema");
 const category = require("./models/Category.schema");
 const user = require("./models/User.schema");
+const ShoppingItem = require("./models/ShoppingItem.schema");
+const Cart = require("./models/Cart.schema");
 
 /////repository/////
 const AuthorRepository = require("./repository/author.repository");
@@ -31,6 +33,8 @@ const UserRepository = require("./repository/User.repository");
 const UserProfileRepo = require("./repository/userProfile.repository");
 const ItemRepository = require("./repository/Item.repository");
 const WishListRepository = require("./repository/whishList.repository");
+const CartRepository = require("./repository/Cart.repository");
+const ShoppingItemRepository = require("./repository/ShoppingItem.repository");
 
 /////controller/////
 const AuthorController = require("./controllers/author.controller");
@@ -39,6 +43,8 @@ const UserController = require("./controllers/User.controller");
 const UserProfileController = require("./controllers/UserProfile.controller");
 const ItemController = require("./controllers/Item.controller");
 const WishListController = require("./controllers/whishList.controller");
+const CartController = require("./controllers/Cart.controller");
+const ShoppingItemsController = require("./controllers/ShoppingItem.controller");
 
 /////instance repo/////
 const authorRepository = new AuthorRepository(author, item);
@@ -47,6 +53,8 @@ const userRepository = new UserRepository(user);
 const userProfileRepository = new UserProfileRepo(user);
 const itemRepository = new ItemRepository(item, itemType, category, author);
 const wishListRepository = new WishListRepository(user);
+const cartRepository = new CartRepository(Cart, ShoppingItem);
+const shoppingItemRepository = new ShoppingItemRepository(ShoppingItem);
 
 /////instance control/////
 const authorController = new AuthorController(authorRepository);
@@ -59,40 +67,6 @@ const wishListController = new WishListController(
   itemRepository,
   userRepository
 );
-
-const cors = require("cors");
-
-const item = require("./models/Item.schema");
-const itemType = require("./models/ItemType.schema");
-const category = require("./models/Category.schema");
-const ShoppingItem = require("./models/ShoppingItem.schema");
-const Cart = require("./models/Cart.schema");
-const author = require("./models/Author.schema");
-
-//Repositories
-const CartRepository = require("./repository/Cart.repository");
-const ItemRepository = require("./repository/Item.repository");
-
-//Controllers
-const CartController = require("./controllers/Cart.controller");
-const ShoppingItemRepository = require("./repository/ShoppingItem.repository");
-const ShoppingItemsController = require("./controllers/ShoppingItem.controller");
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-const mainRouter = express.Router();
-const mainAdminRouter = express.Router();
-
-app.use(`${process.env.API_URL}`, mainRouter);
-
-
-//Instance of Repositries
-const cartRepository = new CartRepository(Cart, ShoppingItem);
-const itemRepository = new ItemRepository(item, itemType, category, author);
-const shoppingItemRepository = new ShoppingItemRepository(ShoppingItem);
-
-//Instance of Controllers
 const cartController = new CartController(
   cartRepository,
   itemRepository,
@@ -105,9 +79,17 @@ const shoppingItemsController = new ShoppingItemsController(
   shoppingItemRepository
 );
 
+const cors = require("cors");
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+const mainRouter = express.Router();
+const mainAdminRouter = express.Router();
+
+app.use(`${process.env.API_URL}`, mainRouter);
 
 mainRouter.use("/user", userRouter(userController));
-
 
 mainRouter.use("/item", itemRouter(itemController));
 
@@ -126,7 +108,6 @@ app.use(
 
 mainRouter.use("/profile", userProfile(userProfileController));
 
-
 mainRouter.use("/author", authorRouter(authorController));
 
 mainRouter.use("/wishList", wishListRouter(wishListController));
@@ -136,7 +117,6 @@ app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({ success: false, message: err.message });
 });
-
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
