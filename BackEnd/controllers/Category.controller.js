@@ -14,8 +14,7 @@ class CategoryController {
 
   async findAllCategories() {
     try {
-    return await this.categoryRepository.getAllCategories();
-      
+      return await this.categoryRepository.getAllCategories();
     } catch (error) {
       throw new Error(error.message);
     }
@@ -46,9 +45,9 @@ class CategoryController {
 
   async findItemsOfCategory(id) {
     try {
-     return await this.categoryRepository.findItemsOfCategory(id);
+      return await this.categoryRepository.findItemsOfCategory(id);
     } catch (error) {
-     throw new Error(error.message);
+      throw new Error(error.message);
     }
   }
 }

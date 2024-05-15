@@ -1,7 +1,8 @@
-const { default: BaseError } = require("./baseError");
+const { BaseError } = require("./baseError");
 
-export default class InternalServerError extends BaseError {
+class InternalServerError extends BaseError {
   constructor(message) {
     super(500, message);
   }
 }
+module.exports = { InternalServerError };
