@@ -36,7 +36,7 @@ class UserProfileController {
       
       }
 
-    return await this.userProfileRepo.updateProfile(emailHeader, body);
+    
       return await this.userProfileRepo.updateProfile(
         emailHeader,
         bodyClone
