@@ -1,8 +1,22 @@
 class CartController {
-  constructor(cartRepository, itemRepository, shoppingItemRepository) {
+  constructor(cartRepository) {
     this.cartRepository = cartRepository;
-    this.itemRepository = itemRepository;
-    this.shoppingItemRepository = shoppingItemRepository;
+  }
+
+  async getAllCartsController() {
+    try {
+      return await this.cartRepository.getAllCartsRepository();
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
+  async getCartByUserIdController(id) {
+    try {
+      return await this.cartRepository.getCurrentUserCartRepository(id);
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
   }
 
   async deleteCartController(id) {

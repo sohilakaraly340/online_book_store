@@ -27,18 +27,17 @@ class ShoppingItemsController {
   }
 
   async addToCartController(body) {
-    const { error, value } = shoppingItemValidation(body);
-
-    if (error) {
-      return { message: error.message };
-    }
-
-    let { item, quantity } = body;
-    if (!quantity) {
-      quantity = 1;
-    }
-
     try {
+      const { error, value } = shoppingItemValidation(body);
+
+      if (error) {
+        return { message: error.message };
+      }
+
+      let { item, quantity } = body;
+      if (!quantity) {
+        quantity = 1;
+      }
       const userId = "66444414aead5d1508746061";
 
       const Isitem = await this.itemRepository.findItem(item);
