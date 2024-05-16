@@ -14,14 +14,13 @@ class WishListController {
 
   async updateWishList(id, email) {
     try {
-      const item = id;
-      const itemAdded = await this.itemRepo.findItem(item);
+      // const itemAdded = await this.itemRepo.findItem(id);
       const user = await this.userRepo.findByEmail(email);
 
-      if (user.wishList.includes(item)) {
-        user.wishList.splice(user.wishList.indexOf(item), 1);
+      if (user.wishList.includes(id)) {
+        user.wishList.splice(user.wishList.indexOf(id), 1);
       } else {
-        user.wishList.push(item);
+        user.wishList.push(id);
       }
 
       return await this.whishListRepo.updateWishList(email, user.wishList);

@@ -23,7 +23,7 @@ class UserProfileRepository {
 
   async updateProfile(email, body) {
     try {
-      const updated = await this.user.updateOne({ email }, body);
+      const updated = await this.user.updateOne({ email}, body);
 
       if (!updated) throw new NotFoundError("User not found");
 

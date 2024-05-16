@@ -13,18 +13,24 @@ class UserProfileController {
 
   async UpdateUserProfile(emailHeader, body) {
     try {
-      const { error, value } = validator.validatUsers(body);
+      const bodyClone =structuredClone(body)
+      
+      const { error, value } = validator.validatUsers(bodyClone);
       if (error) throw new BadRequestError(`In valid data ${error.message}`);
 
-      if (body.email) throw new BadRequestError(`can't change email!`);
-      if (body.password) {
-        const encryptedPassword = await bycrypt.hash(body.password, 10);
-        delete body.password;
+      if (bodyClone.email) throw new BadRequestError(`can't change email!`);
 
-        body.password = encryptedPassword;
+      let encryptedPassword;
+      if (bodyClone.password) {
+        encryptedPassword = await bycrypt.hash(bodyClone.password, 10);
+        bodyClone.password=encryptedPassword;
+      
       }
 
-      return await this.userProfileRepo.updateProfile(emailHeader, body);
+      return await this.userProfileRepo.updateProfile(
+        emailHeader,
+        bodyClone
+      );
     } catch (error) {
       if (error instanceof BadRequestError)
         throw new BadRequestError(error.message);
