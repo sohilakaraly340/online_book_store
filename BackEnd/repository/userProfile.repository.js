@@ -1,4 +1,4 @@
-const { NotFoundError } = require("../handleErrors/notFoundError");
+const { NotFoundError } = require("../Errors/notFoundError");
 
 class UserProfileRepository {
   constructor(user) {
