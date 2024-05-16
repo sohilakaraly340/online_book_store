@@ -1,5 +1,5 @@
 const express = require("express");
-const { handleAsync } = require("../handleErrors/handleAsync");
+const { handleAsync } = require("../Errors/handleAsync");
 const router = express.Router();
 
 const userRouter = (userController) => {
@@ -15,7 +15,7 @@ const userRouter = (userController) => {
     "/login",
     handleAsync(async (req, res) => {
       const logged = await userController.login(req.body);
-      res.status(200).header("Authorization", logged.token).json(logged);
+      res.status(200).json(logged);
     })
   );
 

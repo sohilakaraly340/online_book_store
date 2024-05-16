@@ -1,5 +1,5 @@
-const { BadRequestError } = require("../handleErrors/badRequestError");
-const { InternalServerError } = require("../handleErrors/internalServerError");
+const { BadRequestError } = require("../Errors/badRequestError");
+const { ValidationError } = require("../Errors/validationError");
 const validator = require("../validation/User.validator");
 const bycrypt = require("bcrypt");
 class UserProfileController {
@@ -12,25 +12,18 @@ class UserProfileController {
   }
 
   async UpdateUserProfile(emailHeader, body) {
-    try {
-      const { error, value } = validator.validatUsers(body);
-      if (error) throw new BadRequestError(`In valid data ${error.message}`);
+    const { error, value } = validator.validatUsers(body);
+    if (error) throw new ValidationError(`In valid data ${error.message}`);
 
-      if (body.email) throw new BadRequestError(`can't change email!`);
-      if (body.password) {
-        const encryptedPassword = await bycrypt.hash(body.password, 10);
-        delete body.password;
+    if (body.email) throw new BadRequestError(`can't change email!`);
+    if (body.password) {
+      const encryptedPassword = await bycrypt.hash(body.password, 10);
+      delete body.password;
 
-        body.password = encryptedPassword;
-      }
-
-      return await this.userProfileRepo.updateProfile(emailHeader, body);
-    } catch (error) {
-      if (error instanceof BadRequestError)
-        throw new BadRequestError(error.message);
-
-      throw new InternalServerError(error.message);
+      body.password = encryptedPassword;
     }
+
+    return await this.userProfileRepo.updateProfile(emailHeader, body);
   }
 }
 module.exports = UserProfileController;

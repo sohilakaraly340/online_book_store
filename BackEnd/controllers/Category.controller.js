@@ -1,9 +1,15 @@
+const { ValidationError } = require("../Errors/validationError");
+const validator = require("../validation/Category");
 class CategoryController {
   constructor(categoryRepository) {
     this.categoryRepository = categoryRepository;
   }
 
   async addCategory(body) {
+    const { error } = validator.validateCategory(body);
+    if (error) {
+      throw new ValidationError(`In valid data ${error.message}`);
+    }
     return await this.categoryRepository.createCategory(body);
   }
 

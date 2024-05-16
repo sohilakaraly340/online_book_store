@@ -1,5 +1,5 @@
-const { InternalServerError } = require("../handleErrors/internalServerError");
-const { NotFoundError } = require("../handleErrors/notFoundError");
+const { InternalServerError } = require("../Errors/internalServerError");
+const { NotFoundError } = require("../Errors/notFoundError");
 
 class ItemRepository {
   constructor(item, itemType, category, author) {
