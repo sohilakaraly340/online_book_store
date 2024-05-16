@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const validator = require("../validation/User.validator");
+const { JWT_SECRET } = require("../constants");
 const { BadRequestError } = require("../Errors/badRequestError");
 const { ValidationError } = require("../Errors/validationError");
 
@@ -41,8 +42,8 @@ class UserController {
       throw new BadRequestError("Incorrect email or password.");
     }
 
-    const token = jwt.sign({ email }, "myjwtsecret", { expiresIn: "1d" });
-
+      const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1d" });
+    
     return { token, user };
   }
 

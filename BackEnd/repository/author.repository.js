@@ -31,6 +31,17 @@ class AuthorRepository {
       }
     }
   }
+  async getAuthorById(id){
+    try {
+      const author = await this.author.findOne({ _id: id });
+      if (!author) throw new NotFoundError("Author not found!");
+      return author
+    } catch (error) {
+        throw new InternalServerError(error.message);
+      
+    }
+
+  }
 
   async getAllBooks(authorId) {
     try {
@@ -47,6 +58,20 @@ class AuthorRepository {
         throw new InternalServerError(error.message);
       }
     }
+  }
+
+  async updateAuthor(id,body){
+    const updated= await this.author.updateOne({_id:id},body);
+    if (!updated) throw new NotFoundError("Author not Found!");
+    return updated;
+
+  }
+
+  async deleteAuthor(id){
+    const deleted= await this.author.findByIdAndDelete(id);
+    if (!deleted) throw new NotFoundError("Author not Found!");
+    return deleted;
+
   }
 }
 module.exports = AuthorRepository;
