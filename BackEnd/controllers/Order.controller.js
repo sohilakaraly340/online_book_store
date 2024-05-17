@@ -26,7 +26,10 @@ class OrderController {
 
   async getOrderByIdController(id) {
     try {
-      return await this.orderRepository.getOrderByIdRepository(id);
+      const orderItems =
+        await this.shoppingItemRepository.getShoppingItemsByOrderId(id);
+      const order = await this.orderRepository.getOrderByIdRepository(id);
+      return { order: order, orderItems: orderItems };
     } catch (error) {
       return { message: error.message };
     }

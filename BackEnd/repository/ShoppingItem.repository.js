@@ -17,6 +17,14 @@ class ShoppingItemRepository {
     }
   }
 
+  async getShoppingItemsByOrderId(id) {
+    try {
+      return await ShoppingItem.find({ orderId: id }).populate("item");
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   async createShoppingItemRepository(body) {
     try {
       return await ShoppingItem.create(body);
