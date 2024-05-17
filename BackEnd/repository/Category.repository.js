@@ -8,12 +8,11 @@ class CategoryRepository {
   }
 
   async updateCategory(id, body) {
+    const category = await Category.findById(id);
+    if (!category) throw new NotFoundError("Category not found");
     const updatedCategory = await Category.findByIdAndUpdate(id, body, {
       new: true,
     });
-
-    if (updatedCategory.modifiedCount == 0)
-      throw new NotFoundError("Category not found");
 
     return updatedCategory;
   }
@@ -46,6 +45,5 @@ class CategoryRepository {
     return items;
   }
 }
-  
 
 module.exports = CategoryRepository;

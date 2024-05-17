@@ -75,13 +75,14 @@ const orderController = new OrderController(
   shoppingItemRepository,
   itemRepository
 );
+const mainRouter = express.Router();
+const mainAdminRouter = express.Router();
 
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-const mainRouter = express.Router();
-const mainAdminRouter = express.Router();
+app.use("/uploads", express.static("uploads"));
 
 app.use(`${DB_URL}`, mainRouter);
 
