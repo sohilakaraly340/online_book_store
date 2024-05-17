@@ -7,7 +7,6 @@ const cors = require("cors");
 const userRouter = require("./routes/User.router");
 const itemRouter = require("./routes/Item.router");
 const categoryRouter = require("./routes/Category.router");
-const userProfile = require("./routes/userProfile.router");
 const authorRouter = require("./routes/author.router");
 const wishListRouter = require("./routes/wishList.router");
 const cartRouter = require("./routes/Cart.router");
@@ -25,7 +24,6 @@ const adminAuthorRouter = require("./routes/admin/AuthorRouter");
 const AuthorRepository = require("./repository/author.repository");
 const CategoryRepository = require("./repository/Category.repository");
 const UserRepository = require("./repository/User.repository");
-const UserProfileRepo = require("./repository/userProfile.repository");
 const ItemRepository = require("./repository/Item.repository");
 const WishListRepository = require("./repository/wishList.repository");
 const CartRepository = require("./repository/Cart.repository");
@@ -36,7 +34,6 @@ const OrderRepository = require("./repository/Order.repository");
 const AuthorController = require("./controllers/author.controller");
 const CategoryController = require("./controllers/Category.controller");
 const UserController = require("./controllers/User.controller");
-const UserProfileController = require("./controllers/UserProfile.controller");
 const ItemController = require("./controllers/Item.controller");
 const WishListController = require("./controllers/wishList.controller");
 const CartController = require("./controllers/Cart.controller");
@@ -59,7 +56,6 @@ const orderRepository = new OrderRepository();
 const authorController = new AuthorController(authorRepository);
 const categoryController = new CategoryController(categoryRepository);
 const userController = new UserController(userRepository);
-const userProfileController = new UserProfileController(userProfileRepository);
 const itemController = new ItemController(itemRepository);
 const wishListController = new WishListController(
   wishListRepository,
@@ -107,8 +103,6 @@ mainRouter.use("/cart", cartRouter(cartController));
 mainRouter.use("/shoppingItem", shoppingItemRouter(shoppingItemsController));
 
 mainRouter.use("/order", orderRouter(orderController));
-
-mainRouter.use("/profile", userProfile(userProfileController));
 
 mainRouter.use("/author", authorRouter(authorController));
 

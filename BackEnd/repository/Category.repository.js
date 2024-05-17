@@ -24,40 +24,29 @@ class CategoryRepository {
         new: true,
       });
 
-      if (updatedCategory.modifiedCount == 0) {
-        throw new NotFoundError("Category not found");
-      }
-      return updatedCategory;
-    } catch (error) {
-      this.handleError(error);
-    }
+    if (updatedCategory.modifiedCount == 0)
+      throw new NotFoundError("Category not found");
+
+    return updatedCategory;
   }
   async deleteCategory(id) {
     try {
       const deletedCategory = await Category.findByIdAndDelete(id);
 
-      if (!deletedCategory) {
-        throw new NotFoundError("Category not found");
-      }
-
-      return deletedCategory;
-    } catch (error) {
-      this.handleError(error);
+    if (!deletedCategory) {
+      throw new NotFoundError("Category not found");
     }
+
+    return deletedCategory;
   }
 
   async getAllCategories() {
     try {
       const categories = await Category.find();
 
-      if (!categories) {
-        throw new NotFoundError("No categories found");
-      }
+    if (!categories) throw new NotFoundError("No categories found");
 
-      return categories;
-    } catch (error) {
-      this.handleError(error);
-    }
+    return categories;
   }
 
   async findItemsOfCategory(id) {
@@ -66,14 +55,9 @@ class CategoryRepository {
         .populate("itemType")
         .populate("category");
 
-      if (!items) {
-        throw new NotFoundError("No items found for this category");
-      }
+    if (!items) throw new NotFoundError("No items found for this category");
 
-      return items;
-    } catch (error) {
-      this.handleError(error);
-    }
+    return items;
   }
 }
 
