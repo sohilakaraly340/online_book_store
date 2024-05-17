@@ -1,4 +1,4 @@
-const { BadRequestError } = require("../Errors/badRequestError");
+const { ValidationError } = require("../Errors/validationError");
 const validator = require("../validation/Item.validator");
 class ItemController {
   constructor(itemRepository) {
@@ -8,7 +8,7 @@ class ItemController {
   async AddItem(body, itemType, category) {
     const { error } = validator.validateItem(body);
     if (error) {
-      throw new BadRequestError(`In valid data ${error.message}`);
+      throw new ValidationError(`In valid data ${error.message}`);
     }
 
     await this.itemRepository.findItemType(itemType);

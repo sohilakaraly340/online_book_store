@@ -1,4 +1,4 @@
-const { BadRequestError } = require("../Errors/badRequestError");
+const { ValidationError } = require("../Errors/validationError");
 const validator = require("../validation/Author");
 
 class AuthorController {
@@ -9,7 +9,7 @@ class AuthorController {
   async createAuthor(body) {
     const { error } = validator.validateAuthor(body);
     if (error) {
-      throw new BadRequestError(`In valid data ${error.message}`);
+      throw new ValidationError(`In valid data ${error.message}`);
     }
 
     return await this.authorRepo.createNewAuthor(body);

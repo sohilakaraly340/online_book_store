@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const validator = require("../validation/User.validator");
 const { BadRequestError } = require("../Errors/badRequestError");
+const { ValidationError } = require("../Errors/validationError");
 
 class UserController {
   constructor(userRepository) {
@@ -11,7 +12,7 @@ class UserController {
   async createNewUser(body) {
     const { error } = validator.validatUsers(body);
     if (error) {
-      throw new BadRequestError(`In valid data ${error.message}`);
+      throw new ValidationError(`In valid data ${error.message}`);
     }
 
     const { email } = body;
