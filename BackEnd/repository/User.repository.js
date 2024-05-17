@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
-const { NotFoundError } = require("../handleErrors/notFoundError");
-const { InternalServerError } = require("../handleErrors/internalServerError");
+const { NotFoundError } = require("../Errors/notFoundError");
+const { InternalServerError } = require("../Errors/internalServerError");
 
 class UserRepository {
   constructor(user) {

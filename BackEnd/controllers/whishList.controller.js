@@ -1,3 +1,5 @@
+const { InternalServerError } = require("../Errors/internalServerError");
+
 class WishListController {
   constructor(whishListRepo, itemRepo, userRepo) {
     this.whishListRepo = whishListRepo;
@@ -8,7 +10,7 @@ class WishListController {
     try {
       return await this.whishListRepo.getAllWishList(email);
     } catch (error) {
-      throw new Error(error.message);
+      throw new InternalServerError(error.message);
     }
   }
 
@@ -26,7 +28,7 @@ class WishListController {
 
       return await this.whishListRepo.updateWishList(email, user.wishList);
     } catch (error) {
-      throw new Error(error.message);
+      throw new InternalServerError(error.message);
     }
   }
 }
