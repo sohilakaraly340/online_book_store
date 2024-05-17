@@ -9,4 +9,12 @@ const shoppingItemSchema = joi.object({
 const shoppingItemValidation = (shoppingItem) =>
   shoppingItemSchema.validate(shoppingItem);
 
-module.exports = shoppingItemValidation;
+const updateShoppingItemSchema = joi.object({
+  item: joi.objectId(),
+  quantity: joi.number(),
+});
+
+const updateShoppingItemValidation = (shoppingItem) =>
+  updateShoppingItemSchema.validate(shoppingItem);
+
+module.exports = { shoppingItemValidation, updateShoppingItemValidation };

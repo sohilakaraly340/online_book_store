@@ -1,21 +1,23 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.schema");
 
-const auth = async (req, res, next) => {
+const admin = async (req, res, next) => {
   try {
     const token = req.headers["jwt"];
 
     if (!token) {
-      return res.status(401).send({ message: "unauthorized user" });
+      return res.status(401).send({ message: "permission denied" });
     }
 
     const payLoad = jwt.verify(token, "myjwtsecret");
+    console.log(payLoad);
 
     const { email } = payLoad;
+
     const user = await User.findOne({ email });
 
-    if (!user) {
-      return res.status(401).send({ message: "un authorized user" });
+    if (user.role !== "admin") {
+      return res.status(401).send({ message: "permission denied" });
     }
 
     req.auth = user;
@@ -26,4 +28,4 @@ const auth = async (req, res, next) => {
   }
 };
 
-module.exports = { auth };
+module.exports = { admin };

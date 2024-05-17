@@ -9,7 +9,7 @@ const orderSchema = joi.object({
     .string()
     .valid("Pending", "Accepted", "Canceled")
     .default("Pending"),
-  phoneNumber: joi.string().regex(phonePattern).min(11).max(11),
+  phoneNumber: joi.string().required().regex(phonePattern).min(11).max(11),
   address: joi.string().required().min(3),
 });
 
@@ -17,4 +17,17 @@ const orderValidation = (order) => {
   return orderSchema.validate(order);
 };
 
-module.exports = orderValidation;
+const updateOrderSchema = joi.object({
+  status: joi
+    .string()
+    .valid("Pending", "Accepted", "Canceled")
+    .default("Pending"),
+  phoneNumber: joi.string().regex(phonePattern).min(11).max(11),
+  address: joi.string().min(3),
+});
+
+const orderUpdateValidation = (order) => {
+  return updateOrderSchema.validate(order);
+};
+
+module.exports = { orderValidation, orderUpdateValidation };
