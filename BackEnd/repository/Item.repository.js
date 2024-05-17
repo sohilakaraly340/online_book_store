@@ -33,7 +33,7 @@ class ItemRepository {
   }
 
   async deleteItemType(id) {
-    try {
+    
       const deletedItemType = await ItemType.findByIdAndDelete(id);
 
     if (!deletedItemType) throw new NotFoundError("Item type not found");
@@ -50,7 +50,7 @@ class ItemRepository {
   }
 
   async search(key) {
-    try {
+   
       const categories = await Category.find({
         title: { $regex: key, $options: "i" },
       });
@@ -78,7 +78,7 @@ class ItemRepository {
   }
 
   async deleteItem(id) {
-    try {
+    
       const deletedItem = await Item.findByIdAndDelete(id);
 
     if (!deletedItem) throw new NotFoundError("Item not found");
@@ -87,7 +87,7 @@ class ItemRepository {
   }
 
   async findItemType(id) {
-    try {
+   
       const itemType = await ItemType.findOne({ _id: id });
 
     if (!itemType) throw new NotFoundError("Item type not found");
@@ -96,7 +96,7 @@ class ItemRepository {
   }
 
   async findItem(id) {
-    try {
+   
       const item = await Item.findOne({ _id: id }).populate("itemType");
 
     if (!item) {
@@ -107,7 +107,7 @@ class ItemRepository {
   }
 
   async findCategory(id) {
-    try {
+   
       const category = await Category.findOne({ _id: id });
 
     if (!category) throw new NotFoundError("Category not found");
@@ -116,7 +116,7 @@ class ItemRepository {
   }
 
   async getAllItems() {
-    try {
+   
       const items = await Item.find().populate("itemType").populate("category");
 
     if (!items) throw new NotFoundError("Items not found");
@@ -125,7 +125,7 @@ class ItemRepository {
   }
 
   async updateItem(id, body) {
-    try {
+   
       const updatedItem = await Item.updateOne({ _id: id }, body);
 
     if (updatedItem.modifiedCount == 0)
@@ -134,7 +134,7 @@ class ItemRepository {
     return updatedItem;
   }
   async updateItemType(id, body) {
-    try {
+   
       const updatedItemType = await ItemType.updateOne({ _id: id }, body);
 
     if (updatedItemType.modifiedCount == 0)

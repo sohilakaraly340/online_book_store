@@ -19,7 +19,7 @@ class CategoryRepository {
   }
 
   async updateCategory(id, body) {
-    try {
+   
       const updatedCategory = await Category.findByIdAndUpdate(id, body, {
         new: true,
       });
@@ -29,8 +29,9 @@ class CategoryRepository {
 
     return updatedCategory;
   }
+
   async deleteCategory(id) {
-    try {
+   
       const deletedCategory = await Category.findByIdAndDelete(id);
 
     if (!deletedCategory) {
@@ -41,7 +42,7 @@ class CategoryRepository {
   }
 
   async getAllCategories() {
-    try {
+    
       const categories = await Category.find();
 
     if (!categories) throw new NotFoundError("No categories found");
@@ -50,7 +51,7 @@ class CategoryRepository {
   }
 
   async findItemsOfCategory(id) {
-    try {
+   
       const items = await Item.find({ category: id })
         .populate("itemType")
         .populate("category");
@@ -60,5 +61,6 @@ class CategoryRepository {
     return items;
   }
 }
+  
 
 module.exports = CategoryRepository;
