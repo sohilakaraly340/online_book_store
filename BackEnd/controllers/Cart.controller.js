@@ -22,6 +22,7 @@ class CartController {
   async deleteCartController(id) {
     try {
       const deletedCart = await this.cartRepository.deleteCartRepository(id);
+
       return { success: true, data: deletedCart };
     } catch (error) {
       return { success: false, message: error.message };

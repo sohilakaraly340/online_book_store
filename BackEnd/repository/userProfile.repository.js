@@ -1,9 +1,7 @@
 const { NotFoundError } = require("../Errors/notFoundError");
+const User = require("../models/User.schema");
 
 class UserProfileRepository {
-  constructor(user) {
-    this.user = user;
-  }
   handleError = (error) => {
     if (error instanceof NotFoundError) throw new NotFoundError(error.message);
 
@@ -12,7 +10,7 @@ class UserProfileRepository {
 
   async getUser(email) {
     try {
-      const allUsers = await this.user.find();
+      const allUsers = await User.find();
       const user = await allUsers.find((u) => u.email == email);
       if (!user) throw new NotFoundError("user not found");
       return user;
@@ -23,7 +21,7 @@ class UserProfileRepository {
 
   async updateProfile(email, body) {
     try {
-      const updated = await this.user.updateOne({ email}, body);
+      const updated = await User.updateOne({ email }, body);
 
       if (!updated) throw new NotFoundError("User not found");
 

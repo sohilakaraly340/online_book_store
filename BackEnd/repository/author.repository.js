@@ -1,15 +1,12 @@
 const { InternalServerError } = require("../Errors/internalServerError");
 const { NotFoundError } = require("../Errors/notFoundError");
+const Author = require("../models/Author.schema");
+const Item = require("../models/Item.schema");
 
 class AuthorRepository {
-  constructor(author, item) {
-    this.author = author;
-    this.item = item;
-  }
-
   async createNewAuthor(body) {
     try {
-      const newAuthor = await this.author.create(body);
+      const newAuthor = await Author.create(body);
       return newAuthor;
     } catch (error) {
       throw new InternalServerError(error.message);
@@ -18,7 +15,7 @@ class AuthorRepository {
 
   async getAll() {
     try {
-      const authors = await this.author.find();
+      const authors = await Author.find();
       if (!authors) {
         throw new NotFoundError("Not found authors!");
       }
@@ -31,24 +28,22 @@ class AuthorRepository {
       }
     }
   }
-  async getAuthorById(id){
+  async getAuthorById(id) {
     try {
-      const author = await this.author.findOne({ _id: id });
+      const author = await Author.findOne({ _id: id });
       if (!author) throw new NotFoundError("Author not found!");
-      return author
+      return author;
     } catch (error) {
-        throw new InternalServerError(error.message);
-      
+      throw new InternalServerError(error.message);
     }
-
   }
 
   async getAllBooks(authorId) {
     try {
-      const author = await this.author.findOne({ _id: authorId });
+      const author = await Author.findOne({ _id: authorId });
       if (!author) throw new NotFoundError("Author not found!");
 
-      const books = await this.item.find({ authorId });
+      const books = await Item.find({ authorId });
       if (!books) throw new NotFoundError("Not found books for this authors!");
       return books;
     } catch (error) {
@@ -60,18 +55,16 @@ class AuthorRepository {
     }
   }
 
-  async updateAuthor(id,body){
-    const updated= await this.author.updateOne({_id:id},body);
+  async updateAuthor(id, body) {
+    const updated = await Author.updateOne({ _id: id }, body);
     if (!updated) throw new NotFoundError("Author not Found!");
     return updated;
-
   }
 
-  async deleteAuthor(id){
-    const deleted= await this.author.findByIdAndDelete(id);
+  async deleteAuthor(id) {
+    const deleted = await Author.findByIdAndDelete(id);
     if (!deleted) throw new NotFoundError("Author not Found!");
     return deleted;
-
   }
 }
 module.exports = AuthorRepository;

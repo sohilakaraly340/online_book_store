@@ -42,8 +42,8 @@ class UserController {
       throw new BadRequestError("Incorrect email or password.");
     }
 
-      const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1d" });
-    
+    const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1d" });
+
     return { token, user };
   }
 

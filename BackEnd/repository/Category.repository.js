@@ -1,12 +1,9 @@
 const { InternalServerError } = require("../Errors/internalServerError");
 const { NotFoundError } = require("../Errors/notFoundError");
+const Category = require("../models/Category.schema");
+const Item = require("../models/Item.schema");
 
 class CategoryRepository {
-  constructor(category, item) {
-    this.category = category;
-    this.item = item;
-  }
-
   handleError = (error) => {
     if (error instanceof NotFoundError) throw new NotFoundError(error.message);
 
@@ -15,7 +12,7 @@ class CategoryRepository {
 
   async createCategory(body) {
     try {
-      return await this.category.create(body);
+      return await Category.create(body);
     } catch (error) {
       throw new InternalServerError(error.message);
     }
@@ -23,7 +20,7 @@ class CategoryRepository {
 
   async updateCategory(id, body) {
     try {
-      const updatedCategory = await this.category.findByIdAndUpdate(id, body, {
+      const updatedCategory = await Category.findByIdAndUpdate(id, body, {
         new: true,
       });
 
@@ -37,7 +34,7 @@ class CategoryRepository {
   }
   async deleteCategory(id) {
     try {
-      const deletedCategory = await this.category.findByIdAndDelete(id);
+      const deletedCategory = await Category.findByIdAndDelete(id);
 
       if (!deletedCategory) {
         throw new NotFoundError("Category not found");
@@ -51,7 +48,7 @@ class CategoryRepository {
 
   async getAllCategories() {
     try {
-      const categories = await this.category.find();
+      const categories = await Category.find();
 
       if (!categories) {
         throw new NotFoundError("No categories found");
@@ -65,8 +62,7 @@ class CategoryRepository {
 
   async findItemsOfCategory(id) {
     try {
-      const items = await this.item
-        .find({ category: id })
+      const items = await Item.find({ category: id })
         .populate("itemType")
         .populate("category");
 

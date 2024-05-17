@@ -1,11 +1,9 @@
-class ShoppingItemRepository {
-  constructor(ShoppingItem) {
-    this.ShoppingItem = ShoppingItem;
-  }
+const ShoppingItem = require("../models/ShoppingItem.schema");
 
+class ShoppingItemRepository {
   async getAllshoppingItemsRepository() {
     try {
-      return await this.ShoppingItem.find();
+      return await ShoppingItem.find();
     } catch (error) {
       throw new Error(error.message);
     }
@@ -13,7 +11,7 @@ class ShoppingItemRepository {
 
   async getAllCurrentCartshoppingItemsRepository(id) {
     try {
-      return await this.ShoppingItem.find({ cartId: id }).populate("item");
+      return await ShoppingItem.find({ cartId: id }).populate("item");
     } catch (error) {
       throw new Error(error.message);
     }
@@ -21,7 +19,7 @@ class ShoppingItemRepository {
 
   async createShoppingItemRepository(body) {
     try {
-      return await this.ShoppingItem.create(body);
+      return await ShoppingItem.create(body);
     } catch (error) {
       throw new Error(error.message);
     }
@@ -29,18 +27,18 @@ class ShoppingItemRepository {
 
   async findShoppingItemByIdRepository(id) {
     try {
-      return await this.ShoppingItem.findOne({ _id: id });
+      return await ShoppingItem.findOne({ _id: id });
     } catch (error) {
       throw new Error(error.message);
     }
   }
 
-  async updateShoppingItemRepository(item, body) {
-    console.log(item, body);
+  async updateShoppingItemRepository(itemId, body) {
+    console.log(itemId);
+    console.log(body);
     try {
-      return await this.ShoppingItem.updateOne({ _id: item }, body);
+      return await ShoppingItem.findOneAndUpdate({ _id: itemId }, body);
     } catch (error) {
-      console.log(error);
       throw new Error(error.message);
     }
   }
@@ -50,23 +48,29 @@ class ShoppingItemRepository {
     newOrderId,
     newCartId
   ) {
-    console.log(shoppingItemIds);
-    console.log(newOrderId);
-    console.log(newCartId);
     try {
-      const result = await this.ShoppingItem.updateMany(
+      return await ShoppingItem.updateMany(
         { _id: { $in: shoppingItemIds } },
         { $set: { orderId: newOrderId, cartId: newCartId } }
       );
-      return result;
     } catch (error) {
       throw new Error(error.message);
     }
   }
 
-  async deleteShoppingItemRepository(id) {
+  async deleteShoppingItemRepository(id, user) {
     try {
-      return await this.ShoppingItem.findByIdAndDelete(id);
+      return await ShoppingItem.findByIdAndDelete({ _id: id, user });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async clearAllShoppingItem(cartId) {
+    try {
+      const data = await ShoppingItem.deleteMany({ cartId: cartId });
+      console.log(data);
+      return data;
     } catch (error) {
       throw new Error(error.message);
     }
