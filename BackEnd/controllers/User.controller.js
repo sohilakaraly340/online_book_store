@@ -4,6 +4,7 @@ const validator = require("../validation/User.validator");
 const { JWT_SECRET } = require("../constants");
 const { BadRequestError } = require("../Errors/badRequestError");
 const { ValidationError } = require("../Errors/validationError");
+const bycrypt = require("bcrypt");
 
 class UserController {
   constructor(userRepository) {
@@ -42,13 +43,50 @@ class UserController {
       throw new BadRequestError("Incorrect email or password.");
     }
 
-      const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1d" });
-    
+    const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1d" });
+
     return { token, user };
   }
 
   async findAllUsers() {
     return await this.userRepository.findAll();
+  }
+
+  async getCurrentProfile(email) {
+    return await this.userRepository.findByEmail(email);
+  }
+
+  async UpdateUserProfile(emailHeader, body) {
+    const { error } = validator.validatUsers(body);
+    if (error) throw new ValidationError(`In valid data ${error.message}`);
+    try {
+      const bodyClone = structuredClone(body);
+
+      const { error } = validator.validatUsers(bodyClone);
+      if (error) throw new BadRequestError(`In valid data ${error.message}`);
+
+      if (body.email) throw new BadRequestError(`can't change email!`);
+      if (body.password) {
+        const encryptedPassword = await bycrypt.hash(body.password, 10);
+        delete body.password;
+
+        body.password = encryptedPassword;
+      }
+      if (bodyClone.email) throw new BadRequestError(`can't change email!`);
+
+      let encryptedPassword;
+      if (bodyClone.password) {
+        encryptedPassword = await bycrypt.hash(bodyClone.password, 10);
+        bodyClone.password = encryptedPassword;
+      }
+
+      return await this.userRepository.updateProfile(emailHeader, bodyClone);
+    } catch (error) {
+      if (error instanceof BadRequestError)
+        throw new BadRequestError(error.message);
+
+      throw new InternalServerError(error.message);
+    }
   }
 }
 

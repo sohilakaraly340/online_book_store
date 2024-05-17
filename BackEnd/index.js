@@ -3,12 +3,10 @@ require("./db");
 const express = require("express");
 const cors = require("cors");
 
-
 //routers
 const userRouter = require("./routes/User.router");
 const itemRouter = require("./routes/Item.router");
 const categoryRouter = require("./routes/Category.router");
-const userProfile = require("./routes/userProfile.router");
 const authorRouter = require("./routes/author.router");
 const wishListRouter = require("./routes/wishList.router");
 const cartRouter = require("./routes/Cart.router");
@@ -36,7 +34,6 @@ const Order = require("./models/Order.schema");
 const AuthorRepository = require("./repository/author.repository");
 const CategoryRepository = require("./repository/Category.repository");
 const UserRepository = require("./repository/User.repository");
-const UserProfileRepo = require("./repository/userProfile.repository");
 const ItemRepository = require("./repository/Item.repository");
 const WishListRepository = require("./repository/wishList.repository");
 const CartRepository = require("./repository/Cart.repository");
@@ -47,7 +44,6 @@ const OrderRepository = require("./repository/Order.repository");
 const AuthorController = require("./controllers/author.controller");
 const CategoryController = require("./controllers/Category.controller");
 const UserController = require("./controllers/User.controller");
-const UserProfileController = require("./controllers/UserProfile.controller");
 const ItemController = require("./controllers/Item.controller");
 const WishListController = require("./controllers/wishList.controller");
 const CartController = require("./controllers/Cart.controller");
@@ -59,7 +55,6 @@ const { PORT, DB_URL } = require("./constants");
 const authorRepository = new AuthorRepository(author, item);
 const categoryRepository = new CategoryRepository(category, item);
 const userRepository = new UserRepository(user);
-const userProfileRepository = new UserProfileRepo(user);
 const itemRepository = new ItemRepository(item, itemType, category, author);
 const wishListRepository = new WishListRepository(user);
 const cartRepository = new CartRepository(Cart, ShoppingItem);
@@ -70,7 +65,6 @@ const orderRepository = new OrderRepository(Order);
 const authorController = new AuthorController(authorRepository);
 const categoryController = new CategoryController(categoryRepository);
 const userController = new UserController(userRepository);
-const userProfileController = new UserProfileController(userProfileRepository);
 const itemController = new ItemController(itemRepository);
 const wishListController = new WishListController(
   wishListRepository,
@@ -96,7 +90,6 @@ app.use(express.json());
 const mainRouter = express.Router();
 const mainAdminRouter = express.Router();
 
-
 app.use(`${DB_URL}`, mainRouter);
 
 mainRouter.use("/user", userRouter(userController));
@@ -119,8 +112,6 @@ mainRouter.use("/shoppingItem", shoppingItemRouter(shoppingItemsController));
 
 mainRouter.use("/order", orderRouter(orderController));
 
-mainRouter.use("/profile", userProfile(userProfileController));
-
 mainRouter.use("/author", authorRouter(authorController));
 
 mainRouter.use("/wishList", wishListRouter(wishListController));
@@ -130,7 +121,6 @@ app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({ success: false, message: err.message });
 });
-
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT} ....`);

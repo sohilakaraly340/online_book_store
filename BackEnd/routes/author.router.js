@@ -7,14 +7,13 @@ const authorRouter = (authorController) => {
     "/",
     handleAsync(async (req, res) => {
       const authors = await authorController.getAllAuthor();
-     
+
       res.status(200).json({ success: true, data: authors });
     })
   );
 
- 
   router.get(
-    "/books/:id",
+    "/items/:id",
     handleAsync(async (req, res) => {
       const allBooks = await authorController.getBooksOfAuthor(req.params.id);
       res.status(200).json({ success: true, data: allBooks });
