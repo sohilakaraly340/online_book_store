@@ -7,41 +7,30 @@ class UserRepository {
     this.user = user;
   }
 
-  handleError = (error) => {
-    if (error instanceof NotFoundError) throw new NotFoundError(error.message);
-
-    throw new InternalServerError(error.message);
-  };
-
   async createUser(body) {
-    try {
-      const passwordHash = await bcrypt.hash(body.password, 10);
-      if (!passwordHash)
-        throw new InternalServerError("Error while hashed password");
-      return await this.user.create({ ...body, password: passwordHash });
-    } catch (error) {
-      throw new InternalServerError(error.message);
-    }
+    const passwordHash = await bcrypt.hash(body.password, 10);
+    if (!passwordHash)
+      throw new InternalServerError("Error while hashed password");
+    return await this.user.create({ ...body, password: passwordHash });
   }
 
   async findByEmail(email) {
-    try {
-      const user = await this.user.findOne({ email });
-      // if (!user) throw new NotFoundError("No user found");
-      return user;
-    } catch (error) {
-      this.handleError(error);
-    }
+    const user = await this.user.findOne({ email });
+    return user;
   }
 
   async findAll() {
-    try {
-      const users = await this.user.find();
-      if (!users) throw new NotFoundError("No users found!");
-      return users;
-    } catch (error) {
-      this.handleError(error);
-    }
+    const users = await this.user.find();
+    if (!users) throw new NotFoundError("No users found!");
+    return users;
+  }
+
+  async updateProfile(email, body) {
+    const updated = await this.user.updateOne({ email }, body);
+
+    if (!updated) throw new NotFoundError("User not found");
+
+    return updated;
   }
 }
 
