@@ -1,8 +1,9 @@
 const express = require("express");
+const { admin } = require("../../middleware/admin");
 const router = express.Router();
 
 const orderRouter = (orderController) => {
-  router.get("/", async (req, res) => {
+  router.get("/", admin, async (req, res) => {
     try {
       const data = await orderController.getAllorderController();
 
@@ -15,7 +16,7 @@ const orderRouter = (orderController) => {
     }
   });
 
-  router.patch("/:id", async (req, res) => {
+  router.patch("/:id", admin, async (req, res) => {
     try {
       const data = await orderController.updateOrderController(
         req.params.id,

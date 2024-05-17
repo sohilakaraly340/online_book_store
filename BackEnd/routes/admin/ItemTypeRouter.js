@@ -1,5 +1,6 @@
 const express = require("express");
 const { handleAsync } = require("../../Errors/handleAsync");
+const { admin } = require("../../middleware/admin");
 const router = express.Router();
 
 const itemTypeRouter = (itemController) => {
@@ -13,6 +14,7 @@ const itemTypeRouter = (itemController) => {
 
   router.post(
     "/",
+    admin,
     handleAsync(async (req, res) => {
       const newItemType = await itemController.AddItemType(req.body);
       res.status(200).json({ success: true, data: newItemType });
@@ -21,6 +23,7 @@ const itemTypeRouter = (itemController) => {
 
   router.delete(
     "/:id",
+    admin,
     handleAsync(async (req, res) => {
       await itemController.DeleteItemType(req.params.id);
       res
@@ -31,6 +34,7 @@ const itemTypeRouter = (itemController) => {
 
   router.patch(
     "/:id",
+    admin,
     handleAsync(async (req, res) => {
       const updated = await itemController.UpdateItemType(
         req.params.id,

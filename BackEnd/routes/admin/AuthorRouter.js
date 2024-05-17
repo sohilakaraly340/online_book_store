@@ -1,10 +1,12 @@
 const express = require("express");
 const { handleAsync } = require("../../Errors/handleAsync");
+const { admin } = require("../../middleware/admin");
 const router = express.Router();
 
 const authorRouter = (authorController) => {
   router.patch(
     "/:id",
+    admin,
     handleAsync(async (req, res) => {
       const updated = await authorController.updateAuthor(
         req.params.id,
@@ -16,6 +18,7 @@ const authorRouter = (authorController) => {
   );
   router.delete(
     "/:id",
+    admin,
     handleAsync(async (req, res) => {
       const deleted = await authorController.deleteAuthor(req.params.id);
       res
@@ -26,6 +29,7 @@ const authorRouter = (authorController) => {
 
   router.post(
     "/",
+    admin,
     handleAsync(async (req, res) => {
       const newAuthor = await authorController.createAuthor(req.body);
       res.status(201).json({ success: true, data: newAuthor });

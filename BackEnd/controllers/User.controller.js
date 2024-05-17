@@ -54,11 +54,13 @@ class UserController {
     return await this.userRepository.findAll();
   }
 
-  async getCurrentProfile(email) {
-    return await this.userRepository.findByEmail(email);
+  async getCurrentProfile(auth) {
+    const user = auth;
+    return await this.userRepository.findByEmail(user.email);
   }
 
-  async UpdateUserProfile(emailHeader, body) {
+  async UpdateUserProfile(auth, body) {
+    const user = auth;
     const { error } = userUpdateValidator.validatUpdateUser(body);
     if (error) throw new ValidationError(`In valid data ${error.message}`);
     const bodyClone = structuredClone(body);
@@ -70,7 +72,7 @@ class UserController {
       bodyClone.password = encryptedPassword;
     }
 
-    return await this.userRepository.updateProfile(emailHeader, bodyClone);
+    return await this.userRepository.updateProfile(user.email, bodyClone);
   }
 }
 
