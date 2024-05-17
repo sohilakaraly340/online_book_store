@@ -2,6 +2,7 @@ require("dotenv").config();
 require("./db");
 
 const express = require("express");
+
 /////Router/////
 const userRouter = require("./routes/User.router");
 const itemRouter = require("./routes/Item.router");
@@ -10,11 +11,14 @@ const userProfile = require("./routes/userProfile.router");
 const authorRouter = require("./routes/author.router");
 const wishListRouter = require("./routes/whishList.router");
 const cartRouter = require("./routes/Cart.router");
+const shoppingItemRouter = require("./routes/ShoppingItem.router");
+const orderRouter = require("./routes/Order.router");
 
 const adminUserRouter = require("./routes/admin/UserRoutes");
 const adminItemRouter = require("./routes/admin/ItemRouter");
 const adminItemTypeRouter = require("./routes/admin/ItemTypeRouter");
 const adminCategoryRouter = require("./routes/admin/CategoryRouter");
+const adminOrderRouter = require("./routes/admin/OrderRouter");
 
 /////models/////
 const author = require("./models/Author.schema");
@@ -22,6 +26,9 @@ const item = require("./models/Item.schema");
 const itemType = require("./models/ItemType.schema");
 const category = require("./models/Category.schema");
 const user = require("./models/User.schema");
+const ShoppingItem = require("./models/ShoppingItem.schema");
+const Cart = require("./models/Cart.schema");
+const Order = require("./models/Order.schema");
 
 /////repository/////
 const AuthorRepository = require("./repository/author.repository");
@@ -30,6 +37,9 @@ const UserRepository = require("./repository/User.repository");
 const UserProfileRepo = require("./repository/userProfile.repository");
 const ItemRepository = require("./repository/Item.repository");
 const WishListRepository = require("./repository/whishList.repository");
+const CartRepository = require("./repository/Cart.repository");
+const ShoppingItemRepository = require("./repository/ShoppingItem.repository");
+const OrderRepository = require("./repository/Order.repository");
 
 /////controller/////
 const AuthorController = require("./controllers/author.controller");
@@ -38,6 +48,9 @@ const UserController = require("./controllers/User.controller");
 const UserProfileController = require("./controllers/UserProfile.controller");
 const ItemController = require("./controllers/Item.controller");
 const WishListController = require("./controllers/whishList.controller");
+const CartController = require("./controllers/Cart.controller");
+const ShoppingItemsController = require("./controllers/ShoppingItem.controller");
+const OrderController = require("./controllers/Order.controller");
 
 /////instance repo/////
 const authorRepository = new AuthorRepository(author, item);
@@ -46,6 +59,9 @@ const userRepository = new UserRepository(user);
 const userProfileRepository = new UserProfileRepo(user);
 const itemRepository = new ItemRepository(item, itemType, category, author);
 const wishListRepository = new WishListRepository(user);
+const cartRepository = new CartRepository(Cart, ShoppingItem);
+const shoppingItemRepository = new ShoppingItemRepository(ShoppingItem);
+const orderRepository = new OrderRepository(Order);
 
 /////instance control/////
 const authorController = new AuthorController(authorRepository);
@@ -58,8 +74,21 @@ const wishListController = new WishListController(
   itemRepository,
   userRepository
 );
+const cartController = new CartController(cartRepository);
+const shoppingItemsController = new ShoppingItemsController(
+  cartRepository,
+  itemRepository,
+  shoppingItemRepository
+);
+const orderController = new OrderController(
+  cartRepository,
+  orderRepository,
+  shoppingItemRepository,
+  itemRepository
+);
 
 const cors = require("cors");
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -79,8 +108,13 @@ mainAdminRouter.use("/item", adminItemRouter(itemController));
 mainAdminRouter.use("/itemType", adminItemTypeRouter(itemController));
 mainAdminRouter.use("/user", adminUserRouter(userController));
 mainAdminRouter.use("/category", adminCategoryRouter(categoryController));
+mainAdminRouter.use("/order", adminOrderRouter(orderController));
 
-mainRouter.use("/cart", cartRouter);
+mainRouter.use("/cart", cartRouter(cartController));
+
+mainRouter.use("/shoppingItem", shoppingItemRouter(shoppingItemsController));
+
+mainRouter.use("/order", orderRouter(orderController));
 
 mainRouter.use("/profile", userProfile(userProfileController));
 

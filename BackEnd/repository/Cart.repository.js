@@ -1,11 +1,10 @@
 class CartRepository {
-  constructor(Cart, OrderItem) {
+  constructor(Cart, ShoppingItem) {
     this.Cart = Cart;
-    this.OrderItem = OrderItem;
+    this.ShoppingItem = ShoppingItem;
   }
 
   async getCurrentUserCartRepository(id) {
-    console.log(typeof id);
     try {
       return await this.Cart.findOne({ user: id });
     } catch (error) {
@@ -16,7 +15,6 @@ class CartRepository {
   async createCartRepository(body) {
     try {
       const cart = await this.Cart.create(body);
-      console.log(cart);
       return cart;
     } catch (error) {
       console.log(error);
@@ -25,16 +23,9 @@ class CartRepository {
   }
 
   async deleteCartRepository(id) {
+    console.log(id);
     try {
       return await this.Cart.findByIdAndDelete(id);
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  }
-
-  async getAllOrderItemsRepository() {
-    try {
-      return await this.OrderItem.find();
     } catch (error) {
       throw new Error(error.message);
     }

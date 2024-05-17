@@ -1,37 +1,39 @@
 const express = require("express");
 const router = express.Router();
 
-const CartController = require("../controllers/Cart.controller");
-const Cart = require("../models/Cart.schema");
-const CartRepository = require("../repository/Cart.repository");
+const cartRouter = (cartController) => {
+  router.get("/", async (req, res) => {
+    try {
+      const data = await cartController.getAllCartsController();
+      res.status(200).send(data);
+    } catch (error) {
+      res.status(500).json({ message: error });
+    }
+  });
 
-const Item = require("../models/Item.schema");
-const ItemType = require("../models/ItemType.schema");
-const Category = require("../models/Category.schema");
-const ItemRepository = require("../repository/Item.repository");
+  router.get("/:id", async (req, res) => {
+    try {
+      const data = await cartController.getCartByUserIdController(
+        req.params.id
+      );
+      res.status(200).send(data);
+    } catch (error) {
+      res.status(500).json({ message: error });
+    }
+  });
 
-const OrderItem = require("../models/OrderItem.schema");
+  router.delete("/:id", async (req, res) => {
+    console.log(req.params.id);
+    try {
+      const data = await cartController.deleteCartController(req.params.id);
+      res.status(200).json("Deleted successfully");
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: error });
+    }
+  });
 
-const { orderItemValidation } = require("../validation/OrderItem.validator");
+  return router;
+};
 
-// console.log(orderItemValidation);
-const cartRepository = new CartRepository(Cart);
-const itemRepository = new ItemRepository(Item, ItemType, Category);
-
-const cartController = new CartController(
-  cartRepository,
-  orderItemValidation,
-  itemRepository,
-  OrderItem,
-  Cart
-);
-
-router.post("/addToCart", (req, res) =>
-  cartController.addToCartController(req, res)
-);
-
-router.delete("/deleteCart/:id", (req, res) =>
-  cartController.deleteCartController(req, res)
-);
-
-module.exports = router;
+module.exports = cartRouter;
