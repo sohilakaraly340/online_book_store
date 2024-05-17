@@ -1,13 +1,15 @@
 const express = require("express");
 const { handleAsync } = require("../Errors/handleAsync");
+const { auth } = require("../middleware/auth");
 const router = express.Router();
 
 const wishListRouter = (wishListController) => {
   router.get(
     "/",
+    auth,
     handleAsync(async (req, res) => {
       const allWishList = await wishListController.getAllUsersWishList(
-        req.headers.email
+        req.auth
       );
       res.status(200).json({ success: true, data: allWishList });
     })
@@ -15,10 +17,11 @@ const wishListRouter = (wishListController) => {
 
   router.post(
     "/",
+    auth,
     handleAsync(async (req, res) => {
       const toggleWishList = await wishListController.updateWishList(
         req.body._id,
-        req.headers.email
+        req.auth
       );
       res.status(200).json({ success: true, data: toggleWishList });
     })

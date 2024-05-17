@@ -1,5 +1,6 @@
 const express = require("express");
 const { handleAsync } = require("../../Errors/handleAsync");
+const { admin } = require("../../middleware/admin");
 const router = express.Router();
 
 const categoryRouter = (categoryController) => {
@@ -13,6 +14,7 @@ const categoryRouter = (categoryController) => {
 
   router.post(
     "/",
+    admin,
     handleAsync(async (req, res) => {
       const newCategory = await categoryController.addCategory(req.body);
       res.status(201).json({ success: true, data: newCategory });
@@ -21,6 +23,7 @@ const categoryRouter = (categoryController) => {
 
   router.patch(
     "/:id",
+    admin,
     handleAsync(async (req, res) => {
       const updatedCategory = await categoryController.updateCategory(
         req.params.id,
@@ -32,6 +35,7 @@ const categoryRouter = (categoryController) => {
 
   router.delete(
     "/:id",
+    admin,
     handleAsync(async (req, res) => {
       await categoryController.deleteCategory(req.params.id);
       res

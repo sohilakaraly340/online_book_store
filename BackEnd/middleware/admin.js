@@ -10,7 +10,6 @@ const admin = async (req, res, next) => {
     }
 
     const payLoad = jwt.verify(token, "myjwtsecret");
-    console.log(payLoad);
 
     const { email } = payLoad;
 
