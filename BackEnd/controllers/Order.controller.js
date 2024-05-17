@@ -1,4 +1,7 @@
-const orderValidation = require("../validation/Order.validator");
+const {
+  orderValidation,
+  orderUpdateValidation,
+} = require("../validation/Order.validator");
 
 class OrderController {
   constructor(
@@ -29,31 +32,36 @@ class OrderController {
     }
   }
 
-  async getCurrentUserOrdersController() {
-    const userId = "66444414aead5d1508746061";
+  async getCurrentUserOrdersController(auth) {
     try {
-      return await this.orderRepository.getCurrentUserOrdersById(userId);
+      const user = auth;
+      return await this.orderRepository.getCurrentUserOrdersById(user._id);
     } catch (error) {
       return { message: error.message };
     }
   }
 
-  async createNewOrderController(body) {
+  async createNewOrderController(auth, body) {
     try {
-      const user = "66444414aead5d1508746061";
+      const user = auth;
+
       const { error, value } = orderValidation(body);
-      const { status, phoneNumber, address } = body;
 
       if (error) {
         return { message: error.message };
       }
 
-      const cart = await this.cartRepository.getCurrentUserCartRepository(user);
-      console.log(cart._id);
+      const { status, phoneNumber, address } = body;
+
+      const cart = await this.cartRepository.getCurrentUserCartRepository(
+        user._id
+      );
+
       let orderItems =
         await this.shoppingItemRepository.getAllCurrentCartshoppingItemsRepository(
           cart._id
         );
+
       if (orderItems.length == 0) return { message: "cart is empty" };
 
       const totalPrice = this.calcTotalPrice(orderItems);
@@ -68,19 +76,15 @@ class OrderController {
 
       const newOrder = await this.orderRepository.createOrderRepository(data);
 
-      //   console.log("orderitems", orderItems);
-
       const shoppingItemIds = orderItems.map((item) => item._id);
 
-      const result =
-        await this.shoppingItemRepository.updateManyShoppingItemsRepository(
-          shoppingItemIds,
-          newOrder._id,
-          null
-        );
-      console.log(result);
+      await this.shoppingItemRepository.updateManyShoppingItemsRepository(
+        shoppingItemIds,
+        newOrder._id,
+        null
+      );
 
-      return newOrder;
+      return { order: newOrder, orderItems: orderItems };
     } catch (error) {
       return { message: error.message };
     }
@@ -89,13 +93,19 @@ class OrderController {
   async updateOrderController(id, body) {
     try {
       const order = await this.orderRepository.getOrderByIdRepository(id);
+
       if (!order) {
         return { message: "Order not found" };
       }
-      const updatedOrder = await this.orderRepository.updateOrderRepository(
-        id,
-        body
-      );
+
+      const { error, value } = orderUpdateValidation(body);
+
+      if (error) {
+        return { message: error.message };
+      }
+
+      await this.orderRepository.updateOrderRepository(id, body);
+
       return { message: "UpdatedSuccessfully" };
     } catch (error) {
       return { message: error.message };
@@ -104,12 +114,14 @@ class OrderController {
 
   calcTotalPrice(orderItems) {
     let totalPrice = 0;
+
     for (const item of orderItems) {
       const itemPrice = item.item.discount
         ? item.item.price - (item.item.discount / 100) * item.item.price
         : item.item.price;
       totalPrice += itemPrice * item.quantity;
     }
+
     return totalPrice;
   }
 }

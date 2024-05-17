@@ -1,12 +1,9 @@
-class CartRepository {
-  constructor(Cart, ShoppingItem) {
-    this.Cart = Cart;
-    this.ShoppingItem = ShoppingItem;
-  }
+const Cart = require("../models/Cart.schema");
 
+class CartRepository {
   async getCurrentUserCartRepository(id) {
     try {
-      return await this.Cart.findOne({ user: id });
+      return await Cart.findOne({ user: id });
     } catch (error) {
       throw new Error(error.message);
     }
@@ -14,18 +11,15 @@ class CartRepository {
 
   async createCartRepository(body) {
     try {
-      const cart = await this.Cart.create(body);
-      return cart;
+      return await Cart.create(body);
     } catch (error) {
-      console.log(error);
       throw new Error(error.message);
     }
   }
 
   async deleteCartRepository(id) {
-    console.log(id);
     try {
-      return await this.Cart.findByIdAndDelete(id);
+      return await Cart.findByIdAndDelete(id);
     } catch (error) {
       throw new Error(error.message);
     }
@@ -33,7 +27,7 @@ class CartRepository {
 
   async getAllCartsRepository() {
     try {
-      return await this.Cart.find();
+      return await Cart.find();
     } catch (error) {
       throw new Error(error.message);
     }

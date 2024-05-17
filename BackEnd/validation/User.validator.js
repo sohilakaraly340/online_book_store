@@ -5,12 +5,13 @@ const phonePattern =
   /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
 
 const userSchema = joi.object({
-  firstName: joi.string().min(3).max(20),
+  firstName: joi.string().min(3).max(20).required(),
   lastName: joi.string().min(3).max(20),
-  email: joi.string().regex(EmailPattern),
+  email: joi.string().regex(EmailPattern).required(),
   phoneNumber: joi.string().regex(phonePattern).min(11).max(11),
-  password: joi.string().min(8),
-  address: joi.string()
+  // image: joi.string(),
+  password: joi.string().min(8).required(),
+  address: joi.string(),
 });
 const validatUsers = (user) => userSchema.validate(user);
 

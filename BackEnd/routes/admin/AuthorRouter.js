@@ -6,8 +6,11 @@ const authorRouter = (authorController) => {
   router.patch(
     "/:id",
     handleAsync(async (req, res) => {
-      const updated = await authorController.updateAuthor(req.params.id,req.body);
-      
+      const updated = await authorController.updateAuthor(
+        req.params.id,
+        req.body
+      );
+
       res.status(200).json({ success: true, data: updated });
     })
   );
@@ -15,7 +18,9 @@ const authorRouter = (authorController) => {
     "/:id",
     handleAsync(async (req, res) => {
       const deleted = await authorController.deleteAuthor(req.params.id);
-      res.status(200).json({ success: true, data: "author deleted successfully" });
+      res
+        .status(200)
+        .json({ success: true, data: "author deleted successfully" });
     })
   );
 
@@ -31,12 +36,12 @@ const authorRouter = (authorController) => {
     "/",
     handleAsync(async (req, res) => {
       const authors = await authorController.getAllAuthor();
-     
+
       res.status(200).json({ success: true, data: authors });
     })
   );
 
-  return router
+  return router;
 };
 
-module.exports=authorRouter;
+module.exports = authorRouter;

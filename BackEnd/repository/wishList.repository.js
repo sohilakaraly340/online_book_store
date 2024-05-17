@@ -1,10 +1,7 @@
 const { NotFoundError } = require("../Errors/notFoundError");
+const User = require("../models/User.schema");
 
 class WishListRepository {
-  constructor(user) {
-    this.user = user;
-  }
-
   handleError = (error) => {
     if (error instanceof NotFoundError) throw new NotFoundError(error.message);
 
@@ -14,9 +11,10 @@ class WishListRepository {
   async getAllWishList(email) {
     try {
       // {wishList:1,_id:0} to ignore all data except whishList
-      const userWishList = await this.user
-        .findOne({ email }, { wishList: 1, _id: 0 })
-        .populate("wishList");
+      const userWishList = await User.findOne(
+        { email },
+        { wishList: 1, _id: 0 }
+      ).populate("wishList");
       if (!userWishList) throw new NotFoundError("user not found");
       return userWishList;
     } catch (error) {
@@ -26,10 +24,7 @@ class WishListRepository {
 
   async updateWishList(email, wishList) {
     try {
-      const updatedWishList = await this.user.updateOne(
-        { email },
-        { wishList }
-      );
+      const updatedWishList = await User.updateOne({ email }, { wishList });
       if (!updatedWishList) throw new NotFoundError("user not found");
       return updatedWishList;
     } catch (error) {

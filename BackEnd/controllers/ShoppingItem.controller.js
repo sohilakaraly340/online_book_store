@@ -1,35 +1,55 @@
-const shoppingItemValidation = require("../validation/ShoppingItem.validator");
+const jwt = require("jsonwebtoken");
+const {
+  shoppingItemValidation,
+  updateShoppingItemValidation,
+} = require("../validation/ShoppingItem.validator");
 
 class ShoppingItemsController {
-  constructor(cartRepository, itemRepository, shoppingItemRepository) {
+  constructor(
+    userRepository,
+    cartRepository,
+    itemRepository,
+    shoppingItemRepository
+  ) {
+    this.userRepository = userRepository;
     this.cartRepository = cartRepository;
     this.itemRepository = itemRepository;
     this.shoppingItemRepository = shoppingItemRepository;
   }
 
-  async getAllCurrentCartshoppingItemsController() {
-    //userId
-    const userId = "66444414aead5d1508746061";
+  async getAllCurrentCartshoppingItemsController(headers) {
     try {
+      const token = headers["jwt"];
+
+      if (!token) return "unauthorized user";
+
+      const payLoad = jwt.verify(token, "myjwtsecret");
+
+      const user = await this.userRepository.findByEmail(payLoad.email);
+
+      if (!user) {
+        return "unauthorized user";
+      }
+
       const cart = await this.cartRepository.getCurrentUserCartRepository(
-        userId
+        user._id
       );
-      console.log(cart._id);
       const data =
         await this.shoppingItemRepository.getAllCurrentCartshoppingItemsRepository(
-          cart._id
+          cart._id,
+          user._id
         );
-      console.log(data);
       return data;
     } catch (error) {
       return { message: error.message };
     }
   }
 
-  async addToCartController(body) {
+  async addToCartController(auth, body) {
     try {
-      const { error, value } = shoppingItemValidation(body);
+      const user = auth;
 
+      const { error, value } = shoppingItemValidation(body);
       if (error) {
         return { message: error.message };
       }
@@ -38,14 +58,17 @@ class ShoppingItemsController {
       if (!quantity) {
         quantity = 1;
       }
-      const userId = "66444414aead5d1508746061";
 
       const Isitem = await this.itemRepository.findItem(item);
       if (!Isitem) return "Product not found";
 
-      let cart = await this.cartRepository.getCurrentUserCartRepository(userId);
+      let cart = await this.cartRepository.getCurrentUserCartRepository(
+        user._id
+      );
       if (!cart) {
-        cart = await this.cartRepository.createCartRepository({ user: userId });
+        cart = await this.cartRepository.createCartRepository({
+          user: user._id,
+        });
       }
       const cartId = cart._id;
 
@@ -57,18 +80,18 @@ class ShoppingItemsController {
       for (let i = 0; i < shoppingItems.length; i++) {
         if (shoppingItems[i].item._id == item) {
           const newQuantity = (shoppingItems[i].quantity += +quantity);
-
           let isAvaliable = await this.checkStock(item, newQuantity);
 
           if (!isAvaliable) {
             return "Quantity not avaliable in stock";
           }
 
-          await this.shoppingItemRepository.updateShoppingItemRepository(
-            shoppingItems[i]._id,
-            { quantity: newQuantity }
-          );
-          return value;
+          const updatedData =
+            await this.shoppingItemRepository.updateShoppingItemRepository(
+              shoppingItems[i]._id,
+              { quantity: newQuantity }
+            );
+          return updatedData;
         }
       }
 
@@ -86,23 +109,31 @@ class ShoppingItemsController {
 
       return value;
     } catch (error) {
-      console.log(error);
       return { message: error.message };
     }
   }
 
-  async updateShoppingItemController(id, body) {
+  async updateShoppingItemController(id, body, auth) {
     try {
+      const user = auth;
       const shoppingItem =
         await this.shoppingItemRepository.findShoppingItemByIdRepository(id);
+
       if (!shoppingItem) return "ShoppingItem not found";
 
+      const { error, value } = updateShoppingItemValidation(body);
+
+      if (error) {
+        return { message: error.message };
+      }
+
       const item = await this.itemRepository.findItem(shoppingItem.item);
+
       if (!item) return "Product not found";
 
       if (body.quantity) {
         let isAvaliable = await this.checkStock(item, body.quantity);
-        console.log(isAvaliable);
+
         if (!isAvaliable) {
           return "Quantity not avaliable in stock";
         }
@@ -113,37 +144,41 @@ class ShoppingItemsController {
           id,
           body
         );
+
       return upadtedData;
     } catch (error) {
-      console.log(error);
       return { message: error.message };
     }
   }
 
-  async removeShoppingItemFromCartController(id) {
+  async removeShoppingItemFromCartController(id, auth) {
     try {
-      //   const deletedShoppingItem =
-      return await this.shoppingItemRepository.deleteShoppingItemRepository(id);
-      //   return { success: true, data: deletedShoppingItem };
+      const user = auth;
+
+      const item =
+        await this.shoppingItemRepository.findShoppingItemByIdRepository(id);
+
+      if (!item) return "Item not found";
+
+      await this.shoppingItemRepository.deleteShoppingItemRepository(
+        id,
+        user._id
+      );
+      return "Deleted Successfully";
     } catch (error) {
       return { success: false, message: error.message };
     }
   }
 
-  async clearShoppingItemsFromCart(id) {
+  async clearAllShoppingItemsFromCart(auth) {
     try {
-      const allShoppingItems =
-        await this.shoppingItemRepository.getAllCurrentCartshoppingItemsRepository(
-          id
-        );
-      console.log(allShoppingItems);
-      allShoppingItems.map(async (shoppingItem) => {
-        await this.shoppingItemRepository.updateShoppingItemRepository(
-          shoppingItem._id,
-          { cartId: null }
-        );
-      });
-      return allShoppingItems;
+      const user = auth;
+
+      const cart = await this.cartRepository.getCurrentUserCartRepository(
+        user._id
+      );
+      await this.shoppingItemRepository.clearAllShoppingItem(cart._id);
+      return "All items deleted";
     } catch (error) {
       return { message: error.message };
     }
@@ -151,6 +186,7 @@ class ShoppingItemsController {
 
   async checkStock(itemId, quantity) {
     const item = await this.itemRepository.findItem(itemId);
+
     if (+item.countInStock >= +quantity) {
       return true;
     }

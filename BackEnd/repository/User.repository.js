@@ -1,12 +1,9 @@
 const bcrypt = require("bcrypt");
 const { NotFoundError } = require("../Errors/notFoundError");
 const { InternalServerError } = require("../Errors/internalServerError");
+const User = require("../models/User.schema");
 
 class UserRepository {
-  constructor(user) {
-    this.user = user;
-  }
-
   handleError = (error) => {
     if (error instanceof NotFoundError) throw new NotFoundError(error.message);
 
@@ -18,7 +15,7 @@ class UserRepository {
       const passwordHash = await bcrypt.hash(body.password, 10);
       if (!passwordHash)
         throw new InternalServerError("Error while hashed password");
-      return await this.user.create({ ...body, password: passwordHash });
+      return await User.create({ ...body, password: passwordHash });
     } catch (error) {
       throw new InternalServerError(error.message);
     }
@@ -26,7 +23,7 @@ class UserRepository {
 
   async findByEmail(email) {
     try {
-      const user = await this.user.findOne({ email });
+      const user = await User.findOne({ email });
       // if (!user) throw new NotFoundError("No user found");
       return user;
     } catch (error) {
@@ -36,7 +33,7 @@ class UserRepository {
 
   async findAll() {
     try {
-      const users = await this.user.find();
+      const users = await User.find();
       if (!users) throw new NotFoundError("No users found!");
       return users;
     } catch (error) {

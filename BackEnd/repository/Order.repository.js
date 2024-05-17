@@ -1,11 +1,9 @@
-class OrderRepository {
-  constructor(Order) {
-    this.Order = Order;
-  }
+const Order = require("../models/Order.schema");
 
+class OrderRepository {
   async getAllOrderRepository() {
     try {
-      return await this.Order.find();
+      return await Order.find();
     } catch (error) {
       throw new Error(error.message);
     }
@@ -13,7 +11,7 @@ class OrderRepository {
 
   async getOrderByIdRepository(id) {
     try {
-      return await this.Order.findOne({ _id: id });
+      return await Order.findOne({ _id: id });
     } catch (error) {
       throw new Error(error.message);
     }
@@ -21,7 +19,7 @@ class OrderRepository {
 
   async getCurrentUserOrdersById(id) {
     try {
-      return await this.Order.find({ user: id });
+      return await Order.find({ user: id });
     } catch (error) {
       throw new Error(error.message);
     }
@@ -29,7 +27,7 @@ class OrderRepository {
 
   async createOrderRepository(body) {
     try {
-      return await this.Order.create(body);
+      return await Order.create(body);
     } catch (error) {
       throw new Error(error.message);
     }
@@ -37,7 +35,7 @@ class OrderRepository {
 
   async updateOrderRepository(id, body) {
     try {
-      return await this.Order.updateOne({ _id: id }, body);
+      return await Order.updateOne({ _id: id }, body);
     } catch (error) {
       throw new Error(error.message);
     }

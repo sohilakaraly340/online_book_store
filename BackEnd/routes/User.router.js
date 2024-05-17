@@ -19,6 +19,25 @@ const userRouter = (userController) => {
     })
   );
 
+  router.get(
+    "/",
+    handleAsync(async (req, res) => {
+      const profile = await userController.getCurrentProfile(req.headers.email);
+      res.status(200).json({ success: true, data: profile });
+    })
+  );
+
+  router.patch(
+    "/",
+    handleAsync(async (req, res) => {
+      const updated = await userController.UpdateUserProfile(
+        req.headers.email,
+        req.body
+      );
+      res.status(200).json({ success: true, message: updated });
+    })
+  );
+
   return router;
 };
 

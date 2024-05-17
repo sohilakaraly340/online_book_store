@@ -5,6 +5,7 @@ const orderRouter = (orderController) => {
   router.get("/", async (req, res) => {
     try {
       const data = await orderController.getAllorderController();
+
       res.status(200).json({ data: data });
     } catch (error) {
       res.status(500).json({
@@ -20,6 +21,7 @@ const orderRouter = (orderController) => {
         req.params.id,
         req.body
       );
+
       res.status(200).json({ data: data });
     } catch (error) {
       res.status(500).json({
