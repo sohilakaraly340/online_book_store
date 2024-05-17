@@ -5,6 +5,10 @@ const { STRIPE_KEY, DB_URL } = require("../constants");
 const stripe = Stripe(`${STRIPE_KEY}`);
 const router = express.Router();
 router.post("/create-checkout-session", async (req, res) => {
+
+    const line_items= req.body.orderItems.map((item)=>{
+        
+    })
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
