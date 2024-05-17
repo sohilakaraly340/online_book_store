@@ -20,16 +20,6 @@ const adminCategoryRouter = require("./routes/admin/CategoryRouter");
 const adminOrderRouter = require("./routes/admin/OrderRouter");
 const adminAuthorRouter = require("./routes/admin/AuthorRouter");
 
-//models
-const author = require("./models/Author.schema");
-const item = require("./models/Item.schema");
-const itemType = require("./models/ItemType.schema");
-const category = require("./models/Category.schema");
-const user = require("./models/User.schema");
-const ShoppingItem = require("./models/ShoppingItem.schema");
-const Cart = require("./models/Cart.schema");
-const Order = require("./models/Order.schema");
-
 //repositories
 const AuthorRepository = require("./repository/author.repository");
 const CategoryRepository = require("./repository/Category.repository");
@@ -52,14 +42,15 @@ const OrderController = require("./controllers/Order.controller");
 const { PORT, DB_URL } = require("./constants");
 
 //instance repos
-const authorRepository = new AuthorRepository(author, item);
-const categoryRepository = new CategoryRepository(category, item);
-const userRepository = new UserRepository(user);
-const itemRepository = new ItemRepository(item, itemType, category, author);
-const wishListRepository = new WishListRepository(user);
-const cartRepository = new CartRepository(Cart, ShoppingItem);
-const shoppingItemRepository = new ShoppingItemRepository(ShoppingItem);
-const orderRepository = new OrderRepository(Order);
+const authorRepository = new AuthorRepository();
+const categoryRepository = new CategoryRepository();
+const userRepository = new UserRepository();
+const userProfileRepository = new UserProfileRepo();
+const itemRepository = new ItemRepository();
+const wishListRepository = new WishListRepository();
+const cartRepository = new CartRepository();
+const shoppingItemRepository = new ShoppingItemRepository();
+const orderRepository = new OrderRepository();
 
 //instance controllers
 const authorController = new AuthorController(authorRepository);
@@ -73,6 +64,7 @@ const wishListController = new WishListController(
 );
 const cartController = new CartController(cartRepository);
 const shoppingItemsController = new ShoppingItemsController(
+  userRepository,
   cartRepository,
   itemRepository,
   shoppingItemRepository

@@ -16,11 +16,9 @@ const orderSchema = mongoose.Schema({
   },
   phoneNumber: {
     type: String,
-    required: true,
   },
   address: {
     type: String,
-    required: true,
     minLength: [3, "Address must be at least 3 characters long"],
   },
   dateOfOrder: {

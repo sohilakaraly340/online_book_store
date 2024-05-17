@@ -1,8 +1,9 @@
 const express = require("express");
+const { auth } = require("../middleware/auth");
 const router = express.Router();
 
 const cartRouter = (cartController) => {
-  router.get("/", async (req, res) => {
+  router.get("/", auth, async (req, res) => {
     try {
       const data = await cartController.getAllCartsController();
       res.status(200).send(data);
@@ -16,6 +17,7 @@ const cartRouter = (cartController) => {
       const data = await cartController.getCartByUserIdController(
         req.params.id
       );
+
       res.status(200).send(data);
     } catch (error) {
       res.status(500).json({ message: error });
@@ -23,12 +25,11 @@ const cartRouter = (cartController) => {
   });
 
   router.delete("/:id", async (req, res) => {
-    console.log(req.params.id);
     try {
-      const data = await cartController.deleteCartController(req.params.id);
+      await cartController.deleteCartController(req.params.id);
+
       res.status(200).json("Deleted successfully");
     } catch (error) {
-      console.log(error);
       res.status(500).json({ message: error });
     }
   });
