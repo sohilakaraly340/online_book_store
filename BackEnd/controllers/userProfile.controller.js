@@ -12,8 +12,6 @@ class UserProfileController {
   }
 
   async UpdateUserProfile(emailHeader, body) {
-    const { error, value } = validator.validatUsers(body);
-    if (error) throw new ValidationError(`In valid data ${error.message}`);
     try {
       const bodyClone =structuredClone(body)
       
@@ -35,8 +33,6 @@ class UserProfileController {
         bodyClone.password=encryptedPassword;
       
       }
-
-    
       return await this.userProfileRepo.updateProfile(
         emailHeader,
         bodyClone
