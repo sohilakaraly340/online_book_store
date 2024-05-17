@@ -1,38 +1,37 @@
 const express = require("express");
 const { auth } = require("../middleware/auth");
+const { handleAsync } = require("../Errors/handleAsync");
 const router = express.Router();
 
 const cartRouter = (cartController) => {
-  router.get("/", auth, async (req, res) => {
-    try {
+  router.get(
+    "/",
+    auth,
+    handleAsync(async (req, res) => {
       const data = await cartController.getAllCartsController();
       res.status(200).send(data);
-    } catch (error) {
-      res.status(500).json({ message: error });
-    }
-  });
+    })
+  );
 
-  router.get("/:id", async (req, res) => {
-    try {
+  router.get(
+    "/:id",
+    handleAsync(async (req, res) => {
       const data = await cartController.getCartByUserIdController(
         req.params.id
       );
 
       res.status(200).send(data);
-    } catch (error) {
-      res.status(500).json({ message: error });
-    }
-  });
+    })
+  );
 
-  router.delete("/:id", async (req, res) => {
-    try {
+  router.delete(
+    "/:id",
+    handleAsync(async (req, res) => {
       await cartController.deleteCartController(req.params.id);
 
       res.status(200).json("Deleted successfully");
-    } catch (error) {
-      res.status(500).json({ message: error });
-    }
-  });
+    })
+  );
 
   return router;
 };

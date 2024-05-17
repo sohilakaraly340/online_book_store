@@ -1,41 +1,38 @@
 const express = require("express");
 const { auth } = require("../middleware/auth");
+const { handleAsync } = require("../Errors/handleAsync");
 const router = express.Router();
 
 const shoppingItemRouter = (shoppingItemsController) => {
-  router.get("/", auth, async (req, res) => {
-    try {
+  router.get(
+    "/",
+    auth,
+    handleAsync(async (req, res) => {
       const data =
         await shoppingItemsController.getAllCurrentCartshoppingItemsController(
           req.headers
         );
       res.status(200).json({ data: data });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || "Something went wrong",
-      });
-    }
-  });
+    })
+  );
 
-  router.post("/", auth, async (req, res) => {
-    try {
+  router.post(
+    "/",
+    auth,
+    handleAsync(async (req, res) => {
       const data = await shoppingItemsController.addToCartController(
         req.auth,
         req.body
       );
 
       res.status(200).json({ data: data });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || "Something went wrong",
-      });
-    }
-  });
+    })
+  );
 
-  router.patch("/:id", auth, async (req, res) => {
-    try {
+  router.patch(
+    "/:id",
+    auth,
+    handleAsync(async (req, res) => {
       await shoppingItemsController.updateShoppingItemController(
         req.params.id,
         req.body,
@@ -43,44 +40,33 @@ const shoppingItemRouter = (shoppingItemsController) => {
       );
 
       res.status(200).json("Updated successfully");
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || "Something went wrong",
-      });
-    }
-  });
+    })
+  );
 
-  router.delete("/", auth, async (req, res) => {
-    try {
+  router.delete(
+    "/",
+    auth,
+    handleAsync(async (req, res) => {
       const data = await shoppingItemsController.clearAllShoppingItemsFromCart(
         req.auth
       );
 
       res.status(200).json({ data: data });
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || "Something went wrong",
-      });
-    }
-  });
+    })
+  );
 
-  router.delete("/:id", auth, async (req, res) => {
-    try {
+  router.delete(
+    "/:id",
+    auth,
+    handleAsync(async (req, res) => {
       await shoppingItemsController.removeShoppingItemFromCartController(
         req.params.id,
         req.auth
       );
 
       res.status(200).json("Deleted successfully");
-    } catch (error) {
-      res.status(error.statusCode || 500).json({
-        success: false,
-        message: error.message || "Something went wrong",
-      });
-    }
-  });
+    })
+  );
 
   return router;
 };
