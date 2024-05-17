@@ -1,4 +1,3 @@
-const { InternalServerError } = require("../Errors/internalServerError");
 const { NotFoundError } = require("../Errors/notFoundError");
 const Author = require("../models/Author.schema");
 const Category = require("../models/Category.schema");
@@ -6,35 +5,20 @@ const Item = require("../models/Item.schema");
 const ItemType = require("../models/ItemType.schema");
 
 class ItemRepository {
-  handleError = (error) => {
-    if (error instanceof NotFoundError) throw new NotFoundError(error.message);
-
-    throw new InternalServerError(error.message);
-  };
-
   async getItemTypes() {
-    try {
-      const itmeTypes = await ItemType.find();
-      if (!itmeTypes) {
-        throw new NotFoundError("No types found ");
-      }
-      return itmeTypes;
-    } catch (error) {
-      this.handleError(error);
+    const itmeTypes = await ItemType.find();
+    if (!itmeTypes) {
+      throw new NotFoundError("No types found ");
     }
+    return itmeTypes;
   }
 
   async createItemType(body) {
-    try {
-      return await ItemType.create(body);
-    } catch (error) {
-      this.handleError(error);
-    }
+    return await ItemType.create(body);
   }
 
   async deleteItemType(id) {
-    try {
-      const deletedItemType = await ItemType.findByIdAndDelete(id);
+    const deletedItemType = await ItemType.findByIdAndDelete(id);
 
     if (!deletedItemType) throw new NotFoundError("Item type not found");
 
@@ -42,34 +26,29 @@ class ItemRepository {
   }
 
   async createItem(body) {
-    try {
-      return await Item.create(body);
-    } catch (error) {
-      this.handleError(error);
-    }
+    return await Item.create(body);
   }
 
   async search(key) {
-    try {
-      const categories = await Category.find({
-        title: { $regex: key, $options: "i" },
-      });
-      const authors = await Author.find({
-        name: { $regex: key, $options: "i" },
-      });
+    const categories = await Category.find({
+      title: { $regex: key, $options: "i" },
+    });
+    const authors = await Author.find({
+      name: { $regex: key, $options: "i" },
+    });
 
     const categoryIds = categories.map((category) => category._id);
     const authorIds = authors.map((author) => author._id);
 
-      const data = await Item.find({
-        $or: [
-          { title: { $regex: key, $options: "i" } },
-          { category: { $in: categoryIds } },
-          { authorId: { $in: authorIds } },
-        ],
-      })
-        .populate("category")
-        .populate("authorId");
+    const data = await Item.find({
+      $or: [
+        { title: { $regex: key, $options: "i" } },
+        { category: { $in: categoryIds } },
+        { authorId: { $in: authorIds } },
+      ],
+    })
+      .populate("category")
+      .populate("authorId");
 
     if (!data)
       throw new NotFoundError("No items found matching the search criteria.");
@@ -78,8 +57,7 @@ class ItemRepository {
   }
 
   async deleteItem(id) {
-    try {
-      const deletedItem = await Item.findByIdAndDelete(id);
+    const deletedItem = await Item.findByIdAndDelete(id);
 
     if (!deletedItem) throw new NotFoundError("Item not found");
 
@@ -87,8 +65,7 @@ class ItemRepository {
   }
 
   async findItemType(id) {
-    try {
-      const itemType = await ItemType.findOne({ _id: id });
+    const itemType = await ItemType.findOne({ _id: id });
 
     if (!itemType) throw new NotFoundError("Item type not found");
 
@@ -96,8 +73,7 @@ class ItemRepository {
   }
 
   async findItem(id) {
-    try {
-      const item = await Item.findOne({ _id: id }).populate("itemType");
+    const item = await Item.findOne({ _id: id }).populate("itemType");
 
     if (!item) {
       throw new NotFoundError("Item not found");
@@ -107,8 +83,7 @@ class ItemRepository {
   }
 
   async findCategory(id) {
-    try {
-      const category = await Category.findOne({ _id: id });
+    const category = await Category.findOne({ _id: id });
 
     if (!category) throw new NotFoundError("Category not found");
 
@@ -116,8 +91,7 @@ class ItemRepository {
   }
 
   async getAllItems() {
-    try {
-      const items = await Item.find().populate("itemType").populate("category");
+    const items = await Item.find().populate("itemType").populate("category");
 
     if (!items) throw new NotFoundError("Items not found");
 
@@ -125,8 +99,7 @@ class ItemRepository {
   }
 
   async updateItem(id, body) {
-    try {
-      const updatedItem = await Item.updateOne({ _id: id }, body);
+    const updatedItem = await Item.updateOne({ _id: id }, body);
 
     if (updatedItem.modifiedCount == 0)
       throw new NotFoundError("Item not found");
@@ -134,8 +107,7 @@ class ItemRepository {
     return updatedItem;
   }
   async updateItemType(id, body) {
-    try {
-      const updatedItemType = await ItemType.updateOne({ _id: id }, body);
+    const updatedItemType = await ItemType.updateOne({ _id: id }, body);
 
     if (updatedItemType.modifiedCount == 0)
       throw new NotFoundError("Item not found");

@@ -45,7 +45,6 @@ const { PORT, DB_URL } = require("./constants");
 const authorRepository = new AuthorRepository();
 const categoryRepository = new CategoryRepository();
 const userRepository = new UserRepository();
-const userProfileRepository = new UserProfileRepo();
 const itemRepository = new ItemRepository();
 const wishListRepository = new WishListRepository();
 const cartRepository = new CartRepository();

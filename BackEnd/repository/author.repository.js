@@ -1,58 +1,32 @@
-const { InternalServerError } = require("../Errors/internalServerError");
 const { NotFoundError } = require("../Errors/notFoundError");
 const Author = require("../models/Author.schema");
 const Item = require("../models/Item.schema");
 
 class AuthorRepository {
   async createNewAuthor(body) {
-    try {
-      const newAuthor = await Author.create(body);
-      return newAuthor;
-    } catch (error) {
-      throw new InternalServerError(error.message);
-    }
+    const newAuthor = await Author.create(body);
+    return newAuthor;
   }
 
   async getAll() {
-    try {
-      const authors = await Author.find();
-      if (!authors) {
-        throw new NotFoundError("Not found authors!");
-      }
-      return authors;
-    } catch (error) {
-      if (error instanceof NotFoundError) {
-        throw new NotFoundError(error.message);
-      } else {
-        throw new InternalServerError(error.message);
-      }
-    }
+    const authors = await Author.find();
+    if (!authors) throw new NotFoundError("Not found authors!");
+
+    return authors;
   }
   async getAuthorById(id) {
-    try {
-      const author = await Author.findOne({ _id: id });
-      if (!author) throw new NotFoundError("Author not found!");
-      return author;
-    } catch (error) {
-      throw new InternalServerError(error.message);
-    }
+    const author = await Author.findOne({ _id: id });
+    if (!author) throw new NotFoundError("Author not found!");
+    return author;
   }
 
   async getAllBooks(authorId) {
-    try {
-      const author = await Author.findOne({ _id: authorId });
-      if (!author) throw new NotFoundError("Author not found!");
+    const author = await Author.findOne({ _id: authorId });
+    if (!author) throw new NotFoundError("Author not found!");
 
-      const books = await Item.find({ authorId });
-      if (!books) throw new NotFoundError("Not found books for this authors!");
-      return books;
-    } catch (error) {
-      if (error instanceof NotFoundError) {
-        throw new NotFoundError(error.message);
-      } else {
-        throw new InternalServerError(error.message);
-      }
-    }
+    const books = await Item.find({ authorId });
+    if (!books) throw new NotFoundError("Not found books for this authors!");
+    return books;
   }
 
   async updateAuthor(id, body) {
