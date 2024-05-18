@@ -13,7 +13,7 @@ const itemRouter = (itemController) => {
     uploadImage,
     admin,
     handleAsync(async (req, res) => {
-      const newItem = await itemController.AddItem(req.body);
+      const newItem = await itemController.createNewItem(req.body);
 
       res.status(201).json({ success: true, data: newItem });
     })
@@ -25,7 +25,7 @@ const itemRouter = (itemController) => {
     uploadImage,
     admin,
     handleAsync(async (req, res) => {
-      const updatedItem = await itemController.UpdateItem(
+      const updatedItem = await itemController.updateItem(
         req.params.id,
         req.body
       );
@@ -37,7 +37,7 @@ const itemRouter = (itemController) => {
     "/:id",
     admin,
     handleAsync(async (req, res) => {
-      await itemController.DeleteItem(req.params.id);
+      await itemController.deleteItemById(req.params.id);
       res
         .status(200)
         .json({ success: true, message: "Item deleted successfully" });

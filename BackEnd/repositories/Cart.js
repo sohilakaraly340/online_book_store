@@ -3,7 +3,7 @@ const { NotFoundError } = require("../Errors/NotFoundError");
 const Cart = require("../models/Cart");
 
 class CartRepository {
-  async getCurrentUserCartRepository(id) {
+  async getCurrentUserCart(id) {
     const cart = await Cart.findOne({ user: id });
     if (!cart) {
       throw new NotFoundError("Cart not found");
@@ -11,11 +11,11 @@ class CartRepository {
     return cart;
   }
 
-  async createCartRepository(body) {
+  async createCart(body) {
     return await Cart.create(body);
   }
 
-  async deleteCartRepository(id) {
+  async deleteCartById(id) {
     const deletedCart = await Cart.findByIdAndDelete(id);
     if (!deletedCart) {
       throw new NotFoundError("ShoppingItem not found");
@@ -23,7 +23,7 @@ class CartRepository {
     return deletedCart;
   }
 
-  async getAllCartsRepository() {
+  async getAllCarts() {
     const allCarts = await Cart.find();
     if (!allCarts) {
       throw new NotFoundError("Carts not found");

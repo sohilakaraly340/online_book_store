@@ -8,10 +8,9 @@ const shoppingItemRouter = (shoppingItemsController) => {
     "/",
     auth,
     handleAsync(async (req, res) => {
-      const data =
-        await shoppingItemsController.getAllCurrentCartshoppingItemsController(
-          req.headers
-        );
+      const data = await shoppingItemsController.getCurrentCartAllshoppingItems(
+        req.headers
+      );
       res.status(200).json({ data: data });
     })
   );
@@ -20,10 +19,7 @@ const shoppingItemRouter = (shoppingItemsController) => {
     "/",
     auth,
     handleAsync(async (req, res) => {
-      const data = await shoppingItemsController.addToCartController(
-        req.auth,
-        req.body
-      );
+      const data = await shoppingItemsController.addToCart(req.auth, req.body);
 
       res.status(200).json({ data: data });
     })
@@ -33,7 +29,7 @@ const shoppingItemRouter = (shoppingItemsController) => {
     "/:id",
     auth,
     handleAsync(async (req, res) => {
-      await shoppingItemsController.updateShoppingItemController(
+      await shoppingItemsController.updateShoppingItem(
         req.params.id,
         req.body,
         req.auth
@@ -59,7 +55,7 @@ const shoppingItemRouter = (shoppingItemsController) => {
     "/:id",
     auth,
     handleAsync(async (req, res) => {
-      await shoppingItemsController.removeShoppingItemFromCartController(
+      await shoppingItemsController.removeShoppingItemFromCart(
         req.params.id,
         req.auth
       );

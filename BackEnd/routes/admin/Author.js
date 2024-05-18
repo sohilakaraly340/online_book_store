@@ -33,7 +33,7 @@ const authorRouter = (authorController) => {
     "/:id",
     admin,
     handleAsync(async (req, res) => {
-      await authorController.deleteAuthor(req.params.id);
+      await authorController.deleteAuthorById(req.params.id);
       res
         .status(200)
         .json({ success: true, data: "author deleted successfully" });

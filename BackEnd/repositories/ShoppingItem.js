@@ -3,7 +3,7 @@ const { NotFoundError } = require("../Errors/NotFoundError");
 const ShoppingItem = require("../models/ShoppingItem");
 
 class ShoppingItemRepository {
-  async getAllshoppingItemsRepository() {
+  async getAllshoppingItems() {
     const allshoppingItems = await ShoppingItem.find();
     if (!allshoppingItems) {
       throw new NotFoundError("No Founded Data");
@@ -11,7 +11,7 @@ class ShoppingItemRepository {
     return allshoppingItems;
   }
 
-  async getAllCurrentCartshoppingItemsRepository(id) {
+  async getCurrentCartAllshoppingItems(id) {
     const shoppingItems = await ShoppingItem.find({ cartId: id }).populate(
       "item"
     );
@@ -31,7 +31,7 @@ class ShoppingItemRepository {
     return shoppingItem;
   }
 
-  async createShoppingItemRepository(body) {
+  async createShoppingItem(body) {
     const item = await ShoppingItem.create(body);
     if (!item) {
       throw new Error("Something went wrong");
@@ -39,7 +39,7 @@ class ShoppingItemRepository {
     return item;
   }
 
-  async findShoppingItemByIdRepository(id) {
+  async findShoppingItemById(id) {
     const shoppingItem = await ShoppingItem.findOne({ _id: id });
     if (!shoppingItem) {
       throw new NotFoundError("ShoppingItem not found");
@@ -47,7 +47,7 @@ class ShoppingItemRepository {
     return shoppingItem;
   }
 
-  async updateShoppingItemRepository(itemId, body) {
+  async updateShoppingItem(itemId, body) {
     const updatedData = await ShoppingItem.findOneAndUpdate(
       { _id: itemId },
       body
@@ -58,11 +58,7 @@ class ShoppingItemRepository {
     return updatedData;
   }
 
-  async updateManyShoppingItemsRepository(
-    shoppingItemIds,
-    newOrderId,
-    newCartId
-  ) {
+  async updateManyShoppingItems(shoppingItemIds, newOrderId, newCartId) {
     const updatedData = await ShoppingItem.updateMany(
       { _id: { $in: shoppingItemIds } },
       { $set: { orderId: newOrderId, cartId: newCartId } }
@@ -73,7 +69,7 @@ class ShoppingItemRepository {
     return updatedData;
   }
 
-  async deleteShoppingItemRepository(id, user) {
+  async deleteShoppingItemById(id, user) {
     const deletedItem = await ShoppingItem.findByIdAndDelete({ _id: id, user });
     if (!deletedItem) {
       throw new NotFoundError("ShoppingItem not found");

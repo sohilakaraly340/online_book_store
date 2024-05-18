@@ -6,7 +6,7 @@ const authorRouter = (authorController) => {
   router.get(
     "/",
     handleAsync(async (req, res) => {
-      const authors = await authorController.getAllAuthor();
+      const authors = await authorController.getAllAuthors();
 
       res.status(200).json({ success: true, data: authors });
     })

@@ -5,51 +5,51 @@ class ItemController {
     this.itemRepository = itemRepository;
   }
 
-  async AddItem(body, itemType, category) {
+  async createNewItem(body, itemType, category) {
     const { error } = validator.validateItem(body);
     if (error) {
       throw new ValidationError(`In valid data ${error.message}`);
     }
 
-    await this.itemRepository.findItemType(body.itemType);
-    await this.itemRepository.findCategory(body.category);
+    await this.itemRepository.findItemTypeById(body.itemType);
+    await this.itemRepository.findCategoryById(body.category);
 
-    return await this.itemRepository.createItem(body);
+    return await this.itemRepository.createNewItem(body);
   }
 
-  async getItemTypes() {
-    return await this.itemRepository.getItemTypes();
+  async getAllItemTypes() {
+    return await this.itemRepository.getAllItemTypes();
   }
 
-  async AddItemType(body) {
-    return await this.itemRepository.createItemType(body);
+  async createNewItemType(body) {
+    return await this.itemRepository.createNewItemType(body);
   }
 
-  async DeleteItemType(id) {
-    return await this.itemRepository.deleteItemType(id);
+  async deleteItemTypeById(id) {
+    return await this.itemRepository.deleteItemTypeById(id);
   }
 
-  async UpdateItemType(id, body) {
+  async updateItemType(id, body) {
     return await this.itemRepository.updateItemType(id, body);
   }
 
-  async DeleteItem(id) {
-    return await this.itemRepository.deleteItem(id);
+  async deleteItemById(id) {
+    return await this.itemRepository.deleteItemById(id);
   }
 
-  async GetItemById(id) {
-    return await this.itemRepository.findItem(id);
+  async getItemById(id) {
+    return await this.itemRepository.findItemById(id);
   }
 
-  async UpdateItem(id, body) {
+  async updateItem(id, body) {
     if (body.category) {
-      await this.itemRepository.findCategory(category);
+      await this.itemRepository.findCategoryById(category);
     }
 
     return await this.itemRepository.updateItem(id, body);
   }
 
-  async GetAllItems() {
+  async getAllItems() {
     return await this.itemRepository.getAllItems();
   }
 

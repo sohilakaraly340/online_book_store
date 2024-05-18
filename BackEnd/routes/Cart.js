@@ -8,26 +8,24 @@ const cartRouter = (cartController) => {
     "/",
     auth,
     handleAsync(async (req, res) => {
-      const data = await cartController.getAllCartsController();
-      res.status(200).send(data);
+      const data = await cartController.getAllCarts();
+      res.status(200).json({ success: true, data: data });
     })
   );
 
   router.get(
     "/:id",
     handleAsync(async (req, res) => {
-      const data = await cartController.getCartByUserIdController(
-        req.params.id
-      );
+      const data = await cartController.getCartByUserId(req.params.id);
 
-      res.status(200).send(data);
+      res.status(200).json({ success: true, data: data });
     })
   );
 
   router.delete(
     "/:id",
     handleAsync(async (req, res) => {
-      await cartController.deleteCartController(req.params.id);
+      await cartController.deleteCartById(req.params.id);
 
       res.status(200).json("Deleted successfully");
     })

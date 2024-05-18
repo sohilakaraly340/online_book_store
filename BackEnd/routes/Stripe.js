@@ -11,7 +11,7 @@ const StripeRouter = (OrderController) => {
     "/create-checkout-session",
     handleAsync(async (req, res) => {
       const id = req.body.orderId;
-      const order = await OrderController.getOrderByIdController(id);
+      const order = await OrderController.getOrderById(id);
       const line_items = order.orderItems.map((itm) => {
         return {
           price_data: {

@@ -28,7 +28,7 @@ const userRouter = (userController) => {
     "/",
     auth,
     handleAsync(async (req, res) => {
-      const profile = await userController.getCurrentProfile(req.auth);
+      const profile = await userController.getCurrentUserProfile(req.auth);
       res.status(200).json({ success: true, data: profile });
     })
   );

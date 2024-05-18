@@ -6,7 +6,7 @@ const categoryRouter = (categoryController) => {
   router.get(
     "/",
     handleAsync(async (req, res) => {
-      const allCategory = await categoryController.findAllCategories();
+      const allCategory = await categoryController.getAllCategories();
       res.status(200).json({ success: true, data: allCategory });
     })
   );
@@ -14,7 +14,7 @@ const categoryRouter = (categoryController) => {
   router.get(
     "/:id",
     handleAsync(async (req, res) => {
-      const itemOfCategory = await categoryController.findItemsOfCategory(
+      const itemOfCategory = await categoryController.getAllItemsOfCategory(
         req.params.id
       );
       res.status(200).json({ success: true, data: itemOfCategory });

@@ -6,7 +6,7 @@ const itemRouter = (itemController) => {
   router.get(
     "/",
     handleAsync(async (req, res) => {
-      const allItems = await itemController.GetAllItems();
+      const allItems = await itemController.getAllItems();
       res.status(200).json({ success: true, data: allItems });
     })
   );
@@ -14,7 +14,7 @@ const itemRouter = (itemController) => {
   router.get(
     "/:id",
     handleAsync(async (req, res) => {
-      const item = await itemController.GetItemById(req.params.id);
+      const item = await itemController.getItemById(req.params.id);
       res.status(200).json({ success: true, data: item });
     })
   );

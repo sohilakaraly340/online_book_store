@@ -7,6 +7,7 @@ const { UnAuthorizedError } = require("../Errors/UnAuthorizedError");
 const { NotFoundError } = require("../Errors/NotFoundError");
 const { ValidationError } = require("../Errors/ValidationError");
 const { NotImplementedError } = require("../Errors/NotImplementedError");
+const { JWT_SECRET } = require("../constants");
 
 class ShoppingItemsController {
   constructor(
@@ -21,23 +22,23 @@ class ShoppingItemsController {
     this.shoppingItemRepository = shoppingItemRepository;
   }
 
-  async getAllCurrentCartshoppingItemsController(headers) {
+  async getCurrentCartAllshoppingItems(headers) {
     const token = headers["jwt"];
 
     if (!token) throw new UnAuthorizedError("UnAuthorized User");
 
-    const payLoad = jwt.verify(token, "myjwtsecret");
+    const payLoad = jwt.verify(token, JWT_SECRET);
 
-    const user = await this.userRepository.findByEmail(payLoad.email);
+    const user = await this.userRepository.findUserByEmail(payLoad.email);
 
     if (!user) {
       throw new UnAuthorizedError("UnAuthorized User");
     }
 
-    await this.cartRepository.getCurrentUserCartRepository(user._id);
+    const cart = await this.cartRepository.getCurrentUserCart(user._id);
 
     const data =
-      await this.shoppingItemRepository.getAllCurrentCartshoppingItemsRepository(
+      await this.shoppingItemRepository.getCurrentCartAllshoppingItems(
         cart._id,
         user._id
       );
@@ -45,7 +46,7 @@ class ShoppingItemsController {
     return data;
   }
 
-  async addToCartController(auth, body) {
+  async addToCart(auth, body) {
     const user = auth;
 
     const { error, value } = shoppingItemValidation(body);
@@ -58,20 +59,18 @@ class ShoppingItemsController {
       quantity = 1;
     }
 
-    await this.itemRepository.findItem(item);
+    await this.itemRepository.findItemById(item);
 
-    let cart = await this.cartRepository.getCurrentUserCartRepository(user._id);
+    let cart = await this.cartRepository.getCurrentUserCart(user._id);
     if (!cart) {
-      cart = await this.cartRepository.createCartRepository({
+      cart = await this.cartRepository.createCart({
         user: user._id,
       });
     }
     const cartId = cart._id;
 
     let shoppingItems =
-      await this.shoppingItemRepository.getAllCurrentCartshoppingItemsRepository(
-        cartId
-      );
+      await this.shoppingItemRepository.getCurrentCartAllshoppingItems(cartId);
 
     for (let i = 0; i < shoppingItems.length; i++) {
       if (shoppingItems[i].item._id == item) {
@@ -83,7 +82,7 @@ class ShoppingItemsController {
         }
 
         const updatedData =
-          await this.shoppingItemRepository.updateShoppingItemRepository(
+          await this.shoppingItemRepository.updateShoppingItem(
             shoppingItems[i]._id,
             { quantity: newQuantity }
           );
@@ -97,17 +96,17 @@ class ShoppingItemsController {
       throw new NotImplementedError("Quantity not avaliable in stock");
     }
 
-    return await this.shoppingItemRepository.createShoppingItemRepository({
+    return await this.shoppingItemRepository.createShoppingItem({
       cartId: cartId,
       item: item,
       quantity: quantity,
     });
   }
 
-  async updateShoppingItemController(id, body, auth) {
+  async updateShoppingItem(id, body, auth) {
     const user = auth;
 
-    await this.shoppingItemRepository.findShoppingItemByIdRepository(id);
+    await this.shoppingItemRepository.findShoppingItemById(id);
 
     const { error, value } = updateShoppingItemValidation(body);
 
@@ -115,7 +114,7 @@ class ShoppingItemsController {
       throw new ValidationError(`InValid data ${error.message}`);
     }
 
-    await this.itemRepository.findItem(shoppingItem.item);
+    await this.itemRepository.findItemById(shoppingItem.item);
 
     if (body.quantity) {
       let isAvaliable = await this.checkStock(item, body.quantity);
@@ -125,36 +124,33 @@ class ShoppingItemsController {
       }
     }
 
-    const upadtedData =
-      await this.shoppingItemRepository.updateShoppingItemRepository(id, body);
+    const upadtedData = await this.shoppingItemRepository.updateShoppingItem(
+      id,
+      body
+    );
 
     return upadtedData;
   }
 
-  async removeShoppingItemFromCartController(id, auth) {
+  async removeShoppingItemFromCart(id, auth) {
     const user = auth;
 
-    await this.shoppingItemRepository.findShoppingItemByIdRepository(id);
+    await this.shoppingItemRepository.findShoppingItemById(id);
 
-    await this.shoppingItemRepository.deleteShoppingItemRepository(
-      id,
-      user._id
-    );
+    await this.shoppingItemRepository.deleteShoppingItemById(id, user._id);
     return "Deleted Successfully";
   }
 
   async clearAllShoppingItemsFromCart(auth) {
     const user = auth;
 
-    const cart = await this.cartRepository.getCurrentUserCartRepository(
-      user._id
-    );
+    const cart = await this.cartRepository.getCurrentUserCart(user._id);
     await this.shoppingItemRepository.clearAllShoppingItem(cart._id);
     return "All items deleted";
   }
 
   async checkStock(itemId, quantity) {
-    const item = await this.itemRepository.findItem(itemId);
+    const item = await this.itemRepository.findItemById(itemId);
 
     if (+item.countInStock >= +quantity) {
       return true;

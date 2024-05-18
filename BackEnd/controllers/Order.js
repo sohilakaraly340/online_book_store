@@ -18,23 +18,23 @@ class OrderController {
     this.itemRepository = itemRepository;
   }
 
-  async getAllorderController() {
-    return await this.orderRepository.getAllOrderRepository();
+  async getAllorder() {
+    return await this.orderRepository.getAllOrder();
   }
 
-  async getOrderByIdController(id) {
+  async getOrderById(id) {
     const orderItems =
       await this.shoppingItemRepository.getShoppingItemsByOrderId(id);
-    const order = await this.orderRepository.getOrderByIdRepository(id);
+    const order = await this.orderRepository.getOrderById(id);
     return { order: order, orderItems: orderItems };
   }
 
-  async getCurrentUserOrdersController(auth) {
+  async getCurrentUserOrders(auth) {
     const user = auth;
     return await this.orderRepository.getCurrentUserOrdersById(user._id);
   }
 
-  async createNewOrderController(auth, body) {
+  async createNewOrder(auth, body) {
     const user = auth;
 
     const { error, value } = orderValidation(body);
@@ -45,12 +45,10 @@ class OrderController {
 
     const { status, phoneNumber, address } = body;
 
-    const cart = await this.cartRepository.getCurrentUserCartRepository(
-      user._id
-    );
+    const cart = await this.cartRepository.getCurrentUserCart(user._id);
 
     let orderItems =
-      await this.shoppingItemRepository.getAllCurrentCartshoppingItemsRepository(
+      await this.shoppingItemRepository.getCurrentCartAllshoppingItems(
         cart._id
       );
 
@@ -68,11 +66,11 @@ class OrderController {
       address,
     };
 
-    const newOrder = await this.orderRepository.createOrderRepository(data);
+    const newOrder = await this.orderRepository.createNewOrder(data);
 
     const shoppingItemIds = orderItems.map((item) => item._id);
 
-    await this.shoppingItemRepository.updateManyShoppingItemsRepository(
+    await this.shoppingItemRepository.updateManyShoppingItems(
       shoppingItemIds,
       newOrder._id,
       null
@@ -81,8 +79,8 @@ class OrderController {
     return { order: newOrder, orderItems: orderItems };
   }
 
-  async updateOrderController(id, body) {
-    await this.orderRepository.getOrderByIdRepository(id);
+  async updateOrderById(id, body) {
+    await this.orderRepository.getOrderById(id);
 
     const { error, value } = orderUpdateValidation(body);
 
@@ -90,7 +88,7 @@ class OrderController {
       throw new ValidationError(`InValid data ${error.message}`);
     }
 
-    await this.orderRepository.updateOrderRepository(id, body);
+    await this.orderRepository.updateOrder(id, body);
 
     return { message: "UpdatedSuccessfully" };
   }

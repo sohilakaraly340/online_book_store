@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const {userValidator , userUpdateValidator  }= require("../validators/User");
-
+const { validatUsers, validatUpdateUser } = require("../validators/User");
 
 const { JWT_SECRET } = require("../constants");
 const { BadRequestError } = require("../Errors/BadRequestError");
@@ -14,18 +13,18 @@ class UserController {
   }
 
   async createNewUser(body) {
-    const { error } = userValidator.validatUsers(body);
+    const { error } = validatUsers(body);
     if (error) {
       throw new ValidationError(`In valid data ${error.message}`);
     }
 
     const { email } = body;
-    const existingUser = await this.userRepository.findByEmail(email);
+    const existingUser = await this.userRepository.findUserByEmail(email);
     if (existingUser) {
       throw new BadRequestError("This email is already exist.");
     }
 
-    return await this.userRepository.createUser(body);
+    return await this.userRepository.createNewUser(body);
   }
 
   async login(body) {
@@ -35,7 +34,7 @@ class UserController {
       throw new BadRequestError("Email and password are required.");
     }
 
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findUserByEmail(email);
     if (!user) {
       throw new BadRequestError("Incorrect email or password.");
     }
@@ -50,18 +49,18 @@ class UserController {
     return { token, user };
   }
 
-  async findAllUsers() {
-    return await this.userRepository.findAll();
+  async getAllUser() {
+    return await this.userRepository.getAllUser();
   }
 
-  async getCurrentProfile(auth) {
+  async getCurrentUserProfile(auth) {
     const user = auth;
-    return await this.userRepository.findByEmail(user.email);
+    return await this.userRepository.findUserByEmail(user.email);
   }
 
   async UpdateUserProfile(auth, body) {
     const user = auth;
-    const { error } = userUpdateValidator.validatUpdateUser(body);
+    const { error } = validatUpdateUser(body);
     if (error) throw new ValidationError(`In valid data ${error.message}`);
     const bodyClone = structuredClone(body);
 

@@ -6,9 +6,9 @@ const orderRouter = (orderController) => {
   router.get(
     "/:id",
     handleAsync(async (req, res) => {
-      const data = await orderController.getOrderByIdController(req.params.id);
+      const data = await orderController.getOrderById(req.params.id);
 
-      res.status(200).json({ data: data });
+      res.status(200).json({ success: true, data: data });
     })
   );
 
@@ -16,11 +16,9 @@ const orderRouter = (orderController) => {
     "/",
     auth,
     handleAsync(async (req, res) => {
-      const data = await orderController.getCurrentUserOrdersController(
-        req.auth
-      );
+      const data = await orderController.getCurrentUserOrders(req.auth);
 
-      res.status(200).json({ data: data });
+      res.status(200).json({ success: true, data: data });
     })
   );
 
@@ -28,12 +26,9 @@ const orderRouter = (orderController) => {
     "/",
     auth,
     handleAsync(async (req, res) => {
-      const data = await orderController.createNewOrderController(
-        req.auth,
-        req.body
-      );
+      const data = await orderController.createNewOrder(req.auth, req.body);
 
-      res.status(200).json({ data: data });
+      res.status(200).json({ success: true, data: data });
     })
   );
   return router;

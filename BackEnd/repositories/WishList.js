@@ -3,7 +3,6 @@ const User = require("../models/User");
 
 class WishListRepository {
   async getAllWishList(email) {
-    // {wishList:1,_id:0} to ignore all data except whishList
     const userWishList = await User.findOne(
       { email },
       { wishList: 1, _id: 0 }

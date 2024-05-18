@@ -7,7 +7,7 @@ const itemTypeRouter = (itemController) => {
   router.get(
     "/",
     handleAsync(async (req, res) => {
-      const itemType = await itemController.getItemTypes();
+      const itemType = await itemController.getAllItemTypes();
       res.status(200).json({ success: true, data: itemType });
     })
   );
@@ -16,7 +16,7 @@ const itemTypeRouter = (itemController) => {
     "/",
     admin,
     handleAsync(async (req, res) => {
-      const newItemType = await itemController.AddItemType(req.body);
+      const newItemType = await itemController.createNewItemType(req.body);
       res.status(200).json({ success: true, data: newItemType });
     })
   );
@@ -25,7 +25,7 @@ const itemTypeRouter = (itemController) => {
     "/:id",
     admin,
     handleAsync(async (req, res) => {
-      await itemController.DeleteItemType(req.params.id);
+      await itemController.deleteItemTypeById(req.params.id);
       res
         .status(200)
         .json({ success: true, message: "ItemType deleted successfully" });
@@ -36,7 +36,7 @@ const itemTypeRouter = (itemController) => {
     "/:id",
     admin,
     handleAsync(async (req, res) => {
-      const updated = await itemController.UpdateItemType(
+      const updated = await itemController.updateItemType(
         req.params.id,
         req.body
       );
