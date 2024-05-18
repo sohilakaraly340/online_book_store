@@ -17,6 +17,7 @@ class CategoryRepository {
 
     return updatedCategory;
   }
+
   async deleteCategory(id) {
     const deletedCategory = await Category.findByIdAndDelete(id);
 
@@ -45,5 +46,6 @@ class CategoryRepository {
     return items;
   }
 }
+  
 
 module.exports = CategoryRepository;

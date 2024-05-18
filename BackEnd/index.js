@@ -12,6 +12,7 @@ const wishListRouter = require("./routes/wishList.router");
 const cartRouter = require("./routes/Cart.router");
 const shoppingItemRouter = require("./routes/ShoppingItem.router");
 const orderRouter = require("./routes/Order.router");
+const stripe = require("./routes/Stripe");
 
 const adminUserRouter = require("./routes/admin/UserRoutes");
 const adminItemRouter = require("./routes/admin/ItemRouter");
@@ -77,6 +78,7 @@ const orderController = new OrderController(
 const mainRouter = express.Router();
 const mainAdminRouter = express.Router();
 
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -107,6 +109,8 @@ mainRouter.use("/order", orderRouter(orderController));
 mainRouter.use("/author", authorRouter(authorController));
 
 mainRouter.use("/wishList", wishListRouter(wishListController));
+
+mainRouter.use("/stripe", stripe(orderController));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
