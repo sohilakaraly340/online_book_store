@@ -1,4 +1,4 @@
-const { BaseError } = require("./baseError");
+const { BaseError } = require("./BaseError");
 
 class InternalServerError extends BaseError {
   constructor(message) {
