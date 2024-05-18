@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const { NotFoundError } = require("../Errors/NotFoundError");
 const { InternalServerError } = require("../Errors/InternalServerError");
 const User = require("../models/User");
+const { deleteImages } = require("../middlewares/firebase");
 
 class UserRepository {
   async createUser(body) {
@@ -23,9 +24,14 @@ class UserRepository {
   }
 
   async updateProfile(email, body) {
-    const updated = await User.updateOne({ email }, body);
+    const user = await User.find({ email });
+    if (!user) throw new NotFoundError("User not found");
 
-    if (!updated) throw new NotFoundError("User not found");
+    if (body.images) {
+      deleteImages(user.images);
+    }
+
+    const updated = await User.updateOne({ email }, body);
 
     return updated;
   }

@@ -1,4 +1,5 @@
 const { NotFoundError } = require("../Errors/NotFoundError");
+const { deleteImages } = require("../middlewares/firebase");
 const Category = require("../models/Category");
 const Item = require("../models/Item");
 
@@ -10,6 +11,10 @@ class CategoryRepository {
   async updateCategory(id, body) {
     const category = await Category.findById(id);
     if (!category) throw new NotFoundError("Category not found");
+
+    if (body.images) {
+      await deleteImages(category.images);
+    }
     const updatedCategory = await Category.findByIdAndUpdate(id, body, {
       new: true,
     });
@@ -18,12 +23,14 @@ class CategoryRepository {
   }
 
   async deleteCategory(id) {
-    const deletedCategory = await Category.findByIdAndDelete(id);
+    const category = await Category.findById(id);
 
-    if (!deletedCategory) {
+    if (!category) {
       throw new NotFoundError("Category not found");
     }
+    await deleteImages(category.images);
 
+    const deletedCategory = await Category.findByIdAndDelete(id);
     return deletedCategory;
   }
 

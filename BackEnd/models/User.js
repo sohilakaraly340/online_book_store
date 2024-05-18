@@ -25,15 +25,17 @@ const userSchema = new mongoose.Schema({
   },
   wishList: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref:"Item",
-    default: []
+    ref: "Item",
+    default: [],
   },
   password: {
     type: String,
   },
-  image: {
-    type: String,
-  },
+  images: [
+    {
+      type: String,
+    },
+  ],
   role: {
     type: String,
     enum: ["user", "admin"],

@@ -1,4 +1,5 @@
 const { NotFoundError } = require("../Errors/NotFoundError");
+const { deleteImages } = require("../middlewares/firebase");
 const Author = require("../models/Author");
 const Item = require("../models/Item");
 
@@ -30,14 +31,22 @@ class AuthorRepository {
   }
 
   async updateAuthor(id, body) {
+    const author = await Author.findById(id);
+    if (!author) throw new NotFoundError("Author not Found!");
+    if (body.images) {
+      await deleteImages(author.images);
+    }
+
     const updated = await Author.updateOne({ _id: id }, body);
-    if (!updated) throw new NotFoundError("Author not Found!");
+
     return updated;
   }
 
   async deleteAuthor(id) {
+    const author = await Author.findById(id);
+    if (!author) throw new NotFoundError("Author not Found!");
+    await deleteImages(author.images);
     const deleted = await Author.findByIdAndDelete(id);
-    if (!deleted) throw new NotFoundError("Author not Found!");
     return deleted;
   }
 }

@@ -78,7 +78,6 @@ const orderController = new OrderController(
 const mainRouter = express.Router();
 const mainAdminRouter = express.Router();
 
-
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -111,6 +110,10 @@ mainRouter.use("/author", authorRouter(authorController));
 mainRouter.use("/wishList", wishListRouter(wishListController));
 
 mainRouter.use("/stripe", stripe(orderController));
+
+// app.all('*', (req, res, next) => {
+//   next(new NotFoundError(`Can't find ${req.originalUrl} on this server!`))
+// })
 
 // Error handling middleware
 app.use((err, req, res, next) => {
