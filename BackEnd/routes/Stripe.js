@@ -10,7 +10,7 @@ const StripeRouter = (OrderController) => {
   router.post("/create-checkout-session",handleAsync(async (req, res) => {
     const id = req.body.orderId;
     const order = await OrderController.getOrderByIdController(id);
-    // console.log(order);
+   
     const line_items = order.orderItems.map((itm) => {
       return {
         price_data: {
@@ -18,7 +18,7 @@ const StripeRouter = (OrderController) => {
           product_data: {
             name: itm.item.title,
             description: itm.item.description,
-            //   images: [...itm.item.images],
+            
           },
           unit_amount: Math.round(itm.item.price * 100),
         },
