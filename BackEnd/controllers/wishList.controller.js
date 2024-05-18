@@ -6,12 +6,13 @@ class WishListController {
     this.itemRepo = itemRepo;
     this.userRepo = userRepo;
   }
-  async getAllUsersWishList(email) {
-    return await this.whishListRepo.getAllWishList(email);
+  async getAllUsersWishList(auth) {
+    const user = auth;
+    return await this.whishListRepo.getAllWishList(user.email);
   }
 
-  async updateWishList(id, email) {
-    const user = await this.userRepo.findByEmail(email);
+  async updateWishList(id, auth) {
+    const user = auth;
 
     if (user.wishList.includes(id)) {
       user.wishList.splice(user.wishList.indexOf(id), 1);
@@ -19,7 +20,7 @@ class WishListController {
       user.wishList.push(id);
     }
 
-    return await this.whishListRepo.updateWishList(email, user.wishList);
+    return await this.whishListRepo.updateWishList(user.email, user.wishList);
   }
 }
 module.exports = WishListController;
