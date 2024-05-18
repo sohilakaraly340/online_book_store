@@ -1,7 +1,7 @@
 const express = require("express");
 const Stripe = require("stripe");
 const { STRIPE_KEY } = require("../constants");
-const { handleAsync } = require("../Errors/handleAsync");
+const { handleAsync } = require("../Errors/HandleAsync");
 
 const stripe = Stripe(STRIPE_KEY);
 const router = express.Router();
