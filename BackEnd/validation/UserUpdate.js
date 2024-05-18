@@ -8,7 +8,7 @@ const userUpdateSchema = joi.object({
   firstName: joi.string().min(3).max(20),
   lastName: joi.string().min(3).max(20),
   phoneNumber: joi.string().regex(phonePattern).min(11).max(11),
-  image: joi.string(),
+  images: joi.array().items(joi.string()),
   password: joi.string().min(8),
   address: joi.string(),
 });

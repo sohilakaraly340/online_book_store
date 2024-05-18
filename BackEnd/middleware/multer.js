@@ -1,14 +1,36 @@
 const multer = require("multer");
+const path = require("path");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./uploads");
+const uploadMultiple = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 1000000 },
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb);
   },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
+}).array("images", 2);
+
+const uploadSingle = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 1000000 },
+  fileFilter: async function (req, file, cb) {
+    checkFileType(file, cb);
   },
-});
+}).array("images", 1);
 
-const upload = multer({ storage: storage });
+// Check file Type
+function checkFileType(file, cb) {
+  // Allowed ext
+  const fileTypes = /jpeg|jpg|png|gif/;
+  // Check ext
+  const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
+  // Check mime
+  const mimeType = fileTypes.test(file.mimetype);
 
-module.exports = upload;
+  if (mimeType && extName) {
+    return cb(null, true);
+  } else {
+    cb("Error: Images Only !!!");
+  }
+}
+
+module.exports = { uploadMultiple, uploadSingle };

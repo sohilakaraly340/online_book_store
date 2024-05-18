@@ -1,4 +1,5 @@
 const { NotFoundError } = require("../Errors/notFoundError");
+const { deleteImages } = require("../middleware/firebase");
 const Author = require("../models/Author.schema");
 const Category = require("../models/Category.schema");
 const Item = require("../models/Item.schema");
@@ -57,9 +58,11 @@ class ItemRepository {
   }
 
   async deleteItem(id) {
-    const deletedItem = await Item.findByIdAndDelete(id);
+    const item = findById(id);
+    if (!item) throw new NotFoundError("Item not found");
 
-    if (!deletedItem) throw new NotFoundError("Item not found");
+    await deleteImages(item.images);
+    const deletedItem = await Item.findByIdAndDelete(id);
 
     return deletedItem;
   }
@@ -101,6 +104,9 @@ class ItemRepository {
   async updateItem(id, body) {
     const item = await Item.findById(id);
     if (!item) throw new NotFoundError("Item not found");
+    if (body.images) {
+      deleteImages(item.images);
+    }
     const updatedItem = await Item.updateOne({ _id: id }, body);
 
     return updatedItem;

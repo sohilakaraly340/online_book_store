@@ -1,7 +1,9 @@
 const express = require("express");
 const { handleAsync } = require("../Errors/handleAsync");
 const { auth } = require("../middleware/auth");
-const upload = require("../middleware/multer");
+const { uploadImage } = require("../middleware/firebase");
+const { uploadSingle } = require("../middleware/multer");
+// const upload = require("../middleware/multer");
 
 const router = express.Router();
 
@@ -33,11 +35,14 @@ const userRouter = (userController) => {
 
   router.patch(
     "/",
-    upload.single("image"),
+    uploadSingle,
+    uploadImage,
     auth,
     handleAsync(async (req, res) => {
-      const body = { ...req.body, image: req.file ? req.file.filename : null };
-      const updated = await userController.UpdateUserProfile(req.auth, body);
+      const updated = await userController.UpdateUserProfile(
+        req.auth,
+        req.body
+      );
       res.status(200).json({ success: true, message: updated });
     })
   );
