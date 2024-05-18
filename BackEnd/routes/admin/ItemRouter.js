@@ -1,6 +1,7 @@
 const express = require("express");
 const { handleAsync } = require("../../Errors/handleAsync");
 const { admin } = require("../../middleware/admin");
+const upload = require("../../middleware/multer");
 const router = express.Router();
 
 const itemRouter = (itemController) => {
@@ -14,13 +15,16 @@ const itemRouter = (itemController) => {
 
   router.post(
     "/",
+    upload.array("images", 2),
     admin,
     handleAsync(async (req, res) => {
-      const newItem = await itemController.AddItem(
-        req.body,
-        req.body.itemType,
-        req.body.category
-      );
+      const body = {
+        ...req.body,
+        images: req.files ? req.files.map((file) => file.filename) : [],
+      };
+
+      const newItem = await itemController.AddItem(body);
+
       res.status(201).json({ success: true, data: newItem });
     })
   );
@@ -38,13 +42,14 @@ const itemRouter = (itemController) => {
 
   router.patch(
     "/:id",
+    upload.array("images", 2),
     admin,
     handleAsync(async (req, res) => {
-      const updatedItem = await itemController.UpdateItem(
-        req.params.id,
-        req.body,
-        req.body.category
-      );
+      const body = {
+        ...req.body,
+        images: req.files ? req.files.map((file) => file.filename) : [],
+      };
+      const updatedItem = await itemController.UpdateItem(req.params.id, body);
       res.status(200).json({ success: true, data: updatedItem });
     })
   );

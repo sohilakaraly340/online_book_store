@@ -11,8 +11,8 @@ class ItemController {
       throw new ValidationError(`In valid data ${error.message}`);
     }
 
-    await this.itemRepository.findItemType(itemType);
-    await this.itemRepository.findCategory(category);
+    await this.itemRepository.findItemType(body.itemType);
+    await this.itemRepository.findCategory(body.category);
 
     return await this.itemRepository.createItem(body);
   }
@@ -41,8 +41,8 @@ class ItemController {
     return await this.itemRepository.findItem(id);
   }
 
-  async UpdateItem(id, body, category) {
-    if (category) {
+  async UpdateItem(id, body) {
+    if (body.category) {
       await this.itemRepository.findCategory(category);
     }
 

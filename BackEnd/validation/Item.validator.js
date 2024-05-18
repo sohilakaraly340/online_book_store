@@ -11,8 +11,8 @@ const itemSchema = joi.object({
   publicationDate: joi.string(),
   numOfPage: joi.number(),
   category: joi.objectId().required(),
-  discount: joi.number().required(),
-  duration: joi.number().required(),
+  discount: joi.number(),
+  duration: joi.number(),
 });
 const validateItem = (item) => itemSchema.validate(item);
 

@@ -1,6 +1,8 @@
 const express = require("express");
 const { handleAsync } = require("../Errors/handleAsync");
 const { auth } = require("../middleware/auth");
+const upload = require("../middleware/multer");
+
 const router = express.Router();
 
 const userRouter = (userController) => {
@@ -31,12 +33,11 @@ const userRouter = (userController) => {
 
   router.patch(
     "/",
+    upload.single("image"),
     auth,
     handleAsync(async (req, res) => {
-      const updated = await userController.UpdateUserProfile(
-        req.auth,
-        req.body
-      );
+      const body = { ...req.body, image: req.file ? req.file.filename : null };
+      const updated = await userController.UpdateUserProfile(req.auth, body);
       res.status(200).json({ success: true, message: updated });
     })
   );

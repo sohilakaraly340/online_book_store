@@ -99,10 +99,9 @@ class ItemRepository {
   }
 
   async updateItem(id, body) {
+    const item = await Item.findById(id);
+    if (!item) throw new NotFoundError("Item not found");
     const updatedItem = await Item.updateOne({ _id: id }, body);
-
-    if (updatedItem.modifiedCount == 0)
-      throw new NotFoundError("Item not found");
 
     return updatedItem;
   }
