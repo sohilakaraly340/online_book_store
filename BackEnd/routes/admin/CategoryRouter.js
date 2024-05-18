@@ -18,6 +18,7 @@ const categoryRouter = (categoryController) => {
       res.status(201).json({ success: true, data: newCategory });
     })
   );
+  
   router.get(
     "/",
     handleAsync(async (req, res) => {

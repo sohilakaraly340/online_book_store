@@ -16,14 +16,6 @@ const authorRouter = (authorController) => {
     })
   );
 
-  router.get(
-    "/",
-    handleAsync(async (req, res) => {
-      const authors = await authorController.getAllAuthor();
-
-      res.status(200).json({ success: true, data: authors });
-    })
-  );
   router.patch(
     "/:id",
     uploadSingle,
