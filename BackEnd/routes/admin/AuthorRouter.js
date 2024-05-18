@@ -1,11 +1,16 @@
 const express = require("express");
 const { handleAsync } = require("../../Errors/handleAsync");
 const router = express.Router();
+const upload = require("../../middleware/multer");
 
 const authorRouter = (authorController) => {
   router.patch(
     "/:id",
+    upload.single("image"),
+
     handleAsync(async (req, res) => {
+      const body = { ...req.body, image: req.file ? req.file.filename : null };
+      console.log(body);
       const updated = await authorController.updateAuthor(
         req.params.id,
         req.body
@@ -26,6 +31,7 @@ const authorRouter = (authorController) => {
 
   router.post(
     "/",
+    upload.single("image"),
     handleAsync(async (req, res) => {
       const newAuthor = await authorController.createAuthor(req.body);
       res.status(201).json({ success: true, data: newAuthor });
