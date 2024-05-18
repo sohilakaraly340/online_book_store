@@ -1,36 +1,34 @@
+const { NotImplementedError } = require("../Errors/NotImplementedError");
+const { NotFoundError } = require("../Errors/notFoundError");
 const Cart = require("../models/Cart.schema");
 
 class CartRepository {
   async getCurrentUserCartRepository(id) {
-    try {
-      return await Cart.findOne({ user: id });
-    } catch (error) {
-      throw new Error(error.message);
+    const cart = await Cart.findOne({ user: id });
+    if (!cart) {
+      throw new NotFoundError("Cart not found");
     }
+    return cart;
   }
 
   async createCartRepository(body) {
-    try {
-      return await Cart.create(body);
-    } catch (error) {
-      throw new Error(error.message);
-    }
+    return await Cart.create(body);
   }
 
   async deleteCartRepository(id) {
-    try {
-      return await Cart.findByIdAndDelete(id);
-    } catch (error) {
-      throw new Error(error.message);
+    const deletedCart = await Cart.findByIdAndDelete(id);
+    if (!deletedCart) {
+      throw new NotFoundError("ShoppingItem not found");
     }
+    return deletedCart;
   }
 
   async getAllCartsRepository() {
-    try {
-      return await Cart.find();
-    } catch (error) {
-      throw new Error(error.message);
+    const allCarts = await Cart.find();
+    if (!allCarts) {
+      throw new NotFoundError("Carts not found");
     }
+    return allCarts;
   }
 }
 

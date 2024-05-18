@@ -1,3 +1,5 @@
+const { NotImplementedError } = require("../Errors/NotImplementedError");
+const { ValidationError } = require("../Errors/validationError");
 const {
   orderValidation,
   orderUpdateValidation,
@@ -17,102 +19,80 @@ class OrderController {
   }
 
   async getAllorderController() {
-    try {
-      return await this.orderRepository.getAllOrderRepository();
-    } catch (error) {
-      return { message: error.message };
-    }
+    return await this.orderRepository.getAllOrderRepository();
   }
 
   async getOrderByIdController(id) {
-    try {
-      const orderItems =
-        await this.shoppingItemRepository.getShoppingItemsByOrderId(id);
-      const order = await this.orderRepository.getOrderByIdRepository(id);
-      return { order: order, orderItems: orderItems };
-    } catch (error) {
-      return { message: error.message };
-    }
+    const orderItems =
+      await this.shoppingItemRepository.getShoppingItemsByOrderId(id);
+    const order = await this.orderRepository.getOrderByIdRepository(id);
+    return { order: order, orderItems: orderItems };
   }
 
   async getCurrentUserOrdersController(auth) {
-    try {
-      const user = auth;
-      return await this.orderRepository.getCurrentUserOrdersById(user._id);
-    } catch (error) {
-      return { message: error.message };
-    }
+    const user = auth;
+    return await this.orderRepository.getCurrentUserOrdersById(user._id);
   }
 
   async createNewOrderController(auth, body) {
-    try {
-      const user = auth;
+    const user = auth;
 
-      const { error, value } = orderValidation(body);
+    const { error, value } = orderValidation(body);
 
-      if (error) {
-        return { message: error.message };
-      }
-
-      const { status, phoneNumber, address } = body;
-
-      const cart = await this.cartRepository.getCurrentUserCartRepository(
-        user._id
-      );
-
-      let orderItems =
-        await this.shoppingItemRepository.getAllCurrentCartshoppingItemsRepository(
-          cart._id
-        );
-
-      if (orderItems.length == 0) return { message: "cart is empty" };
-
-      const totalPrice = this.calcTotalPrice(orderItems);
-
-      const data = {
-        user,
-        totalPrice,
-        status,
-        phoneNumber,
-        address,
-      };
-
-      const newOrder = await this.orderRepository.createOrderRepository(data);
-
-      const shoppingItemIds = orderItems.map((item) => item._id);
-
-      await this.shoppingItemRepository.updateManyShoppingItemsRepository(
-        shoppingItemIds,
-        newOrder._id,
-        null
-      );
-
-      return { order: newOrder, orderItems: orderItems };
-    } catch (error) {
-      return { message: error.message };
+    if (error) {
+      throw new ValidationError(`InValid data ${error.message}`);
     }
+
+    const { status, phoneNumber, address } = body;
+
+    const cart = await this.cartRepository.getCurrentUserCartRepository(
+      user._id
+    );
+
+    let orderItems =
+      await this.shoppingItemRepository.getAllCurrentCartshoppingItemsRepository(
+        cart._id
+      );
+
+    if (orderItems.length == 0) {
+      throw new NotImplementedError("Cart is empty!");
+    }
+
+    const totalPrice = this.calcTotalPrice(orderItems);
+
+    const data = {
+      user,
+      totalPrice,
+      status,
+      phoneNumber,
+      address,
+    };
+
+    const newOrder = await this.orderRepository.createOrderRepository(data);
+
+    const shoppingItemIds = orderItems.map((item) => item._id);
+
+    await this.shoppingItemRepository.updateManyShoppingItemsRepository(
+      shoppingItemIds,
+      newOrder._id,
+      null
+    );
+
+    return { order: newOrder, orderItems: orderItems };
   }
 
   async updateOrderController(id, body) {
-    try {
-      const order = await this.orderRepository.getOrderByIdRepository(id);
+    await this.orderRepository.getOrderByIdRepository(id);
 
-      if (!order) {
-        return { message: "Order not found" };
-      }
+    const { error, value } = orderUpdateValidation(body);
 
-      const { error, value } = orderUpdateValidation(body);
-
-      if (error) {
-        return { message: error.message };
-      }
-
-      await this.orderRepository.updateOrderRepository(id, body);
-
-      return { message: "UpdatedSuccessfully" };
-    } catch (error) {
-      return { message: error.message };
+    if (error) {
+      throw new ValidationError(`InValid data ${error.message}`);
     }
+
+    await this.orderRepository.updateOrderRepository(id, body);
+
+    return { message: "UpdatedSuccessfully" };
   }
 
   calcTotalPrice(orderItems) {

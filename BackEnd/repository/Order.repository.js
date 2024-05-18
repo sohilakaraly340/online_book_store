@@ -1,44 +1,41 @@
+const { NotFoundError } = require("../Errors/notFoundError");
 const Order = require("../models/Order.schema");
 
 class OrderRepository {
   async getAllOrderRepository() {
-    try {
-      return await Order.find();
-    } catch (error) {
-      throw new Error(error.message);
+    const allOrders = await Order.find();
+    if (!allOrders) {
+      throw new NotFoundError("Orders not found");
     }
+    return allOrders;
   }
 
   async getOrderByIdRepository(id) {
-    try {
-      return await Order.findOne({ _id: id });
-    } catch (error) {
-      throw new Error(error.message);
+    const order = await Order.findOne({ _id: id });
+    if (!order) {
+      throw new NotFoundError("Orders not found");
     }
+    return order;
   }
 
   async getCurrentUserOrdersById(id) {
-    try {
-      return await Order.find({ user: id });
-    } catch (error) {
-      throw new Error(error.message);
+    const orders = await Order.find({ user: id });
+    if (!orders) {
+      throw new NotFoundError("Orders not found");
     }
+    return orders;
   }
 
   async createOrderRepository(body) {
-    try {
-      return await Order.create(body);
-    } catch (error) {
-      throw new Error(error.message);
-    }
+    return await Order.create(body);
   }
 
   async updateOrderRepository(id, body) {
-    try {
-      return await Order.updateOne({ _id: id }, body);
-    } catch (error) {
-      throw new Error(error.message);
+    const updatedData = await Order.updateOne({ _id: id }, body);
+    if (updatedData.modifiedCount == 0) {
+      throw new NotFoundError("Order not found");
     }
+    return updatedData;
   }
 }
 
