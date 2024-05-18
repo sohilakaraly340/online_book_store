@@ -6,14 +6,6 @@ const upload = require("../../middleware/multer");
 const router = express.Router();
 
 const categoryRouter = (categoryController) => {
-  router.get(
-    "/",
-    handleAsync(async (req, res) => {
-      const allCategory = await categoryController.findAllCategories();
-      res.status(200).json({ success: true, data: allCategory });
-    })
-  );
-
   router.post(
     "/",
     upload.single("image"),
