@@ -5,14 +5,6 @@ const upload = require("../../middleware/multer");
 const router = express.Router();
 
 const itemRouter = (itemController) => {
-  router.get(
-    "/",
-    handleAsync(async (req, res) => {
-      const allItems = await itemController.GetAllItems();
-      res.status(200).json({ success: true, data: allItems });
-    })
-  );
-
   router.post(
     "/",
     upload.array("images", 2),
