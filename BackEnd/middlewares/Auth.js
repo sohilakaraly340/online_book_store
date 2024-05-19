@@ -7,7 +7,7 @@ const auth = async (req, res, next) => {
     const token = req.headers["jwt"];
 
     if (!token) {
-      return res.status(401).send({ message: "unauthorized user" });
+      return res.status(401).send({ message: "UnAuthorized User" });
     }
 
     const payLoad = jwt.verify(token, JWT_SECRET);
@@ -16,14 +16,14 @@ const auth = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(401).send({ message: "un authorized user" });
+      return res.status(401).send({ message: "UnAuthorized User" });
     }
 
     req.auth = user;
 
     next();
   } catch (err) {
-    return res.status(401).send({ message: "error" });
+    return res.status(401).send({ message: "UnAuthorized User" });
   }
 };
 
