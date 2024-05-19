@@ -1,11 +1,23 @@
 const express = require("express");
 const { handleAsync } = require("../../Errors/handleAsync");
 const { admin } = require("../../middleware/admin");
-const upload = require("../../middleware/multer");
+const { uploadSingle } = require("../../middleware/multer");
+const { uploadImage } = require("../../middleware/firebase");
+// const upload = require("../../middleware/multer");
 
 const router = express.Router();
 
 const categoryRouter = (categoryController) => {
+  router.post(
+    "/",
+    uploadSingle,
+    uploadImage,
+    admin,
+    handleAsync(async (req, res) => {
+      const newCategory = await categoryController.addCategory(req.body);
+      res.status(201).json({ success: true, data: newCategory });
+    })
+  );
   router.get(
     "/",
     handleAsync(async (req, res) => {
@@ -14,26 +26,15 @@ const categoryRouter = (categoryController) => {
     })
   );
 
-  router.post(
-    "/",
-    upload.single("image"),
-    admin,
-    handleAsync(async (req, res) => {
-      const body = { ...req.body, image: req.file ? req.file.filename : null };
-      const newCategory = await categoryController.addCategory(body);
-      res.status(201).json({ success: true, data: newCategory });
-    })
-  );
-
   router.patch(
     "/:id",
-    upload.single("image"),
+    uploadSingle,
+    uploadImage,
     admin,
     handleAsync(async (req, res) => {
-      const body = { ...req.body, image: req.file ? req.file.filename : null };
       const updatedCategory = await categoryController.updateCategory(
         req.params.id,
-        body
+        req.body
       );
       res.status(200).json({ success: true, data: updatedCategory });
     })

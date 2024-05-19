@@ -1,17 +1,17 @@
 const express = require("express");
 const { handleAsync } = require("../../Errors/handleAsync");
 const { admin } = require("../../middleware/admin");
+const { uploadImage } = require("../../middleware/firebase");
+const { uploadSingle } = require("../../middleware/multer");
 const router = express.Router();
-const upload = require("../../middleware/multer");
 
 const authorRouter = (authorController) => {
   router.post(
     "/",
-    upload.single("image"),
-    admin,
+    uploadSingle,
+    uploadImage,
     handleAsync(async (req, res) => {
-      const body = { ...req.body, image: req.file ? req.file.filename : null };
-      const newAuthor = await authorController.createAuthor(body);
+      const newAuthor = await authorController.createAuthor(req.body);
       res.status(201).json({ success: true, data: newAuthor });
     })
   );
@@ -26,12 +26,14 @@ const authorRouter = (authorController) => {
   );
   router.patch(
     "/:id",
-    upload.single("image"),
+    uploadSingle,
+    uploadImage,
     admin,
     handleAsync(async (req, res) => {
-      const body = { ...req.body, image: req.file ? req.file.filename : null };
-      const updated = await authorController.updateAuthor(req.params.id, body);
-
+      const updated = await authorController.updateAuthor(
+        req.params.id,
+        req.body
+      );
       res.status(200).json({ success: true, data: updated });
     })
   );
@@ -39,7 +41,7 @@ const authorRouter = (authorController) => {
     "/:id",
     admin,
     handleAsync(async (req, res) => {
-      const deleted = await authorController.deleteAuthor(req.params.id);
+      await authorController.deleteAuthor(req.params.id);
       res
         .status(200)
         .json({ success: true, data: "author deleted successfully" });
