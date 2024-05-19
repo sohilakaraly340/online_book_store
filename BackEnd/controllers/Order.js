@@ -33,7 +33,9 @@ class OrderController {
     const user = auth;
     const order = await this.orderRepository.getCurrentUserOrdersById(user._id);
     const orderItems =
-      await this.shoppingItemRepository.getShoppingItemsByOrderId(id);
+      await this.shoppingItemRepository.getShoppingItemsByOrderId(
+        order.map((ord) => ord.id)
+      );
     return { order: order, orderItems: orderItems };
   }
 
