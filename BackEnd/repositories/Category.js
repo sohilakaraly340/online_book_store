@@ -45,7 +45,8 @@ class CategoryRepository {
   async getAllItemsOfCategory(id) {
     const items = await Item.find({ category: id })
       .populate("itemType")
-      .populate("category");
+      .populate("category")
+      .populate("authorId");
 
     if (!items) throw new NotFoundError("No items found for this category");
 

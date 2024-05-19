@@ -48,6 +48,7 @@ class ItemRepository {
         { authorId: { $in: authorIds } },
       ],
     })
+      .populate("itemType")
       .populate("category")
       .populate("authorId");
 
@@ -76,8 +77,10 @@ class ItemRepository {
   }
 
   async findItemById(id) {
-    const item = await Item.findOne({ _id: id }).populate("itemType");
-
+    const item = await Item.findOne({ _id: id })
+      .populate("itemType")
+      .populate("category")
+      .populate("authorId");
     if (!item) {
       throw new NotFoundError("Item not found");
     }
@@ -94,7 +97,10 @@ class ItemRepository {
   }
 
   async getAllItems() {
-    const items = await Item.find().populate("itemType").populate("category");
+    const items = await Item.find()
+      .populate("itemType")
+      .populate("category")
+      .populate("authorId");
 
     if (!items) throw new NotFoundError("Items not found");
 
