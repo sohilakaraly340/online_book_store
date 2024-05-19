@@ -7,6 +7,7 @@ const itemSchema = joi.object({
   images: joi.array().items(joi.string()),
   countInStock: joi.number().required(),
   price: joi.number().required(),
+  authorId: joi.objectId().required(),
   itemType: joi.objectId().required(),
   publicationDate: joi.string(),
   numOfPage: joi.number(),
