@@ -58,7 +58,7 @@ class ItemRepository {
   }
 
   async deleteItem(id) {
-    const item = findById(id);
+    const item = await Item.findById(id);
     if (!item) throw new NotFoundError("Item not found");
 
     await deleteImages(item.images);
