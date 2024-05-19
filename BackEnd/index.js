@@ -4,42 +4,42 @@ const express = require("express");
 const cors = require("cors");
 
 //routers
-const userRouter = require("./routes/User.router");
-const itemRouter = require("./routes/Item.router");
-const categoryRouter = require("./routes/Category.router");
-const authorRouter = require("./routes/author.router");
-const wishListRouter = require("./routes/wishList.router");
-const cartRouter = require("./routes/Cart.router");
-const shoppingItemRouter = require("./routes/ShoppingItem.router");
-const orderRouter = require("./routes/Order.router");
+const userRouter = require("./routes/User");
+const itemRouter = require("./routes/Item");
+const categoryRouter = require("./routes/Category");
+const authorRouter = require("./routes/Author");
+const wishListRouter = require("./routes/WishList");
+const cartRouter = require("./routes/Cart");
+const shoppingItemRouter = require("./routes/ShoppingItem");
+const orderRouter = require("./routes/Order");
 const stripe = require("./routes/Stripe");
 
-const adminUserRouter = require("./routes/admin/UserRoutes");
-const adminItemRouter = require("./routes/admin/ItemRouter");
-const adminItemTypeRouter = require("./routes/admin/ItemTypeRouter");
-const adminCategoryRouter = require("./routes/admin/CategoryRouter");
-const adminOrderRouter = require("./routes/admin/OrderRouter");
-const adminAuthorRouter = require("./routes/admin/AuthorRouter");
+const adminUserRouter = require("./routes/admin/User");
+const adminItemRouter = require("./routes/admin/Item");
+const adminItemTypeRouter = require("./routes/admin/ItemType");
+const adminCategoryRouter = require("./routes/admin/Category");
+const adminOrderRouter = require("./routes/admin/Order");
+const adminAuthorRouter = require("./routes/admin/Author");
 
 //repositories
-const AuthorRepository = require("./repository/author.repository");
-const CategoryRepository = require("./repository/Category.repository");
-const UserRepository = require("./repository/User.repository");
-const ItemRepository = require("./repository/Item.repository");
-const WishListRepository = require("./repository/wishList.repository");
-const CartRepository = require("./repository/Cart.repository");
-const ShoppingItemRepository = require("./repository/ShoppingItem.repository");
-const OrderRepository = require("./repository/Order.repository");
+const AuthorRepository = require("./repositories/Author");
+const CategoryRepository = require("./repositories/Category");
+const UserRepository = require("./repositories/User");
+const ItemRepository = require("./repositories/Item");
+const WishListRepository = require("./repositories/WishList");
+const CartRepository = require("./repositories/Cart");
+const ShoppingItemRepository = require("./repositories/ShoppingItem");
+const OrderRepository = require("./repositories/Order");
 
 //controllers
-const AuthorController = require("./controllers/author.controller");
-const CategoryController = require("./controllers/Category.controller");
-const UserController = require("./controllers/User.controller");
-const ItemController = require("./controllers/Item.controller");
-const WishListController = require("./controllers/wishList.controller");
-const CartController = require("./controllers/Cart.controller");
-const ShoppingItemsController = require("./controllers/ShoppingItem.controller");
-const OrderController = require("./controllers/Order.controller");
+const AuthorController = require("./controllers/Author");
+const CategoryController = require("./controllers/Category");
+const UserController = require("./controllers/User");
+const ItemController = require("./controllers/Item");
+const WishListController = require("./controllers/WishList");
+const CartController = require("./controllers/Cart");
+const ShoppingItemsController = require("./controllers/ShoppingItem");
+const OrderController = require("./controllers/Order");
 const { PORT, DB_URL } = require("./constants");
 
 //instance repos

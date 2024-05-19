@@ -1,4 +1,4 @@
-const { BaseError } = require("./baseError");
+const { BaseError } = require("./BaseError");
 
 class UnAuthorizedError extends BaseError {
   constructor(message) {
