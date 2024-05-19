@@ -6,7 +6,7 @@ class CartRepository {
   async getCurrentUserCart(id) {
     const cart = await Cart.findOne({ user: id });
     if (!cart) {
-      return "Cart not found";
+      return false;
     }
     return cart;
   }

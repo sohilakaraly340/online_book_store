@@ -78,7 +78,10 @@ class ShoppingItemsController {
       await this.shoppingItemRepository.getCurrentCartAllshoppingItems(cartId);
 
     for (let i = 0; i < shoppingItems.length; i++) {
-      if (shoppingItems[i].item._id == item) {
+      if (
+        shoppingItems[i].item._id == item &&
+        shoppingItems[i].cartId !== null
+      ) {
         const newQuantity = (shoppingItems[i].quantity += +quantity);
         let isAvaliable = await this.checkStock(item, newQuantity);
 
@@ -111,7 +114,9 @@ class ShoppingItemsController {
   async updateShoppingItem(id, body, auth) {
     const user = auth;
 
-    await this.shoppingItemRepository.findShoppingItemById(id);
+    const shoppingItem = await this.shoppingItemRepository.findShoppingItemById(
+      id
+    );
 
     const { error, value } = updateShoppingItemValidation(body);
 
@@ -119,7 +124,7 @@ class ShoppingItemsController {
       throw new ValidationError(`InValid data ${error.message}`);
     }
 
-    await this.itemRepository.findItemById(shoppingItem.item);
+    const item = await this.itemRepository.findItemById(shoppingItem.item);
 
     if (body.quantity) {
       let isAvaliable = await this.checkStock(item, body.quantity);
