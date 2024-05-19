@@ -27,9 +27,4 @@ const userUpdateSchema = joi.object({
 
 const validatUpdateUser = (user) => userUpdateSchema.validate(user);
 
-module.exports = { validatUpdateUser ,validatUsers };
-
-
-
-
-module.exports = { validatUsers };
+module.exports = { validatUpdateUser, validatUsers };

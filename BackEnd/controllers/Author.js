@@ -2,8 +2,8 @@ const { ValidationError } = require("../Errors/ValidationError");
 const validator = require("../validators/Author");
 
 class AuthorController {
-  constructor(authorRepo) {
-    this.authorRepo = authorRepo;
+  constructor(authorRepository) {
+    this.authorRepository = authorRepository;
   }
 
   async createAuthor(body) {
@@ -12,26 +12,26 @@ class AuthorController {
       throw new ValidationError(`In valid data ${error.message}`);
     }
 
-    return await this.authorRepo.createNewAuthor(body);
+    return await this.authorRepository.createNewAuthor(body);
   }
 
-  async getAllAuthor() {
-    return await this.authorRepo.getAll();
+  async getAllAuthors() {
+    return await this.authorRepository.getAllAuthors();
   }
 
   async getBooksOfAuthor(id) {
-    return await this.authorRepo.getAllBooks(id);
+    return await this.authorRepository.getAllBooks(id);
   }
   async getAuthorById(id) {
-    return await this.authorRepo.getAuthorById(id);
+    return await this.authorRepository.getAuthorById(id);
   }
 
   async updateAuthor(id, body) {
-    return await this.authorRepo.updateAuthor(id, body);
+    return await this.authorRepository.updateAuthor(id, body);
   }
 
-  async deleteAuthor(id) {
-    return await this.authorRepo.deleteAuthor(id);
+  async deleteAuthorById(id) {
+    return await this.authorRepository.deleteAuthorById(id);
   }
 }
 module.exports = AuthorController;

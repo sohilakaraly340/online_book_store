@@ -57,11 +57,7 @@ const authorController = new AuthorController(authorRepository);
 const categoryController = new CategoryController(categoryRepository);
 const userController = new UserController(userRepository);
 const itemController = new ItemController(itemRepository);
-const wishListController = new WishListController(
-  wishListRepository,
-  itemRepository,
-  userRepository
-);
+const wishListController = new WishListController(wishListRepository);
 const cartController = new CartController(cartRepository);
 const shoppingItemsController = new ShoppingItemsController(
   userRepository,

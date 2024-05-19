@@ -1,4 +1,4 @@
-const { NotFoundError } = require("../Errors/notFoundError");
+const { NotFoundError } = require("../Errors/NotFoundError");
 const { deleteImages } = require("../middlewares/firebase");
 const Author = require("../models/Author");
 const Category = require("../models/Category");
@@ -6,7 +6,7 @@ const Item = require("../models/Item");
 const ItemType = require("../models/ItemType");
 
 class ItemRepository {
-  async getItemTypes() {
+  async getAllItemTypes() {
     const itmeTypes = await ItemType.find();
     if (!itmeTypes) {
       throw new NotFoundError("No types found ");
@@ -14,11 +14,11 @@ class ItemRepository {
     return itmeTypes;
   }
 
-  async createItemType(body) {
+  async createNewItemType(body) {
     return await ItemType.create(body);
   }
 
-  async deleteItemType(id) {
+  async deleteItemTypeById(id) {
     const deletedItemType = await ItemType.findByIdAndDelete(id);
 
     if (!deletedItemType) throw new NotFoundError("Item type not found");
@@ -26,7 +26,7 @@ class ItemRepository {
     return deletedItemType;
   }
 
-  async createItem(body) {
+  async createNewItem(body) {
     return await Item.create(body);
   }
 
@@ -57,8 +57,8 @@ class ItemRepository {
     return data;
   }
 
-  async deleteItem(id) {
-    const item = await Itemy.findById(id);
+  async deleteItemById(id) {
+    const item = await Item.findById(id);
     if (!item) throw new NotFoundError("Item not found");
 
     await deleteImages(item.images);
@@ -67,7 +67,7 @@ class ItemRepository {
     return deletedItem;
   }
 
-  async findItemType(id) {
+  async findItemTypeById(id) {
     const itemType = await ItemType.findOne({ _id: id });
 
     if (!itemType) throw new NotFoundError("Item type not found");
@@ -75,7 +75,7 @@ class ItemRepository {
     return itemType;
   }
 
-  async findItem(id) {
+  async findItemById(id) {
     const item = await Item.findOne({ _id: id }).populate("itemType");
 
     if (!item) {
@@ -85,7 +85,7 @@ class ItemRepository {
     return item;
   }
 
-  async findCategory(id) {
+  async findCategoryById(id) {
     const category = await Category.findOne({ _id: id });
 
     if (!category) throw new NotFoundError("Category not found");

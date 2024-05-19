@@ -14,15 +14,15 @@ const categoryRouter = (categoryController) => {
     uploadImage,
     admin,
     handleAsync(async (req, res) => {
-      const newCategory = await categoryController.addCategory(req.body);
+      const newCategory = await categoryController.createCategory(req.body);
       res.status(201).json({ success: true, data: newCategory });
     })
   );
-  
+
   router.get(
     "/",
     handleAsync(async (req, res) => {
-      const allCategory = await categoryController.findAllCategories();
+      const allCategory = await categoryController.getAllCategories();
       res.status(200).json({ success: true, data: allCategory });
     })
   );

@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const { JWT_SECRET } = require("../constants");
 
 const admin = async (req, res, next) => {
   try {
@@ -9,7 +10,7 @@ const admin = async (req, res, next) => {
       return res.status(401).send({ message: "permission denied" });
     }
 
-    const payLoad = jwt.verify(token, "myjwtsecret");
+    const payLoad = jwt.verify(token, JWT_SECRET);
 
     const { email } = payLoad;
 

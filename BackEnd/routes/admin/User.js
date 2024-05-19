@@ -8,7 +8,7 @@ const userRouter = (userController) => {
     "/",
     admin,
     handleAsync(async (req, res) => {
-      const allUser = await userController.findAllUsers();
+      const allUser = await userController.getAllUser();
       res.status(200).json({ success: true, data: allUser });
     })
   );

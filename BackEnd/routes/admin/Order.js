@@ -5,7 +5,7 @@ const router = express.Router();
 const orderRouter = (orderController) => {
   router.get("/", admin, async (req, res) => {
     try {
-      const data = await orderController.getAllorderController();
+      const data = await orderController.getAllorder();
 
       res.status(200).json({ data: data });
     } catch (error) {
@@ -18,7 +18,7 @@ const orderRouter = (orderController) => {
 
   router.patch("/:id", admin, async (req, res) => {
     try {
-      const data = await orderController.updateOrderController(
+      const data = await orderController.updateOrderById(
         req.params.id,
         req.body
       );

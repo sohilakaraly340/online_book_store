@@ -5,7 +5,7 @@ class CategoryController {
     this.categoryRepository = categoryRepository;
   }
 
-  async addCategory(body) {
+  async createCategory(body) {
     const { error } = validator.validateCategory(body);
     if (error) {
       throw new ValidationError(`In valid data ${error.message}`);
@@ -13,7 +13,7 @@ class CategoryController {
     return await this.categoryRepository.createCategory(body);
   }
 
-  async findAllCategories() {
+  async getAllCategories() {
     return await this.categoryRepository.getAllCategories();
   }
 
@@ -22,11 +22,11 @@ class CategoryController {
   }
 
   async deleteCategory(id) {
-    return await this.categoryRepository.deleteCategory(id);
+    return await this.categoryRepository.deleteCategoryById(id);
   }
 
-  async findItemsOfCategory(id) {
-    return await this.categoryRepository.findItemsOfCategory(id);
+  async getAllItemsOfCategory(id) {
+    return await this.categoryRepository.getAllItemsOfCategory(id);
   }
 }
 

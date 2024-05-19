@@ -9,7 +9,7 @@ class AuthorRepository {
     return newAuthor;
   }
 
-  async getAll() {
+  async getAllAuthors() {
     const authors = await Author.find();
     if (!authors) throw new NotFoundError("Not found authors!");
 
@@ -42,7 +42,7 @@ class AuthorRepository {
     return updated;
   }
 
-  async deleteAuthor(id) {
+  async deleteAuthorById(id) {
     const author = await Author.findById(id);
     if (!author) throw new NotFoundError("Author not Found!");
     await deleteImages(author.images);

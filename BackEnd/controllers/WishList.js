@@ -1,14 +1,12 @@
 const { InternalServerError } = require("../Errors/InternalServerError");
 
 class WishListController {
-  constructor(whishListRepo, itemRepo, userRepo) {
-    this.whishListRepo = whishListRepo;
-    this.itemRepo = itemRepo;
-    this.userRepo = userRepo;
+  constructor(whishListRepository) {
+    this.whishListRepository = whishListRepository;
   }
   async getAllUsersWishList(auth) {
     const user = auth;
-    return await this.whishListRepo.getAllWishList(user.email);
+    return await this.whishListRepository.getAllWishList(user.email);
   }
 
   async updateWishList(id, auth) {
@@ -20,7 +18,10 @@ class WishListController {
       user.wishList.push(id);
     }
 
-    return await this.whishListRepo.updateWishList(user.email, user.wishList);
+    return await this.whishListRepository.updateWishList(
+      user.email,
+      user.wishList
+    );
   }
 }
 module.exports = WishListController;

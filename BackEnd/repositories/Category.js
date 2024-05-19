@@ -22,7 +22,7 @@ class CategoryRepository {
     return updatedCategory;
   }
 
-  async deleteCategory(id) {
+  async deleteCategoryById(id) {
     const category = await Category.findById(id);
 
     if (!category) {
@@ -42,7 +42,7 @@ class CategoryRepository {
     return categories;
   }
 
-  async findItemsOfCategory(id) {
+  async getAllItemsOfCategory(id) {
     const items = await Item.find({ category: id })
       .populate("itemType")
       .populate("category");

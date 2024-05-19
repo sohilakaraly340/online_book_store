@@ -61,12 +61,29 @@ const deleteImages = async (images) => {
       process.env.FIREBASE_USER,
       process.env.FIREBASE_AUTH
     );
-    images.map(async (image) => {
+
+    const checkAndDeleteImage = async (image) => {
       const storageRef = ref(storageFB, image);
-      await deleteObject(storageRef);
-    });
+      try {
+        await getMetadata(storageRef);
+        await deleteObject(storageRef);
+        console.log(`Deleted image: ${image}`);
+      } catch (metadataError) {
+        if (metadataError.code === "storage/object-not-found") {
+          console.log(`Image does not exist: ${image}`);
+        } else {
+          console.log(
+            `Error checking image metadata: ${metadataError.message}`
+          );
+        }
+      }
+    };
+
+    for (const image of images) {
+      await checkAndDeleteImage(image);
+    }
   } catch (err) {
-    console.log("error in deleted Image from firebase", err.message);
+    console.log("Error in deleting images from Firebase:", err.message);
   }
 };
 module.exports = {

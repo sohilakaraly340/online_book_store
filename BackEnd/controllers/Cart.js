@@ -3,16 +3,16 @@ class CartController {
     this.cartRepository = cartRepository;
   }
 
-  async getAllCartsController() {
-    return await this.cartRepository.getAllCartsRepository();
+  async getAllCarts() {
+    return await this.cartRepository.getAllCarts();
   }
 
-  async getCartByUserIdController(id) {
-    return await this.cartRepository.getCurrentUserCartRepository(id);
+  async getCartByUserId(id) {
+    return await this.cartRepository.getCurrentUserCart(id);
   }
 
-  async deleteCartController(id) {
-    return await this.cartRepository.deleteCartRepository(id);
+  async deleteCartById(id) {
+    return await this.cartRepository.deleteCartById(id);
   }
 }
 

@@ -5,19 +5,19 @@ const User = require("../models/User");
 const { deleteImages } = require("../middlewares/firebase");
 
 class UserRepository {
-  async createUser(body) {
+  async createNewUser(body) {
     const passwordHash = await bcrypt.hash(body.password, 10);
     if (!passwordHash)
       throw new InternalServerError("Error while hashed password");
     return await User.create({ ...body, password: passwordHash });
   }
 
-  async findByEmail(email) {
+  async findUserByEmail(email) {
     const user = await User.findOne({ email });
     return user;
   }
 
-  async findAll() {
+  async getAllUser() {
     const users = await User.find();
     if (!users) throw new NotFoundError("No users found!");
     return users;
