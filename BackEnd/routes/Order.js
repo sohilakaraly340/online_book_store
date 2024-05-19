@@ -31,6 +31,16 @@ const orderRouter = (orderController) => {
       res.status(200).json({ success: true, data: data });
     })
   );
+
+  router.patch(
+    "/:id",
+    auth,
+    handleAsync(async (req, res) => {
+      const data = await orderController.cancelOrder(req.params.id);
+      res.status(200).json({ success: true, data: data });
+    })
+  );
+
   return router;
 };
 

@@ -55,6 +55,11 @@ class ShoppingItemsController {
     }
 
     let { item, quantity } = body;
+
+    if (quantity === 0) {
+      throw new ValidationError("InValid data quantity must be more than zero");
+    }
+
     if (!quantity) {
       quantity = 1;
     }

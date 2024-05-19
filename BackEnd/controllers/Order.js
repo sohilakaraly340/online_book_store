@@ -31,7 +31,10 @@ class OrderController {
 
   async getCurrentUserOrders(auth) {
     const user = auth;
-    return await this.orderRepository.getCurrentUserOrdersById(user._id);
+    const order = await this.orderRepository.getCurrentUserOrdersById(user._id);
+    const orderItems =
+      await this.shoppingItemRepository.getShoppingItemsByOrderId(id);
+    return { order: order, orderItems: orderItems };
   }
 
   async createNewOrder(auth, body) {
@@ -76,12 +79,20 @@ class OrderController {
       null
     );
 
+    if (newOrder.status === "Accepted" || newOrder.status === "Pending") {
+      for (let i = 0; i < orderItems.length; i++) {
+        const item = orderItems[i].item;
+        const newCountInStock = item.countInStock - +orderItems[i].quantity;
+        await this.itemRepository.updateItem(item._id, {
+          countInStock: newCountInStock,
+        });
+      }
+    }
+
     return { order: newOrder, orderItems: orderItems };
   }
 
   async updateOrderById(id, body) {
-    await this.orderRepository.getOrderById(id);
-
     const { error, value } = orderUpdateValidation(body);
 
     if (error) {
@@ -91,6 +102,22 @@ class OrderController {
     await this.orderRepository.updateOrder(id, body);
 
     return { message: "UpdatedSuccessfully" };
+  }
+
+  async cancelOrder(id) {
+    await this.orderRepository.updateOrder(id, {
+      status: "Canceled",
+    });
+    const shoppingItems =
+      await this.shoppingItemRepository.getShoppingItemsByOrderId(id);
+    for (let i = 0; i < shoppingItems.length; i++) {
+      const item = shoppingItems[i].item;
+      const newCountInStock = item.countInStock + +shoppingItems[i].quantity;
+      await this.itemRepository.updateItem(item._id, {
+        countInStock: newCountInStock,
+      });
+    }
+    return { message: "Order Canceled Successfully" };
   }
 
   calcTotalPrice(orderItems) {

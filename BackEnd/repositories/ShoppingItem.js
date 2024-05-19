@@ -32,7 +32,7 @@ class ShoppingItemRepository {
   }
 
   async createShoppingItem(body) {
-    const item = await ShoppingItem.create(body);
+    const item = (await ShoppingItem.create(body)).populate("item");
     if (!item) {
       throw new Error("Something went wrong");
     }
