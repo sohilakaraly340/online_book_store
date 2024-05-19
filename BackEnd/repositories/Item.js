@@ -1,4 +1,4 @@
-const { NotFoundError } = require("../Errors/NotFoundError");
+const { NotFoundError } = require("../Errors/notFoundError");
 const { deleteImages } = require("../middlewares/firebase");
 const Author = require("../models/Author");
 const Category = require("../models/Category");
@@ -58,7 +58,7 @@ class ItemRepository {
   }
 
   async deleteItem(id) {
-    const item = await Item.findById(id);
+    const item = await Itemy.findById(id);
     if (!item) throw new NotFoundError("Item not found");
 
     await deleteImages(item.images);
