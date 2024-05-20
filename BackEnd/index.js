@@ -41,6 +41,7 @@ const CartController = require("./controllers/Cart");
 const ShoppingItemsController = require("./controllers/ShoppingItem");
 const OrderController = require("./controllers/Order");
 const { PORT, DB_URL } = require("./constants");
+const { NotFoundError } = require("./Errors/NotFoundError");
 
 //instance repos
 const authorRepository = new AuthorRepository();
@@ -107,9 +108,9 @@ mainRouter.use("/wishList", wishListRouter(wishListController));
 
 mainRouter.use("/stripe", stripe(orderController));
 
-// app.all('*', (req, res, next) => {
-//   next(new NotFoundError(`Can't find ${req.originalUrl} on this server!`))
-// })
+app.all("*", (req, res, next) => {
+  next(new NotFoundError(`Can't find ${req.originalUrl} on this server!`));
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
