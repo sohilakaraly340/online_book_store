@@ -46,7 +46,7 @@ class UserController {
 
     const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1d" });
 
-    return { token, user };
+    return token;
   }
 
   async getAllUser() {

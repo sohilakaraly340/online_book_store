@@ -1,4 +1,3 @@
-const { BadRequestError } = require("../Errors/BadRequestError");
 const { NotFoundError } = require("../Errors/NotFoundError");
 const ShoppingItem = require("../models/ShoppingItem");
 

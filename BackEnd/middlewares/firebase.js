@@ -11,7 +11,6 @@ const { auth } = require("../fireBase.config");
 const uploadImage = async (req, res, next) => {
   try {
     if (!req.files || req.files.length === 0) {
-      console.log("No files uploaded");
       return next();
     }
 

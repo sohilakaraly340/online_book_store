@@ -36,6 +36,7 @@ class ShoppingItemsController {
     }
 
     const cart = await this.cartRepository.getCurrentUserCart(user._id);
+    if (!cart) throw new NotFoundError("cart not found");
 
     const data =
       await this.shoppingItemRepository.getCurrentCartAllshoppingItems(

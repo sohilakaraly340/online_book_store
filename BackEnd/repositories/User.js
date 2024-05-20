@@ -9,7 +9,8 @@ class UserRepository {
     const passwordHash = await bcrypt.hash(body.password, 10);
     if (!passwordHash)
       throw new InternalServerError("Error while hashed password");
-    return await User.create({ ...body, password: passwordHash });
+    await User.create({ ...body, password: passwordHash });
+    return "User created successfull";
   }
 
   async findUserByEmail(email) {

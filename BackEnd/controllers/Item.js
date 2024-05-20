@@ -56,6 +56,12 @@ class ItemController {
   async search(key) {
     return await this.itemRepository.search(key);
   }
+
+  async newArrival() {
+    const items = await this.itemRepository.getAllItems();
+
+    return items.slice(-4).reverse();
+  }
 }
 
 module.exports = ItemController;

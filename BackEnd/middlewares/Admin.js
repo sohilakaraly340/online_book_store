@@ -24,7 +24,8 @@ const admin = async (req, res, next) => {
 
     next();
   } catch (err) {
-    return res.status(401).send({ message: "error" });
+    err.statusCode = 401;
+    next(err);
   }
 };
 

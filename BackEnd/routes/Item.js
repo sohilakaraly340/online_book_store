@@ -4,6 +4,14 @@ const router = express.Router();
 
 const itemRouter = (itemController) => {
   router.get(
+    "/newArrival",
+    handleAsync(async (req, res) => {
+      const items = await itemController.newArrival();
+      res.status(200).json({ success: true, data: items });
+    })
+  );
+
+  router.get(
     "/",
     handleAsync(async (req, res) => {
       const allItems = await itemController.getAllItems();

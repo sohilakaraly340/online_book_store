@@ -11,7 +11,7 @@ const userRouter = (userController) => {
     "/",
     handleAsync(async (req, res) => {
       const newUser = await userController.createNewUser(req.body);
-      res.status(201).json({ success: true, data: newUser });
+      res.status(201).json({ success: true, message: newUser });
     })
   );
 
@@ -19,7 +19,7 @@ const userRouter = (userController) => {
     "/login",
     handleAsync(async (req, res) => {
       const logged = await userController.login(req.body);
-      res.status(200).json(logged);
+      res.status(200).json({ success: true, token: logged });
     })
   );
 
