@@ -91,7 +91,10 @@ class ItemRepository {
       throw new NotFoundError("Item not found");
     }
 
-    return item;
+    let suggestionItems = await Item.find({ category: item.category._id });
+    suggestionItems = suggestionItems.slice(1, suggestionItems.length);
+
+    return { item, suggestionItems };
   }
 
   async findCategoryById(id) {

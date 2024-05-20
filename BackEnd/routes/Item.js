@@ -23,7 +23,13 @@ const itemRouter = (itemController) => {
     "/:id",
     handleAsync(async (req, res) => {
       const item = await itemController.getItemById(req.params.id);
-      res.status(200).json({ success: true, data: item });
+      res
+        .status(200)
+        .json({
+          success: true,
+          item: item.item,
+          suggestionItems: item.suggestionItems,
+        });
     })
   );
 
