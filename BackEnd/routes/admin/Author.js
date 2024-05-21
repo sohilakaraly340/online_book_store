@@ -10,6 +10,7 @@ const authorRouter = (authorController) => {
     "/",
     uploadSingle,
     uploadImage,
+    admin,
     handleAsync(async (req, res) => {
       const newAuthor = await authorController.createAuthor(req.body);
       res.status(201).json({ success: true, data: newAuthor });
