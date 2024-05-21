@@ -31,31 +31,37 @@ class ItemRepository {
   }
 
   async search(key) {
-    const categories = await Category.find({
-      title: { $regex: key, $options: "i" },
-    });
     const authors = await Author.find({
       name: { $regex: key, $options: "i" },
     });
 
-    const categoryIds = categories.map((category) => category._id);
-    const authorIds = authors.map((author) => author._id);
+    let itemsByAuthor = [];
 
-    const data = await Item.find({
-      $or: [
-        { title: { $regex: key, $options: "i" } },
-        { category: { $in: categoryIds } },
-        { authorId: { $in: authorIds } },
-      ],
+    if (authors.length > 0) {
+      const authorIds = authors.map((author) => author._id);
+      itemsByAuthor = await Item.find({
+        authorId: { $in: authorIds },
+      })
+        .populate("itemType")
+        .populate("category")
+        .populate("authorId");
+    }
+
+    const itemsByTitle = await Item.find({
+      title: { $regex: key, $options: "i" },
     })
       .populate("itemType")
       .populate("category")
       .populate("authorId");
 
-    if (!data)
+    if (itemsByAuthor.length === 0 && itemsByTitle.length === 0) {
       throw new NotFoundError("No items found matching the search criteria.");
+    }
 
-    return data;
+    return {
+      itemsByAuthor,
+      itemsByTitle,
+    };
   }
 
   async deleteItemById(id) {
