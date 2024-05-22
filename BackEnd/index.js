@@ -82,12 +82,6 @@ app.use("/uploads", express.static("uploads"));
 
 app.use(`${DB_URL}`, mainRouter);
 
-mainRouter.use("/user", userRouter(userController));
-
-mainRouter.use("/item", itemRouter(itemController));
-
-mainRouter.use("/category", categoryRouter(categoryController));
-
 mainRouter.use("/admin", mainAdminRouter);
 mainAdminRouter.use("/item", adminItemRouter(itemController));
 mainAdminRouter.use("/itemType", adminItemTypeRouter(itemController));
@@ -95,6 +89,12 @@ mainAdminRouter.use("/user", adminUserRouter(userController));
 mainAdminRouter.use("/category", adminCategoryRouter(categoryController));
 mainAdminRouter.use("/order", adminOrderRouter(orderController));
 mainAdminRouter.use("/author", adminAuthorRouter(authorController));
+
+mainRouter.use("/user", userRouter(userController));
+
+mainRouter.use("/item", itemRouter(itemController));
+
+mainRouter.use("/category", categoryRouter(categoryController));
 
 mainRouter.use("/cart", cartRouter(cartController));
 
