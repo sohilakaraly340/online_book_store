@@ -42,13 +42,14 @@ class OrderController {
   async createNewOrder(auth, body) {
     const user = auth;
 
+    const { firstName, lastName, email, phoneNumber, address, city, country } =
+      body;
+
     const { error, value } = orderValidation(body);
 
     if (error) {
       throw new ValidationError(`InValid data ${error.message}`);
     }
-
-    const { status, phoneNumber, address } = body;
 
     const cart = await this.cartRepository.getCurrentUserCart(user._id);
 
@@ -64,11 +65,15 @@ class OrderController {
     const totalPrice = this.calcTotalPrice(orderItems);
 
     const data = {
-      user,
-      totalPrice,
-      status,
+      user: user._id,
+      firstName,
+      lastName,
+      email,
       phoneNumber,
       address,
+      city,
+      country,
+      totalPrice,
     };
 
     const newOrder = await this.orderRepository.createNewOrder(data);
