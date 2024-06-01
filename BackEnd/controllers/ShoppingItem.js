@@ -164,10 +164,10 @@ class ShoppingItemsController {
     const item = await this.itemRepository.findItemById(itemId);
 
     if (+item.countInStock >= +quantity) {
-      return true;
+      return false;
     }
 
-    return false;
+    return true;
   }
 }
 
