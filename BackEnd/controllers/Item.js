@@ -42,10 +42,6 @@ class ItemController {
   }
 
   async updateItem(id, body) {
-    if (body.category) {
-      await this.itemRepository.findCategoryById(category);
-    }
-
     return await this.itemRepository.updateItem(id, body);
   }
 
@@ -61,6 +57,12 @@ class ItemController {
     const items = await this.itemRepository.getAllItems();
 
     return items.slice(-4).reverse();
+  }
+
+  async selectOptions() {
+    const options = await this.itemRepository.selectOptions();
+
+    return options;
   }
 }
 

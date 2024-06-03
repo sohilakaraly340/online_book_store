@@ -119,6 +119,16 @@ class ItemRepository {
   async updateItem(id, body) {
     const item = await Item.findById(id);
     if (!item) throw new NotFoundError("Item not found");
+
+    const itemType = await ItemType.findById(body.itemType);
+    if (!itemType) throw new NotFoundError("item type not found");
+
+    const author = await Author.findById(body.authorId);
+    if (!author) throw new NotFoundError("item type not found");
+
+    const category = await Category.findById(body.category);
+    if (!category) throw new NotFoundError("category not found");
+
     if (body.images) {
       deleteImages(item.images);
     }
@@ -133,6 +143,17 @@ class ItemRepository {
       throw new NotFoundError("Item not found");
 
     return updatedItemType;
+  }
+
+  async selectOptions() {
+    const categoryOpitions = await Category.find({}, "title");
+    const authorOpitions = await Author.find({}, "name");
+    const itemTypeOpitions = await ItemType.find({}, "itemType");
+    return {
+      categoryOpitions,
+      authorOpitions,
+      itemTypeOpitions,
+    };
   }
 }
 
