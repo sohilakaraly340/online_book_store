@@ -1,5 +1,3 @@
-const { InternalServerError } = require("../Errors/InternalServerError");
-
 class WishListController {
   constructor(whishListRepository) {
     this.whishListRepository = whishListRepository;

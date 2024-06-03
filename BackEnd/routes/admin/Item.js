@@ -3,7 +3,6 @@ const { handleAsync } = require("../../Errors/HandleAsync");
 const { admin } = require("../../middlewares/Admin");
 const { uploadImage } = require("../../middlewares/firebase");
 const { uploadMultiple } = require("../../middlewares/Multer");
-// const upload = require("../../middleware/multer");
 const router = express.Router();
 
 const itemRouter = (itemController) => {
@@ -21,7 +20,6 @@ const itemRouter = (itemController) => {
 
   router.get(
     "/options",
-    // admin,
     handleAsync(async (req, res) => {
       const options = await itemController.selectOptions();
 

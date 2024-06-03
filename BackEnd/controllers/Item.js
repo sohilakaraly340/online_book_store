@@ -42,10 +42,6 @@ class ItemController {
   }
 
   async updateItem(id, body) {
-    // if (body.category) {
-    //   const category =await this.itemRepository.findCategoryById(category);
-    // }
-
     return await this.itemRepository.updateItem(id, body);
   }
 

@@ -30,7 +30,7 @@ const uploadImage = async (req, res, next) => {
       const dateTime = Date.now();
       const fileName = `images/${dateTime}-${Math.random()
         .toString(36)
-        .substring(7)}`; // Adding a random string to ensure unique filenames
+        .substring(7)}`;
       const storageRef = ref(storageFB, fileName);
       const metadata = {
         contentType: file.mimetype,
