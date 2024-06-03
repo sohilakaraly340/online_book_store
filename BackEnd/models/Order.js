@@ -6,13 +6,22 @@ const orderSchema = mongoose.Schema({
     ref: "User",
     required: true,
   },
+  firstName: {
+    type: String,
+    minLength: [3, "First name must be at least 3 characters long"],
+    required: [true, "First name is required"],
+  },
+  lastName: {
+    type: String,
+    minLength: [3, "Last name must be at least 3 characters long"],
+  },
+  email: {
+    type: String,
+    minLength: [3, "Email must be at least 3 characters long"],
+    required: [true, "Email is required"],
+  },
   totalPrice: {
     type: Number,
-  },
-  status: {
-    type: String,
-    enum: ["Pending", "Accepted", "Canceled"],
-    default: "Pending",
   },
   phoneNumber: {
     type: String,
@@ -20,6 +29,19 @@ const orderSchema = mongoose.Schema({
   address: {
     type: String,
     minLength: [3, "Address must be at least 3 characters long"],
+  },
+  country: {
+    type: String,
+    required: [true, "Country is required"],
+  },
+  city: {
+    type: String,
+    required: [true, "City is required"],
+  },
+  status: {
+    type: String,
+    enum: ["Pending", "Accepted", "Canceled"],
+    default: "Pending",
   },
   dateOfOrder: {
     type: Date,

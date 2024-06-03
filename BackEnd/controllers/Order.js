@@ -42,33 +42,38 @@ class OrderController {
   async createNewOrder(auth, body) {
     const user = auth;
 
+    const { firstName, lastName, email, phoneNumber, address, city, country } =
+      body;
+
     const { error, value } = orderValidation(body);
 
     if (error) {
-      throw new ValidationError(`InValid data ${error.message}`);
+      throw new ValidationError(`Invalid data ${error.message}`);
     }
 
-    const { status, phoneNumber, address } = body;
-
     const cart = await this.cartRepository.getCurrentUserCart(user._id);
-
+    console.log(cart);
     let orderItems =
       await this.shoppingItemRepository.getCurrentCartAllshoppingItems(
         cart._id
       );
 
-    if (orderItems.length == 0) {
+    if (orderItems.length === 0) {
       throw new NotImplementedError("Cart is empty!");
     }
 
     const totalPrice = this.calcTotalPrice(orderItems);
 
     const data = {
-      user,
-      totalPrice,
-      status,
+      user: user._id,
+      firstName,
+      lastName,
+      email,
       phoneNumber,
       address,
+      city,
+      country,
+      totalPrice,
     };
 
     const newOrder = await this.orderRepository.createNewOrder(data);
@@ -82,9 +87,9 @@ class OrderController {
     );
 
     if (newOrder.status === "Accepted" || newOrder.status === "Pending") {
-      for (let i = 0; i < orderItems.length; i++) {
-        const item = orderItems[i].item;
-        const newCountInStock = item.countInStock - +orderItems[i].quantity;
+      for (const orderItem of orderItems) {
+        const item = orderItem.item;
+        const newCountInStock = item.countInStock - orderItem.quantity;
         await this.itemRepository.updateItem(item._id, {
           countInStock: newCountInStock,
         });
