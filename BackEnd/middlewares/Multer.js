@@ -3,7 +3,7 @@ const path = require("path");
 
 const uploadMultiple = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 1000000 },
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb);
   },
@@ -11,7 +11,7 @@ const uploadMultiple = multer({
 
 const uploadSingle = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 1000000 },
+  limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: async function (req, file, cb) {
     checkFileType(file, cb);
   },
@@ -20,7 +20,7 @@ const uploadSingle = multer({
 // Check file Type
 function checkFileType(file, cb) {
   // Allowed ext
-  const fileTypes = /jpeg|jpg|png|gif/;
+  const fileTypes = /jpeg|jpg|png|gif|webp|jfif/;
   // Check ext
   const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
   // Check mime

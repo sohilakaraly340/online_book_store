@@ -19,6 +19,16 @@ const itemRouter = (itemController) => {
     })
   );
 
+  router.get(
+    "/options",
+    // admin,
+    handleAsync(async (req, res) => {
+      const options = await itemController.selectOptions();
+
+      res.status(201).json({ success: true, data: options });
+    })
+  );
+
   router.patch(
     "/:id",
     uploadMultiple,
