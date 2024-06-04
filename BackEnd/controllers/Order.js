@@ -52,7 +52,6 @@ class OrderController {
     }
 
     const cart = await this.cartRepository.getCurrentUserCart(user._id);
-    console.log(cart);
     let orderItems =
       await this.shoppingItemRepository.getCurrentCartAllshoppingItems(
         cart._id
