@@ -121,6 +121,7 @@ class ItemRepository {
     if (!item) throw new NotFoundError("Item not found");
 
     const itemType = await ItemType.findById(body.itemType);
+    console.log(itemType);
     if (!itemType) throw new NotFoundError("item type not found");
 
     const author = await Author.findById(body.authorId);
@@ -136,6 +137,16 @@ class ItemRepository {
 
     return updatedItem;
   }
+
+  async updateItemStock(id, body) {
+    const item = await Item.findById(id);
+    if (!item) throw new NotFoundError("Item not found");
+
+    const updatedData = await Item.updateOne({ _id: id }, body);
+
+    return updatedData;
+  }
+
   async updateItemType(id, body) {
     const updatedItemType = await ItemType.updateOne({ _id: id }, body);
 
