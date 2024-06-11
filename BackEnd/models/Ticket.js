@@ -6,8 +6,8 @@ const tickettSchema = new mongoose.Schema({
     ref: "User",
   },
   dateCreated: {
-    type: Date,
-    default: Date.now(),
+    type: String,
+    default: () => new Date().toLocaleString("en-US"),
   },
   event: {
     type: mongoose.Schema.Types.ObjectId,
