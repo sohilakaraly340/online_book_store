@@ -18,6 +18,15 @@ const eventSchema = new mongoose.Schema({
   location: {
     type: String,
   },
+  numOfTickets: {
+    type: Number,
+    default: 0,
+  },
+  images: [
+    {
+      type: String,
+    },
+  ],
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,

@@ -14,6 +14,7 @@ const shoppingItemRouter = require("./routes/ShoppingItem");
 const orderRouter = require("./routes/Order");
 const stripe = require("./routes/Stripe");
 const event = require("./routes/Event");
+const ticket = require("./routes/Ticket");
 
 const adminUserRouter = require("./routes/admin/User");
 const adminItemRouter = require("./routes/admin/Item");
@@ -33,6 +34,7 @@ const CartRepository = require("./repositories/Cart");
 const ShoppingItemRepository = require("./repositories/ShoppingItem");
 const OrderRepository = require("./repositories/Order");
 const EventRepository = require("./repositories/Event");
+const TicketRepository = require("./repositories/Ticket");
 
 //controllers
 const AuthorController = require("./controllers/Author");
@@ -46,6 +48,7 @@ const OrderController = require("./controllers/Order");
 const { PORT, DB_URL } = require("./constants");
 const { NotFoundError } = require("./Errors/NotFoundError");
 const EventController = require("./controllers/Event");
+const TicketController = require("./controllers/Ticket");
 
 //instance repos
 const authorRepository = new AuthorRepository();
@@ -57,6 +60,7 @@ const cartRepository = new CartRepository();
 const shoppingItemRepository = new ShoppingItemRepository();
 const orderRepository = new OrderRepository();
 const eventRepository = new EventRepository();
+const ticketRepository = new TicketRepository();
 
 //instance controllers
 const authorController = new AuthorController(authorRepository);
@@ -78,6 +82,7 @@ const orderController = new OrderController(
   itemRepository
 );
 const eventController = new EventController(eventRepository);
+const ticketController = new TicketController(ticketRepository);
 
 const mainRouter = express.Router();
 const mainAdminRouter = express.Router();
@@ -116,6 +121,7 @@ mainRouter.use("/wishList", wishListRouter(wishListController));
 
 mainRouter.use("/stripe", stripe(orderController));
 mainRouter.use("/event", event(eventController));
+mainRouter.use("/ticket", ticket(ticketController));
 
 app.all("*", (req, res, next) => {
   next(new NotFoundError(`Can't find ${req.originalUrl} on this server!`));

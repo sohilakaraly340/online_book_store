@@ -1,6 +1,7 @@
 const { NotFoundError } = require("../Errors/NotFoundError");
 const { deleteImages } = require("../middlewares/firebase");
 const Event = require("../models/Event");
+const Ticket = require("../models/Ticket");
 
 class EventRepository {
   async getAllEvents() {
@@ -16,7 +17,7 @@ class EventRepository {
   }
 
   async getEventById(id) {
-    const event = await Event.findOne({ _id: id });
+    const event = await Event.findOne({ _id: id }).populate("users");
     if (!event) throw new NotFoundError("event not found!");
     return event;
   }
@@ -39,6 +40,8 @@ class EventRepository {
     await deleteImages(event.images);
 
     const deleted = await Event.findByIdAndDelete(id);
+
+    await Ticket.deleteMany({ event: id });
     return deleted;
   }
 }
