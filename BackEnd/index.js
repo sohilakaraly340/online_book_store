@@ -13,6 +13,7 @@ const cartRouter = require("./routes/Cart");
 const shoppingItemRouter = require("./routes/ShoppingItem");
 const orderRouter = require("./routes/Order");
 const stripe = require("./routes/Stripe");
+const event = require("./routes/Event");
 
 const adminUserRouter = require("./routes/admin/User");
 const adminItemRouter = require("./routes/admin/Item");
@@ -20,6 +21,7 @@ const adminItemTypeRouter = require("./routes/admin/ItemType");
 const adminCategoryRouter = require("./routes/admin/Category");
 const adminOrderRouter = require("./routes/admin/Order");
 const adminAuthorRouter = require("./routes/admin/Author");
+const adminEventRouter = require("./routes/admin/Event");
 
 //repositories
 const AuthorRepository = require("./repositories/Author");
@@ -30,6 +32,7 @@ const WishListRepository = require("./repositories/WishList");
 const CartRepository = require("./repositories/Cart");
 const ShoppingItemRepository = require("./repositories/ShoppingItem");
 const OrderRepository = require("./repositories/Order");
+const EventRepository = require("./repositories/Event");
 
 //controllers
 const AuthorController = require("./controllers/Author");
@@ -42,6 +45,7 @@ const ShoppingItemsController = require("./controllers/ShoppingItem");
 const OrderController = require("./controllers/Order");
 const { PORT, DB_URL } = require("./constants");
 const { NotFoundError } = require("./Errors/NotFoundError");
+const EventController = require("./controllers/Event");
 
 //instance repos
 const authorRepository = new AuthorRepository();
@@ -52,6 +56,7 @@ const wishListRepository = new WishListRepository();
 const cartRepository = new CartRepository();
 const shoppingItemRepository = new ShoppingItemRepository();
 const orderRepository = new OrderRepository();
+const eventRepository = new EventRepository();
 
 //instance controllers
 const authorController = new AuthorController(authorRepository);
@@ -72,6 +77,8 @@ const orderController = new OrderController(
   shoppingItemRepository,
   itemRepository
 );
+const eventController = new EventController(eventRepository);
+
 const mainRouter = express.Router();
 const mainAdminRouter = express.Router();
 
@@ -89,6 +96,7 @@ mainAdminRouter.use("/user", adminUserRouter(userController));
 mainAdminRouter.use("/category", adminCategoryRouter(categoryController));
 mainAdminRouter.use("/order", adminOrderRouter(orderController));
 mainAdminRouter.use("/author", adminAuthorRouter(authorController));
+mainAdminRouter.use("/event", adminEventRouter(eventController));
 
 mainRouter.use("/user", userRouter(userController));
 
@@ -107,6 +115,7 @@ mainRouter.use("/author", authorRouter(authorController));
 mainRouter.use("/wishList", wishListRouter(wishListController));
 
 mainRouter.use("/stripe", stripe(orderController));
+mainRouter.use("/event", event(eventController));
 
 app.all("*", (req, res, next) => {
   next(new NotFoundError(`Can't find ${req.originalUrl} on this server!`));
