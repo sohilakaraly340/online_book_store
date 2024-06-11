@@ -92,7 +92,7 @@ class ItemRepository {
     }
 
     let suggestionItems = await Item.find({ category: item.category._id });
-    suggestionItems = suggestionItems.slice(1, suggestionItems.length);
+    suggestionItems = suggestionItems.slice(1, 3);
 
     return { item, suggestionItems };
   }
