@@ -1,5 +1,7 @@
 const express = require("express");
 const { handleAsync } = require("../Errors/HandleAsync");
+const paginate = require("../middlewares/Pagination");
+const items = require("../models/Item")
 const router = express.Router();
 
 const itemRouter = (itemController) => {
@@ -13,9 +15,10 @@ const itemRouter = (itemController) => {
 
   router.get(
     "/",
+    paginate(items),
     handleAsync(async (req, res) => {
       const allItems = await itemController.getAllItems();
-      res.status(200).json({ success: true, data: allItems });
+      res.status(200).json({ success: true, data: req.paginatedResult });
     })
   );
 

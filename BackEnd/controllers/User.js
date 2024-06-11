@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { validatUsers, validatUpdateUser } = require("../validators/User");
+const { validatUsers, validatUpdateUser, validatUpdateUserPassword } = require("../validators/User");
 
 const { JWT_SECRET } = require("../constants");
 const { BadRequestError } = require("../Errors/BadRequestError");
@@ -66,13 +66,31 @@ class UserController {
 
     if (bodyClone.email) throw new BadRequestError(`can't change email!`);
 
-    if (bodyClone.password) {
-      const encryptedPassword = await bycrypt.hash(bodyClone.password, 10);
-      bodyClone.password = encryptedPassword;
-    }
-
     return await this.userRepository.updateProfile(user.email, bodyClone);
   }
+
+  async changePassword(auth, body) {
+    const user = auth;
+    const bodyClone = structuredClone(body);
+    const { error } = validatUpdateUserPassword(bodyClone);
+    
+    if (error) throw new ValidationError(`Invalid data ${error.message}`);
+    
+    // Validate the old password
+    const isValidOldPassword = await bcrypt.compare(body.oldPassword, user.password);
+    if (!isValidOldPassword) {
+        throw new BadRequestError("Incorrect old password.");
+    }
+    
+    if (bodyClone.newPassword) {
+        const encryptedPassword = await bcrypt.hash(bodyClone.newPassword, 10);
+        bodyClone.password = encryptedPassword;
+    } else {
+        throw new BadRequestError("New password is required.");
+    }
+
+    return await this.userRepository.changePassword(user.email, bodyClone);
+}
 }
 
 module.exports = UserController;

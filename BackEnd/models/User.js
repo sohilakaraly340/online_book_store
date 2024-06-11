@@ -34,6 +34,7 @@ const userSchema = new mongoose.Schema({
   images: [
     {
       type: String,
+      default:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSouls88ujOkH8eT0AKf0gU4wh8pY4249WYrWu9EVZwPsXgKvyIz0dH2roxugfxHvAhBfA&usqp=CAU"
     },
   ],
   role: {
