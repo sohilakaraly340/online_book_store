@@ -31,12 +31,23 @@ class OrderController {
 
   async getCurrentUserOrders(auth) {
     const user = auth;
-    const order = await this.orderRepository.getCurrentUserOrdersById(user._id);
-    const orderItems =
-      await this.shoppingItemRepository.getShoppingItemsByOrderId(
-        order.map((ord) => ord.id)
-      );
-    return { order: order, orderItems: orderItems };
+    const orders = await this.orderRepository.getCurrentUserOrdersById(
+      user._id
+    );
+    const ordersWithItems = await Promise.all(
+      orders.map(async (order) => {
+        const orderItems =
+          await this.shoppingItemRepository.getShoppingItemsByOrderId(order.id);
+        return {
+          order,
+          orderItems: orderItems.map((orderItem) => ({
+            orderItem,
+          })),
+        };
+      })
+    );
+
+    return ordersWithItems;
   }
 
   async createNewOrder(auth, body) {
@@ -44,7 +55,6 @@ class OrderController {
 
     const { firstName, lastName, email, phoneNumber, address, city, country } =
       body;
-
     const { error, value } = orderValidation(body);
 
     if (error) {
@@ -89,7 +99,7 @@ class OrderController {
       for (const orderItem of orderItems) {
         const item = orderItem.item;
         const newCountInStock = item.countInStock - orderItem.quantity;
-        await this.itemRepository.updateItem(item._id, {
+        await this.itemRepository.updateItemStock(item._id, {
           countInStock: newCountInStock,
         });
       }
@@ -119,7 +129,7 @@ class OrderController {
     for (let i = 0; i < shoppingItems.length; i++) {
       const item = shoppingItems[i].item;
       const newCountInStock = item.countInStock + +shoppingItems[i].quantity;
-      await this.itemRepository.updateItem(item._id, {
+      await this.itemRepository.updateItemStock(item._id, {
         countInStock: newCountInStock,
       });
     }
