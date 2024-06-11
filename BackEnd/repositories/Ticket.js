@@ -27,7 +27,7 @@ class TicketRepository {
     if (!ticket) throw new NotFoundError("Ticket not found!");
 
     const event = await Event.findById(ticket.event);
-    event.users = event.users.filter((user) => user != ticket.user);
+    event.users = event.users.filter((user) => user == ticket.user);
 
     event.numOfTickets++;
     await event.save();
