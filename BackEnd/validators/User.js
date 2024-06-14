@@ -21,10 +21,22 @@ const userUpdateSchema = joi.object({
   lastName: joi.string().min(3).max(20),
   phoneNumber: joi.string().regex(phonePattern).min(11).max(11),
   images: joi.array().items(joi.string()),
-  password: joi.string().min(8),
   address: joi.string(),
 });
 
 const validatUpdateUser = (user) => userUpdateSchema.validate(user);
 
-module.exports = { validatUpdateUser, validatUsers };
+const userUpdatePasswordSchema = joi.object({
+  oldPassword: joi.string().required(),
+  newPassword: joi.string().min(8).required(),
+  confirmPassword: joi.string()
+    .valid(joi.ref('newPassword'))
+    .required()
+    .messages({
+      'any.only': 'Confirm password must match new password'
+    })
+});
+
+const validatUpdateUserPassword = (user) => userUpdatePasswordSchema.validate(user);
+
+module.exports = { validatUpdateUser, validatUsers , validatUpdateUserPassword };

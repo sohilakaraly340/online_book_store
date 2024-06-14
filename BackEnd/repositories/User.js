@@ -36,6 +36,10 @@ class UserRepository {
 
     return updated;
   }
+  async changePassword(email, body) {
+    const result = await User.updateOne({ email }, { password: body.password });
+    return result;
+}
 }
 
 module.exports = UserRepository;
