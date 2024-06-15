@@ -31,6 +31,7 @@ const itemSchema = new mongoose.Schema({
   },
   numOfPage: {
     type: Number,
+    default: 0,
     required: function () {
       return this.itemType === "Book";
     },
