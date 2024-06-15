@@ -13,6 +13,8 @@ const cartRouter = require("./routes/Cart");
 const shoppingItemRouter = require("./routes/ShoppingItem");
 const orderRouter = require("./routes/Order");
 const stripe = require("./routes/Stripe");
+const reviewRouter = require("./routes/Review");
+const ratingRouter = require("./routes/Rating");
 
 const adminUserRouter = require("./routes/admin/User");
 const adminItemRouter = require("./routes/admin/Item");
@@ -30,6 +32,8 @@ const WishListRepository = require("./repositories/WishList");
 const CartRepository = require("./repositories/Cart");
 const ShoppingItemRepository = require("./repositories/ShoppingItem");
 const OrderRepository = require("./repositories/Order");
+const ReviewRepository = require("./repositories/Review");
+const RatingRepository = require("./repositories/Rating");
 
 //controllers
 const AuthorController = require("./controllers/Author");
@@ -40,6 +44,8 @@ const WishListController = require("./controllers/WishList");
 const CartController = require("./controllers/Cart");
 const ShoppingItemsController = require("./controllers/ShoppingItem");
 const OrderController = require("./controllers/Order");
+const ReviewController = require("./controllers/Review");
+const RatingController = require("./controllers/Rating")
 const { PORT, DB_URL } = require("./constants");
 const { NotFoundError } = require("./Errors/NotFoundError");
 
@@ -52,6 +58,8 @@ const wishListRepository = new WishListRepository();
 const cartRepository = new CartRepository();
 const shoppingItemRepository = new ShoppingItemRepository();
 const orderRepository = new OrderRepository();
+const reviewRepository = new ReviewRepository();
+const ratingRepository = new RatingRepository();
 
 //instance controllers
 const authorController = new AuthorController(authorRepository);
@@ -72,6 +80,8 @@ const orderController = new OrderController(
   shoppingItemRepository,
   itemRepository
 );
+const reviewController = new ReviewController(reviewRepository);
+const ratingController = new RatingController(ratingRepository)
 const mainRouter = express.Router();
 const mainAdminRouter = express.Router();
 
@@ -105,6 +115,10 @@ mainRouter.use("/order", orderRouter(orderController));
 mainRouter.use("/author", authorRouter(authorController));
 
 mainRouter.use("/wishList", wishListRouter(wishListController));
+
+mainRouter.use("/review", reviewRouter(reviewController,itemController));
+
+mainRouter.use("/rating", ratingRouter(ratingController))
 
 mainRouter.use("/stripe", stripe(orderController));
 

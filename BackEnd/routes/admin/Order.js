@@ -5,7 +5,7 @@ const router = express.Router();
 const orders = require("../../models/Order")
 
 const orderRouter = (orderController) => {
-  router.get("/", admin,paginate(orders), async (req, res) => {
+  router.get("/", admin,paginate(orders , [{path: 'user'}]), async (req, res) => {
     try {
       const data = await orderController.getAllorder();
 

@@ -15,7 +15,7 @@ const itemRouter = (itemController) => {
 
   router.get(
     "/",
-    paginate(items),
+    paginate(items , [{path: 'itemType'},{ path: 'category'},{path: 'authorId'}]),
     handleAsync(async (req, res) => {
       const allItems = await itemController.getAllItems();
       res.status(200).json({ success: true, data: req.paginatedResult });
