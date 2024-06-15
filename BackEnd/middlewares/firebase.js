@@ -30,7 +30,7 @@ const uploadImage = async (req, res, next) => {
       const dateTime = Date.now();
       const fileName = `images/${dateTime}-${Math.random()
         .toString(36)
-        .substring(7)}`; // Adding a random string to ensure unique filenames
+        .substring(7)}`;
       const storageRef = ref(storageFB, fileName);
       const metadata = {
         contentType: file.mimetype,
@@ -51,7 +51,6 @@ const uploadImage = async (req, res, next) => {
     });
   }
 };
-
 const deleteImages = async (images) => {
   try {
     const storageFB = getStorage();
@@ -60,10 +59,21 @@ const deleteImages = async (images) => {
       process.env.FIREBASE_USER,
       process.env.FIREBASE_AUTH
     );
-    images.map(async (image) => {
-      const storageRef = ref(storageFB, image);
-      await deleteObject(storageRef);
-    });
+    await Promise.all(
+      images.map(async (image) => {
+        const storageRef = ref(storageFB, image);
+        try {
+          await deleteObject(storageRef);
+          console.log(`Successfully deleted: ${image}`);
+        } catch (error) {
+          if (error.code === "storage/object-not-found") {
+            console.log(`Image not found: ${image}`);
+          } else {
+            console.log(`Error deleting ${image}:`, error.message);
+          }
+        }
+      })
+    );
   } catch (err) {
     console.log("error in deleted Image from firebase", err.message);
   }

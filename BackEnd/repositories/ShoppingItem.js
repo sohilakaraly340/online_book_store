@@ -31,11 +31,12 @@ class ShoppingItemRepository {
   }
 
   async createShoppingItem(body) {
-    const item = await ShoppingItem.create(body).populate("item");
+    const item = await ShoppingItem.create(body);
     if (!item) {
       throw new Error("Something went wrong");
     }
-    return item;
+    const populatedItem = await item.populate("item");
+    return populatedItem;
   }
 
   async findShoppingItemById(id) {

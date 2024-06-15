@@ -1,4 +1,3 @@
-const { required } = require("joi");
 const mongoose = require("mongoose");
 
 const orderSchema = mongoose.Schema({
@@ -18,9 +17,7 @@ const orderSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    minLength: [3, "Email must be at least 3 characters long"],
     required: [true, "Email is required"],
-    unique: true,
   },
   totalPrice: {
     type: Number,

@@ -3,7 +3,6 @@ const { handleAsync } = require("../../Errors/HandleAsync");
 const { admin } = require("../../middlewares/Admin");
 const { uploadSingle } = require("../../middlewares/Multer");
 const { uploadImage } = require("../../middlewares/firebase");
-// const upload = require("../../middleware/multer");
 
 const router = express.Router();
 

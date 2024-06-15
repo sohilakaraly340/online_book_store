@@ -31,6 +31,7 @@ const itemSchema = new mongoose.Schema({
   },
   numOfPage: {
     type: Number,
+    default: 0,
     required: function () {
       return this.itemType === "Book";
     },
@@ -46,7 +47,7 @@ const itemSchema = new mongoose.Schema({
   },
   dateCreated: {
     type: Date,
-    default: Date.now,
+    default: Date.now(),
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,

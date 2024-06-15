@@ -31,12 +31,23 @@ class OrderController {
 
   async getCurrentUserOrders(auth) {
     const user = auth;
-    const order = await this.orderRepository.getCurrentUserOrdersById(user._id);
-    const orderItems =
-      await this.shoppingItemRepository.getShoppingItemsByOrderId(
-        order.map((ord) => ord.id)
-      );
-    return { order: order, orderItems: orderItems };
+    const orders = await this.orderRepository.getCurrentUserOrdersById(
+      user._id
+    );
+    const ordersWithItems = await Promise.all(
+      orders.map(async (order) => {
+        const orderItems =
+          await this.shoppingItemRepository.getShoppingItemsByOrderId(order.id);
+        return {
+          order,
+          orderItems: orderItems.map((orderItem) => ({
+            orderItem,
+          })),
+        };
+      })
+    );
+
+    return ordersWithItems;
   }
 
   async createNewOrder(auth, body) {
@@ -44,21 +55,19 @@ class OrderController {
 
     const { firstName, lastName, email, phoneNumber, address, city, country } =
       body;
-
     const { error, value } = orderValidation(body);
 
     if (error) {
-      throw new ValidationError(`InValid data ${error.message}`);
+      throw new ValidationError(`Invalid data ${error.message}`);
     }
 
     const cart = await this.cartRepository.getCurrentUserCart(user._id);
-
     let orderItems =
       await this.shoppingItemRepository.getCurrentCartAllshoppingItems(
         cart._id
       );
 
-    if (orderItems.length == 0) {
+    if (orderItems.length === 0) {
       throw new NotImplementedError("Cart is empty!");
     }
 
@@ -87,10 +96,10 @@ class OrderController {
     );
 
     if (newOrder.status === "Accepted" || newOrder.status === "Pending") {
-      for (let i = 0; i < orderItems.length; i++) {
-        const item = orderItems[i].item;
-        const newCountInStock = item.countInStock - +orderItems[i].quantity;
-        await this.itemRepository.updateItem(item._id, {
+      for (const orderItem of orderItems) {
+        const item = orderItem.item;
+        const newCountInStock = item.countInStock - orderItem.quantity;
+        await this.itemRepository.updateItemStock(item._id, {
           countInStock: newCountInStock,
         });
       }
@@ -120,7 +129,7 @@ class OrderController {
     for (let i = 0; i < shoppingItems.length; i++) {
       const item = shoppingItems[i].item;
       const newCountInStock = item.countInStock + +shoppingItems[i].quantity;
-      await this.itemRepository.updateItem(item._id, {
+      await this.itemRepository.updateItemStock(item._id, {
         countInStock: newCountInStock,
       });
     }

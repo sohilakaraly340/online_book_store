@@ -128,7 +128,7 @@ class ShoppingItemsController {
     const item = await this.itemRepository.findItemById(shoppingItem.item);
 
     if (body.quantity) {
-      let isAvaliable = await this.checkStock(item, body.quantity);
+      let isAvaliable = await this.checkStock(item.item._id, body.quantity);
 
       if (!isAvaliable) {
         throw new NotImplementedError("Quantity not avaliable in stock");
@@ -162,12 +162,11 @@ class ShoppingItemsController {
 
   async checkStock(itemId, quantity) {
     const item = await this.itemRepository.findItemById(itemId);
-
-    if (+item.countInStock >= +quantity) {
-      return false;
+    if (+item.item.countInStock >= +quantity) {
+      return true;
     }
 
-    return true;
+    return false;
   }
 }
 
