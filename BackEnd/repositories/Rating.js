@@ -10,7 +10,7 @@ class RatingRepository{
     }
 
     async getAllItemRate(item){
-        return await rating.find({item});
+        return await rating.find({item}).populate('item').populate('user');
     }
 
 }
