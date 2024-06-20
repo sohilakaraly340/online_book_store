@@ -9,6 +9,7 @@ const { signInWithEmailAndPassword } = require("firebase/auth");
 const { auth } = require("../fireBase.config");
 
 const uploadImage = async (req, res, next) => {
+  console.log(req.file);
   try {
     if (!req.files || req.files.length === 0) {
       return next();

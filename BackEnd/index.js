@@ -13,8 +13,13 @@ const cartRouter = require("./routes/Cart");
 const shoppingItemRouter = require("./routes/ShoppingItem");
 const orderRouter = require("./routes/Order");
 const stripe = require("./routes/Stripe");
+
+const reviewRouter = require("./routes/Review");
+const ratingRouter = require("./routes/Rating");
+
 const event = require("./routes/Event");
 const ticket = require("./routes/Ticket");
+const usedItemRouter = require("./routes/UsedItem");
 
 const adminUserRouter = require("./routes/admin/User");
 const adminItemRouter = require("./routes/admin/Item");
@@ -23,6 +28,7 @@ const adminCategoryRouter = require("./routes/admin/Category");
 const adminOrderRouter = require("./routes/admin/Order");
 const adminAuthorRouter = require("./routes/admin/Author");
 const adminEventRouter = require("./routes/admin/Event");
+const adminUsedItemRouter = require("./routes/admin/UsedItem");
 
 //repositories
 const AuthorRepository = require("./repositories/Author");
@@ -33,8 +39,14 @@ const WishListRepository = require("./repositories/WishList");
 const CartRepository = require("./repositories/Cart");
 const ShoppingItemRepository = require("./repositories/ShoppingItem");
 const OrderRepository = require("./repositories/Order");
+
+const ReviewRepository = require("./repositories/Review");
+const RatingRepository = require("./repositories/Rating");
+
 const EventRepository = require("./repositories/Event");
 const TicketRepository = require("./repositories/Ticket");
+const UsedItemRepository = require("./repositories/UsedItem");
+
 
 //controllers
 const AuthorController = require("./controllers/Author");
@@ -45,10 +57,13 @@ const WishListController = require("./controllers/WishList");
 const CartController = require("./controllers/Cart");
 const ShoppingItemsController = require("./controllers/ShoppingItem");
 const OrderController = require("./controllers/Order");
+const ReviewController = require("./controllers/Review");
+const RatingController = require("./controllers/Rating")
 const { PORT, DB_URL } = require("./constants");
 const { NotFoundError } = require("./Errors/NotFoundError");
 const EventController = require("./controllers/Event");
 const TicketController = require("./controllers/Ticket");
+const UsedItemController = require("./controllers/UsedItem");
 
 //instance repos
 const authorRepository = new AuthorRepository();
@@ -59,8 +74,14 @@ const wishListRepository = new WishListRepository();
 const cartRepository = new CartRepository();
 const shoppingItemRepository = new ShoppingItemRepository();
 const orderRepository = new OrderRepository();
+
+const reviewRepository = new ReviewRepository();
+const ratingRepository = new RatingRepository();
+
 const eventRepository = new EventRepository();
 const ticketRepository = new TicketRepository();
+const usedItemRepository = new UsedItemRepository();
+
 
 //instance controllers
 const authorController = new AuthorController(authorRepository);
@@ -81,8 +102,13 @@ const orderController = new OrderController(
   shoppingItemRepository,
   itemRepository
 );
+
+const reviewController = new ReviewController(reviewRepository);
+const ratingController = new RatingController(ratingRepository)
+
 const eventController = new EventController(eventRepository);
 const ticketController = new TicketController(ticketRepository);
+const usedItemController = new UsedItemController(usedItemRepository);
 
 const mainRouter = express.Router();
 const mainAdminRouter = express.Router();
@@ -102,6 +128,7 @@ mainAdminRouter.use("/category", adminCategoryRouter(categoryController));
 mainAdminRouter.use("/order", adminOrderRouter(orderController));
 mainAdminRouter.use("/author", adminAuthorRouter(authorController));
 mainAdminRouter.use("/event", adminEventRouter(eventController));
+mainAdminRouter.use("/usedItem", adminUsedItemRouter(usedItemController));
 
 mainRouter.use("/user", userRouter(userController));
 
@@ -119,9 +146,17 @@ mainRouter.use("/author", authorRouter(authorController));
 
 mainRouter.use("/wishList", wishListRouter(wishListController));
 
+mainRouter.use("/review", reviewRouter(reviewController,itemController));
+
+mainRouter.use("/rating", ratingRouter(ratingController))
+
 mainRouter.use("/stripe", stripe(orderController));
+
 mainRouter.use("/event", event(eventController));
+
 mainRouter.use("/ticket", ticket(ticketController));
+
+mainRouter.use("/usedItem", usedItemRouter(usedItemController));
 
 app.all("*", (req, res, next) => {
   next(new NotFoundError(`Can't find ${req.originalUrl} on this server!`));

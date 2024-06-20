@@ -121,7 +121,6 @@ class ItemRepository {
     if (!item) throw new NotFoundError("Item not found");
 
     const itemType = await ItemType.findById(body.itemType);
-    console.log(itemType);
     if (!itemType) throw new NotFoundError("item type not found");
 
     const author = await Author.findById(body.authorId);
