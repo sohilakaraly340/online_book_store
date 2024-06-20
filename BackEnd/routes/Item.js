@@ -1,7 +1,7 @@
 const express = require("express");
 const { handleAsync } = require("../Errors/HandleAsync");
 const paginate = require("../middlewares/Pagination");
-const items = require("../models/Item")
+const items = require("../models/Item");
 const router = express.Router();
 
 const itemRouter = (itemController) => {
@@ -15,7 +15,11 @@ const itemRouter = (itemController) => {
 
   router.get(
     "/",
-    paginate(items),
+    paginate(items, [
+      { path: "itemType" },
+      { path: "category" },
+      { path: "authorId" },
+    ]),
     handleAsync(async (req, res) => {
       const allItems = await itemController.getAllItems();
       res.status(200).json({ success: true, data: req.paginatedResult });
@@ -26,13 +30,11 @@ const itemRouter = (itemController) => {
     "/:id",
     handleAsync(async (req, res) => {
       const item = await itemController.getItemById(req.params.id);
-      res
-        .status(200)
-        .json({
-          success: true,
-          item: item.item,
-          suggestionItems: item.suggestionItems,
-        });
+      res.status(200).json({
+        success: true,
+        item: item.item,
+        suggestionItems: item.suggestionItems,
+      });
     })
   );
 
