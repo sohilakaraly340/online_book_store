@@ -63,14 +63,6 @@ const itemSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Author",
   },
-  // rating: {
-  //   type: Number,
-  //   default: 0,
-  // },
-  // numReviews: {
-  //   type: Number,
-  //   default: 0,
-  // },
 });
 
 const Item = mongoose.model("Item", itemSchema);
