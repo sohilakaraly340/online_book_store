@@ -4,6 +4,7 @@ const Author = require("../models/Author");
 const Category = require("../models/Category");
 const Item = require("../models/Item");
 const ItemType = require("../models/ItemType");
+const review = require("../models/Review");
 
 class ItemRepository {
   async getAllItemTypes() {
@@ -69,6 +70,7 @@ class ItemRepository {
     if (!item) throw new NotFoundError("Item not found");
 
     await deleteImages(item.images);
+    await review.deleteMany({ item: id });
     const deletedItem = await Item.findByIdAndDelete(id);
 
     return deletedItem;
