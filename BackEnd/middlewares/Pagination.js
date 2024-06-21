@@ -4,16 +4,19 @@ const paginate = (model, populateOptions = []) => {
       const limit = parseInt(req.query.limit) || 8;
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
+      
   
       const result = {};
   
       try {
         const totalDocuments = await model.countDocuments().exec();
-        
+        const numOfPages = Math.ceil(totalDocuments / limit) ;
+
         if (endIndex < totalDocuments) {
           result.next = {
             page: page + 1,
             limit: limit,
+            numOfPages
           };
         }
   
@@ -21,6 +24,7 @@ const paginate = (model, populateOptions = []) => {
           result.previous = {
             page: page - 1,
             limit: limit,
+            numOfPages
           };
         }
   
