@@ -26,7 +26,7 @@ class ReviewRepository {
       .find()
       .populate({
         path: "user",
-        select: "firstName",
+        select: "firstName images",
       })
       .populate({
         path: "item",
