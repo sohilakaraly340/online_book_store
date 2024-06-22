@@ -3,23 +3,6 @@ const { handleAsync } = require("../Errors/HandleAsync");
 const router = express.Router();
 
 const ticketRouter = (ticketController) => {
-  //   router.get(
-  //     "/",
-  //     handleAsync(async (req, res) => {
-  //       const events = await ticketController.getAllEvents();
-
-  //       res.status(200).json({ success: true, data: events });
-  //     })
-  //   );
-
-  //   router.get(
-  //     "/:id",
-  //     handleAsync(async (req, res) => {
-  //       const event = await ticketController.getEventById(req.params.id);
-  //       res.status(200).json({ success: true, data: event });
-  //     })
-  //   );
-
   router.post(
     "/",
     handleAsync(async (req, res) => {
