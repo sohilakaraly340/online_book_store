@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose');
 
 const paginate = (model, populateOptions = [], filterOptions = {}) => {
@@ -56,7 +57,7 @@ const paginate = (model, populateOptions = [], filterOptions = {}) => {
 
       result.results = await query.exec();
 
-      req.paginatedResult = result;
+      req.paginatedResult = { ...result, numOfPages };
       next();
     } catch (error) {
       console.error("Error in paginate middleware:", error);

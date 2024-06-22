@@ -39,12 +39,15 @@ const itemRouter = (itemController) => {
 
   router.get(
     "/search/:key",
-    handleAsync(async (req, res) => {
-      const searched = await itemController.search(req.params.key);
+    handleAsync(async (req, res, next) => {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 5;
+
+      const searched = await itemController.search(req.params.key, page, limit);
+
       res.status(200).json({ success: true, data: searched });
     })
   );
-
   return router;
 };
 
