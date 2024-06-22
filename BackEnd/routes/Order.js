@@ -18,7 +18,7 @@ const orderRouter = (orderController) => {
     handleAsync(async (req, res) => {
       const data = await orderController.getCurrentUserOrders(req.auth);
 
-      res.status(200).json({ success: true, data: data });
+      res.status(200).json({ success: true, data: data});
     })
   );
 
