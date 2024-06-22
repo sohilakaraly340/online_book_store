@@ -9,6 +9,7 @@ const paginate = (model, populateOptions = []) => {
 
     try {
       const totalDocuments = await model.countDocuments().exec();
+      const numOfPages = Math.ceil(totalDocuments / limit);
 
       if (endIndex < totalDocuments) {
         result.next = {
@@ -33,7 +34,7 @@ const paginate = (model, populateOptions = []) => {
 
       result.results = await query.exec();
 
-      req.paginatedResult = result;
+      req.paginatedResult = { ...result, numOfPages };
       next();
     } catch (error) {
       res.status(500).json({ message: error.message });

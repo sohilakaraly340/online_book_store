@@ -30,7 +30,7 @@ class ReviewRepository {
       })
       .populate({
         path: "item",
-        select: "title",
+        select: "title images",
       });
   }
 }

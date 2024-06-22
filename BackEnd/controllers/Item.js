@@ -49,8 +49,8 @@ class ItemController {
     return await this.itemRepository.getAllItems();
   }
 
-  async search(key) {
-    return await this.itemRepository.search(key);
+  async search(key, page, limit) {
+    return await this.itemRepository.search(key, page, limit);
   }
 
   async newArrival() {
