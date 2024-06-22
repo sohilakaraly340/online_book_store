@@ -31,37 +31,60 @@ class ItemRepository {
     return await Item.create(body);
   }
 
-  async search(key) {
+  async search(key, page, limit) {
+    const startIndex = (page - 1) * limit;
+
     const authors = await Author.find({
       name: { $regex: key, $options: "i" },
     });
 
     let itemsByAuthor = [];
+    let totalItemsByAuthor = 0;
 
     if (authors.length > 0) {
       const authorIds = authors.map((author) => author._id);
+      totalItemsByAuthor = await Item.countDocuments({
+        authorId: { $in: authorIds },
+      });
+
       itemsByAuthor = await Item.find({
         authorId: { $in: authorIds },
       })
         .populate("itemType")
         .populate("category")
-        .populate("authorId");
+        .populate("authorId")
+        .limit(limit)
+        .skip(startIndex);
     }
+
+    const totalItemsByTitle = await Item.countDocuments({
+      title: { $regex: key, $options: "i" },
+    });
 
     const itemsByTitle = await Item.find({
       title: { $regex: key, $options: "i" },
     })
       .populate("itemType")
       .populate("category")
-      .populate("authorId");
+      .populate("authorId")
+      .limit(limit)
+      .skip(startIndex);
 
     if (itemsByAuthor.length === 0 && itemsByTitle.length === 0) {
       throw new NotFoundError("No items found matching the search criteria.");
     }
 
+    const totalItems = totalItemsByAuthor + totalItemsByTitle;
+    const numOfPages = Math.ceil(totalItems / limit);
+
     return {
       itemsByAuthor,
       itemsByTitle,
+      // totalItems,
+      numOfPages,
+      currentPage: page,
+      nextPage: page < numOfPages ? page + 1 : null,
+      prevPage: page > 1 ? page - 1 : null,
     };
   }
 
