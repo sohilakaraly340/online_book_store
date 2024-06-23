@@ -3,14 +3,16 @@ const { handleAsync } = require("../Errors/HandleAsync");
 const { auth } = require("../middlewares/Auth");
 const { uploadImage } = require("../middlewares/firebase");
 const { uploadMultiple } = require("../middlewares/Multer");
+const paginate = require("../middlewares/Pagination");
 const router = express.Router();
-
+const usedItem = require("../models/UsedItem");
 const usedItemRouter = (usedItemController) => {
   router.get(
     "/",
+    paginate(usedItem),
     handleAsync(async (req, res) => {
       const data = await usedItemController.getAllUsedItems();
-      res.status(200).json({ success: true, data: data });
+      res.status(200).json({ success: true, data: req.paginatedResult });
     })
   );
 
