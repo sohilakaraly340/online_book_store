@@ -49,10 +49,19 @@ class UsedItemRepository {
     const usedItem = await UsedItem.findOne({ _id: id });
     if (!usedItem) throw new NotFoundError("UsedItem not found");
 
-    const updatedUsedItem = await UsedItem.updateOne({ _id: id }, body);
-    if (updatedUsedItem.modifiedCount == 0) {
-      throw new NotFoundError("Order not found");
+    const updatedUsedItem = await UsedItem.findOneAndUpdate(
+      { _id: id },
+      body,
+      { new: true } // Return the updated document
+    )
+      .populate("user")
+      .populate("category")
+      .populate("itemType");
+
+    if (!updatedUsedItem) {
+      throw new NotFoundError("UsedItem not found");
     }
+
     return updatedUsedItem;
   }
 

@@ -52,6 +52,7 @@ const usedItemRouter = (usedItemController) => {
     auth,
     handleAsync(async (req, res) => {
       const data = await usedItemController.updateUsedItemById(
+        req.auth,
         req.params.id,
         req.body
       );

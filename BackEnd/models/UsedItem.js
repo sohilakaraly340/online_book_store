@@ -23,16 +23,10 @@ const usedItemSchema = new mongoose.Schema({
     default: 0,
     min: [0, "price cannot be less than 0"],
   },
-  firstName: {
-    type: String,
-    minLength: [3, "First name must be at least 3 characters long"],
-    required: [true, "First name is required"],
-  },
   email: {
     type: String,
     minLength: [3, "Email must be at least 3 characters long"],
     required: [true, "Email is required"],
-    unique: true,
   },
   phoneNumber: {
     type: String,
@@ -48,7 +42,6 @@ const usedItemSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
-    required: true,
   },
   itemType: {
     type: mongoose.Schema.Types.ObjectId,
