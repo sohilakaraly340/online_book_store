@@ -9,11 +9,10 @@ const usedItemSchema = joi.object({
   description: joi.string().min(5),
   message: joi.string().min(5),
   images: joi.array().items(joi.string()),
-  price: joi.number().required(),
-  category: joi.objectId().required(),
+  price: joi.number(),
+  category: joi.objectId(),
   itemType: joi.objectId().required(),
   address: joi.string().required().min(3),
-  firstName: joi.string().min(3).max(20).required(),
   phoneNumber: joi.string().required().regex(phonePattern).min(11).max(11),
   email: joi.string().regex(EmailPattern).required(),
 });
@@ -31,7 +30,6 @@ const updateUsedItemSchema = joi.object({
   category: joi.objectId(),
   itemType: joi.objectId(),
   address: joi.string().required().min(3),
-  firstName: joi.string().min(3).max(20),
   phoneNumber: joi.string().regex(phonePattern).min(11).max(11),
   email: joi.string().regex(EmailPattern),
 });
