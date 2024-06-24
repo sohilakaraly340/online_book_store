@@ -1,15 +1,17 @@
 const express = require("express");
 const { handleAsync } = require("../Errors/HandleAsync");
 const { auth } = require("../middlewares/Auth");
-
+const review = require("../models/Review");
+const paginate = require("../middlewares/Pagination");
 const router = express.Router();
 
 const reviewRouter = (reviewController, itemController) => {
   router.get(
     "/",
+    paginate(review),
     handleAsync(async (req, res) => {
       const reviews = await reviewController.getReviews();
-      res.status(200).json({ success: true, Reviews: reviews });
+      res.status(200).json({ success: true, Reviews: req.paginatedResult });
     })
   ),
     router.post(
