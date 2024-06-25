@@ -10,15 +10,23 @@ class UsedItemController {
   }
 
   async getAllUsedItems() {
-    return await this.usedItemRepository.getAllUsedItems();
+    let allUsedItems = await this.usedItemRepository.getAllUsedItems();
+    allUsedItems = allUsedItems.reverse();
+    return allUsedItems;
   }
 
   async getUsedItemById(id) {
     const usedItem = await this.usedItemRepository.findUsedItemById(id);
-    let suggestionUsedItems =
-      await this.usedItemRepository.findUsedItemByCategory(
-        usedItem.category._id
-      );
+    let suggestionUsedItems;
+    if (usedItem.category) {
+      suggestionUsedItems =
+        await this.usedItemRepository.findUsedItemByCategory(
+          usedItem.category._id
+        );
+    } else {
+      suggestionUsedItems = await this.usedItemRepository.getAllUsedItems();
+      suggestionUsedItems = suggestionUsedItems.slice(0, 5);
+    }
     suggestionUsedItems = suggestionUsedItems.filter(
       (item) => item._id.toString() !== usedItem._id.toString()
     );
@@ -44,13 +52,16 @@ class UsedItemController {
     return await this.usedItemRepository.createNewUsedItem(data);
   }
 
-  async updateUsedItemById(id, body) {
+  async updateUsedItemById(auth, id, body) {
+    const user = auth;
     const { error } = updateValidateUsedItem(body);
     if (error) {
       throw new ValidationError(`Invalid data ${error.message}`);
     }
-    await this.usedItemRepository.updateUsedItem(id, body);
-    return { message: "UpdatedSuccessfully" };
+    const data = { ...body, user: user._id };
+    const response = await this.usedItemRepository.updateUsedItem(id, data);
+    console.log(response);
+    return response;
   }
 
   async deleteUsedItem(id) {
