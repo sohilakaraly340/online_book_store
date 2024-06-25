@@ -49,5 +49,32 @@ class AuthorRepository {
     const deleted = await Author.findByIdAndDelete(id);
     return deleted;
   }
+
+  async getAuthorWithMostBooks() {
+    const result = await Item.aggregate([
+      {
+        $group: {
+          _id: "$authorId",
+          itemCount: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { itemCount: -1 },
+      },
+      {
+        $limit: 1,
+      },
+    ]);
+
+    if (result.length === 0) {
+      throw new NotFoundError("No authors found with books.");
+    }
+
+    const authorId = result[0]._id;
+    const author = await Author.findById(authorId);
+    if (!author) throw new NotFoundError("Author not found!");
+
+    return { author, itemCount: result[0].itemCount };
+  }
 }
 module.exports = AuthorRepository;
