@@ -80,7 +80,6 @@ class ItemRepository {
     return {
       itemsByAuthor,
       itemsByTitle,
-      // totalItems,
       numOfPages,
       currentPage: page,
       nextPage: page < numOfPages ? page + 1 : null,
