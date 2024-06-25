@@ -9,7 +9,11 @@ const usedItem = require("../models/UsedItem");
 const usedItemRouter = (usedItemController) => {
   router.get(
     "/",
-    paginate(usedItem),
+    paginate(usedItem, [
+      { path: "itemType" },
+      { path: "category" },
+      { path: "user" },
+    ]),
     handleAsync(async (req, res) => {
       const data = await usedItemController.getAllUsedItems();
       res.status(200).json({ success: true, data: req.paginatedResult });

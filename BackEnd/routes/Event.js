@@ -6,7 +6,7 @@ const event = require("../models/Event");
 const eventRouter = (eventController) => {
   router.get(
     "/",
-    paginate(event),
+    paginate(event, [{ path: "users" }]),
     handleAsync(async (req, res) => {
       const events = await eventController.getAllEvents();
 

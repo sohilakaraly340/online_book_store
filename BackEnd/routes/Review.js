@@ -8,7 +8,7 @@ const router = express.Router();
 const reviewRouter = (reviewController, itemController) => {
   router.get(
     "/",
-    paginate(review),
+    paginate(review, [{ path: "user" }, { path: "item" }]),
     handleAsync(async (req, res) => {
       const reviews = await reviewController.getReviews();
       res.status(200).json({ success: true, Reviews: req.paginatedResult });
@@ -69,7 +69,6 @@ const reviewRouter = (reviewController, itemController) => {
           const reviewId = await reviewController.getReviews(req.params.id);
           if (!reviewId)
             return res.status(404).json({ message: "review not found" });
-
 
           const updated = await reviewController.updateReview(
             req.params.id,

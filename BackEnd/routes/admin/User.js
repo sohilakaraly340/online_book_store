@@ -8,7 +8,7 @@ const userRouter = (userController) => {
   router.get(
     "/",
     admin,
-    paginate(users),
+    paginate(users, [{ path: "wishList" }]),
     handleAsync(async (req, res) => {
       await userController.getAllUser();
       res.status(200).json({ success: true, data: req.paginatedResult });
