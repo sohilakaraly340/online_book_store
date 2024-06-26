@@ -74,7 +74,13 @@ class AuthorRepository {
     const author = await Author.findById(authorId);
     if (!author) throw new NotFoundError("Author not found!");
 
-    return { author, itemCount: result[0].itemCount };
+    const allAuthorBooks = await Item.find({ authorId });
+
+    return {
+      author,
+      itemCount: result[0].itemCount,
+      Book: allAuthorBooks[allAuthorBooks.length - 1],
+    };
   }
 }
 module.exports = AuthorRepository;
