@@ -36,9 +36,10 @@ class TicketRepository {
     await Ticket.deleteOne({ _id: id });
   }
 
-  async getAllUserTickets(id) {
-    return await Ticket.find({ user: id }).populate("event");
+  async getAllUserTickets(userId) {
+    return await Ticket.find({ user: userId }).populate("event");
   }
+
   async getTicketById(id) {
     return await Ticket.findById({ _id: id })
       .populate("event")

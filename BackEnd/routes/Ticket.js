@@ -1,5 +1,6 @@
 const express = require("express");
 const { handleAsync } = require("../Errors/HandleAsync");
+const { auth } = require("../middlewares/Auth");
 const router = express.Router();
 
 const ticketRouter = (ticketController) => {
@@ -20,19 +21,21 @@ const ticketRouter = (ticketController) => {
         .json({ success: true, data: "Ticket deleted successfully" });
     })
   );
+
+  router.get(
+    "/user",
+    auth,
+    handleAsync(async (req, res) => {
+      const tickets = await ticketController.getAllUserTickets(req.auth);
+      res.status(200).json({ success: true, data: tickets });
+    })
+  );
+
   router.get(
     "/:id",
     handleAsync(async (req, res) => {
       const ticket = await ticketController.getTicketById(req.params.id);
       res.status(200).json({ success: true, data: ticket });
-    })
-  );
-
-  router.get(
-    "/user/:id",
-    handleAsync(async (req, res) => {
-      const tickets = await ticketController.getAllUserTickets(req.params.id);
-      res.status(200).json({ success: true, data: tickets });
     })
   );
 
