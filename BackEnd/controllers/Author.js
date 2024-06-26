@@ -33,5 +33,8 @@ class AuthorController {
   async deleteAuthorById(id) {
     return await this.authorRepository.deleteAuthorById(id);
   }
+  async getAuthorWithMostBooks() {
+    return await this.authorRepository.getAuthorWithMostBooks();
+  }
 }
 module.exports = AuthorController;

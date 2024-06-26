@@ -22,6 +22,13 @@ const authorRouter = (authorController) => {
     })
   );
 
+  router.get(
+    "/mostPopularAuthor",
+    handleAsync(async (req, res) => {
+      const mostPopularAuthor = await authorController.getAuthorWithMostBooks();
+      res.status(200).json({ success: true, data: mostPopularAuthor });
+    })
+  );
   return router;
 };
 

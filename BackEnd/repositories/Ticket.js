@@ -15,7 +15,8 @@ class TicketRepository {
       throw new BadRequestError("You already have a ticket for this event!");
     }
 
-    const newTicket = await Ticket.create(body);
+    const newTicket = await (await Ticket.create(body)).populate("event");
+
     event.users.push(body.user);
     event.numOfTickets--;
     await event.save();
@@ -39,7 +40,9 @@ class TicketRepository {
     return await Ticket.find({ user: id }).populate("event");
   }
   async getTicketById(id) {
-    return await Ticket.findById(id).populate("event");
+    return await Ticket.findById({ _id: id })
+      .populate("event")
+      .populate("user");
   }
 
   async getTicketsByEventId(id) {
