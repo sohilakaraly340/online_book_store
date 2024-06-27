@@ -18,6 +18,7 @@ class UsedItemController {
   async getUsedItemById(id) {
     const usedItem = await this.usedItemRepository.findUsedItemById(id);
     let suggestionUsedItems;
+    console.log(usedItem.category);
     if (usedItem.category) {
       suggestionUsedItems =
         await this.usedItemRepository.findUsedItemByCategory(
