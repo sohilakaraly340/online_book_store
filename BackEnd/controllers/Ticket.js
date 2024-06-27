@@ -9,8 +9,9 @@ class TicketController {
   async deleteTicketById(id) {
     return await this.ticketRepository.deleteTicket(id);
   }
-  async getAllUserTickets(id) {
-    return await this.ticketRepository.getAllUserTickets(id);
+  async getAllUserTickets(auth) {
+    const user = auth;
+    return await this.ticketRepository.getAllUserTickets(user._id);
   }
   async getTicketById(id) {
     return await this.ticketRepository.getTicketById(id);
