@@ -29,8 +29,8 @@ const StripeRouter = (OrderController) => {
         payment_method_types: ["card"],
         line_items,
         mode: "payment",
-        success_url: `http://localhost:3005/success.html`,
-        cancel_url: `http://localhost:3005/cancel.html`,
+        success_url: `${process.env.CLIENT_URL}orderconfirmation`,
+        cancel_url: `${process.env.CLIENT_URL}/payment`,
       });
 
       res.status(200).json({ success: true, url: session.url });
