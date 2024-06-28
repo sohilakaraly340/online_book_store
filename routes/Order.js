@@ -1,6 +1,6 @@
 const express = require("express");
 const { auth } = require("../middlewares/Auth");
-const { handleAsync } = require("../Errors/HandleAsync");
+const { handleAsync } = require("../Errors/handleAsync");
 const router = express.Router();
 const orderRouter = (orderController) => {
   router.get(
@@ -18,7 +18,7 @@ const orderRouter = (orderController) => {
     handleAsync(async (req, res) => {
       const data = await orderController.getCurrentUserOrders(req.auth);
 
-      res.status(200).json({ success: true, data: data});
+      res.status(200).json({ success: true, data: data });
     })
   );
 

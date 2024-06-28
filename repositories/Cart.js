@@ -1,5 +1,5 @@
 const { NotImplementedError } = require("../Errors/NotImplementedError");
-const { NotFoundError } = require("../Errors/NotFoundError");
+const { NotFoundError } = require("../Errors/notFoundError");
 const Cart = require("../models/Cart");
 
 class CartRepository {

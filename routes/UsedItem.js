@@ -1,5 +1,5 @@
 const express = require("express");
-const { handleAsync } = require("../Errors/HandleAsync");
+const { handleAsync } = require("../Errors/handleAsync");
 const { auth } = require("../middlewares/Auth");
 const { uploadImage } = require("../middlewares/firebase");
 const { uploadMultiple } = require("../middlewares/Multer");

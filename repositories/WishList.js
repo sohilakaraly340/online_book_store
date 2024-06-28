@@ -1,4 +1,4 @@
-const { NotFoundError } = require("../Errors/NotFoundError");
+const { NotFoundError } = require("../Errors/notFoundError");
 const User = require("../models/User");
 
 class WishListRepository {

@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { NotFoundError } = require("../Errors/NotFoundError");
+const { NotFoundError } = require("../Errors/notFoundError");
 const { InternalServerError } = require("../Errors/InternalServerError");
 const User = require("../models/User");
 const { deleteImages } = require("../middlewares/firebase");
@@ -39,7 +39,7 @@ class UserRepository {
   async changePassword(email, body) {
     const result = await User.updateOne({ email }, { password: body.password });
     return result;
-}
+  }
 }
 
 module.exports = UserRepository;

@@ -3,10 +3,10 @@ const {
   shoppingItemValidation,
   updateShoppingItemValidation,
 } = require("../validators/ShoppingItem");
-const { UnAuthorizedError } = require("../Errors/UnAuthorizedError");
-const { NotFoundError } = require("../Errors/NotFoundError");
-const { ValidationError } = require("../Errors/ValidationError");
-const { NotImplementedError } = require("../Errors/NotImplementedError");
+const { UnAuthorizedError } = require("../Errors/unAuthorizedError");
+const { NotFoundError } = require("../Errors/notFoundError");
+const { ValidationError } = require("../Errors/validationError");
+const { NotImplementedError } = require("../Errors/notImplementedError");
 const { JWT_SECRET } = require("../constants");
 
 class ShoppingItemsController {

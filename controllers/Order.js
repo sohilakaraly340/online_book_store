@@ -1,5 +1,5 @@
-const { NotImplementedError } = require("../Errors/NotImplementedError");
-const { ValidationError } = require("../Errors/ValidationError");
+const { NotImplementedError } = require("../Errors/notImplementedError");
+const { ValidationError } = require("../Errors/validationError");
 const {
   orderValidation,
   orderUpdateValidation,

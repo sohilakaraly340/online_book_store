@@ -1,4 +1,4 @@
-const { NotFoundError } = require("../Errors/NotFoundError");
+const { NotFoundError } = require("../Errors/notFoundError");
 const { deleteImages } = require("../middlewares/firebase");
 const Category = require("../models/Category");
 const Item = require("../models/Item");
