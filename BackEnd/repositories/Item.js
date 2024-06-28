@@ -70,9 +70,9 @@ class ItemRepository {
       .limit(limit)
       .skip(startIndex);
 
-    if (itemsByAuthor.length === 0 && itemsByTitle.length === 0) {
-      throw new NotFoundError("No items found matching the search criteria.");
-    }
+    // if (itemsByAuthor.length === 0 && itemsByTitle.length === 0) {
+    //   throw new NotFoundError("No items found matching the search criteria.");
+    // }
 
     const totalItems = totalItemsByAuthor + totalItemsByTitle;
     const numOfPages = Math.ceil(totalItems / limit);
