@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const { NotFoundError } = require("../Errors/notFoundError");
-const { InternalServerError } = require("../Errors/InternalServerError");
+const { InternalServerError } = require("../Errors/internalServerError");
 const User = require("../models/User");
 const { deleteImages } = require("../middlewares/firebase");
 
