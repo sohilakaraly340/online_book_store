@@ -47,7 +47,6 @@ const EventRepository = require("./repositories/Event");
 const TicketRepository = require("./repositories/Ticket");
 const UsedItemRepository = require("./repositories/UsedItem");
 
-
 //controllers
 const AuthorController = require("./controllers/Author");
 const CategoryController = require("./controllers/Category");
@@ -58,9 +57,9 @@ const CartController = require("./controllers/Cart");
 const ShoppingItemsController = require("./controllers/ShoppingItem");
 const OrderController = require("./controllers/Order");
 const ReviewController = require("./controllers/Review");
-const RatingController = require("./controllers/Rating")
+const RatingController = require("./controllers/Rating");
 const { PORT, DB_URL } = require("./constants");
-const { NotFoundError } = require("./Errors/NotFoundError");
+const { NotFoundError } = require("./Errors/notFoundError");
 const EventController = require("./controllers/Event");
 const TicketController = require("./controllers/Ticket");
 const UsedItemController = require("./controllers/UsedItem");
@@ -81,7 +80,6 @@ const ratingRepository = new RatingRepository();
 const eventRepository = new EventRepository();
 const ticketRepository = new TicketRepository();
 const usedItemRepository = new UsedItemRepository();
-
 
 //instance controllers
 const authorController = new AuthorController(authorRepository);
@@ -104,7 +102,7 @@ const orderController = new OrderController(
 );
 
 const reviewController = new ReviewController(reviewRepository);
-const ratingController = new RatingController(ratingRepository)
+const ratingController = new RatingController(ratingRepository);
 
 const eventController = new EventController(eventRepository);
 const ticketController = new TicketController(ticketRepository);
@@ -146,9 +144,9 @@ mainRouter.use("/author", authorRouter(authorController));
 
 mainRouter.use("/wishList", wishListRouter(wishListController));
 
-mainRouter.use("/review", reviewRouter(reviewController,itemController));
+mainRouter.use("/review", reviewRouter(reviewController, itemController));
 
-mainRouter.use("/rating", ratingRouter(ratingController))
+mainRouter.use("/rating", ratingRouter(ratingController));
 
 mainRouter.use("/stripe", stripe(orderController));
 
