@@ -1,4 +1,4 @@
-const { ValidationError } = require("../Errors/ValidationError");
+const { ValidationError } = require("../Errors/validationError");
 const validator = require("../validators/Item");
 class ItemController {
   constructor(itemRepository) {

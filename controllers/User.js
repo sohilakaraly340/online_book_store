@@ -9,8 +9,8 @@ const {
 const crypto = require("crypto");
 
 const { JWT_SECRET } = require("../constants");
-const { BadRequestError } = require("../Errors/BadRequestError");
-const { ValidationError } = require("../Errors/ValidationError");
+const { BadRequestError } = require("../Errors/badRequestError");
+const { ValidationError } = require("../Errors/validationError");
 const bycrypt = require("bcrypt");
 
 class UserController {

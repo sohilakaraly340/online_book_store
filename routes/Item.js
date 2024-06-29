@@ -1,5 +1,5 @@
 const express = require("express");
-const { handleAsync } = require("../Errors/HandleAsync");
+const { handleAsync } = require("../Errors/handleAsync");
 const paginate = require("../middlewares/Pagination");
 const items = require("../models/Item");
 const router = express.Router();

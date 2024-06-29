@@ -1,4 +1,4 @@
-const { NotFoundError } = require("../Errors/NotFoundError");
+const { NotFoundError } = require("../Errors/notFoundError");
 const ShoppingItem = require("../models/ShoppingItem");
 
 class ShoppingItemRepository {
