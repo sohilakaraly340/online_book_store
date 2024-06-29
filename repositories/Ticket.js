@@ -1,7 +1,7 @@
 const { NotFoundError } = require("../Errors/notFoundError");
 const Ticket = require("../models/Ticket");
 const Event = require("../models/Event");
-const { BadRequestError } = require("../Errors/BadRequestError");
+const { BadRequestError } = require("../Errors/badRequestError");
 
 class TicketRepository {
   async createNewTicket(body) {
